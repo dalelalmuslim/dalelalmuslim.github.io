@@ -1,0 +1,359 @@
+.section--settings .settings__label {
+    display: block;
+}
+
+.section--settings .settings__notifications-card {
+    padding: 15px;
+    background: var(--bg-color);
+}
+
+.section--settings .settings__time-input {
+    padding: 5px;
+    width: 110px;
+}
+
+.section--settings .settings__install-container {
+    display: none;
+}
+
+.section--settings .settings-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.section--settings .settings-link-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--surface-color, #ffffff);
+    border: 1px solid var(--border-color, #e5e5e5);
+    color: var(--text-color, #222);
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.section--settings .settings-link-btn:hover {
+    background: var(--hover-bg, #f7f7f7);
+    text-decoration: none;
+}
+
+.section--settings .settings-link-btn i {
+    color: var(--primary, #125B50);
+    min-width: 18px;
+}
+
+
+.section--settings .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.section--settings .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.section--settings .toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: 0.3s;
+    border-radius: 34px;
+}
+
+.section--settings .toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.section--settings .toggle-switch input:checked + .slider {
+    background-color: var(--primary);
+}
+
+.section--settings .toggle-switch input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+
+.section--settings .settings__updates-card {
+    padding: 15px;
+    background: var(--bg-color);
+}
+
+.section--settings .settings__updates-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.section--settings .settings__updates-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.section--settings .settings__updates-text,
+.section--settings .settings__updates-meta,
+.section--settings .settings__updates-hint {
+    margin: 0;
+}
+
+.section--settings .settings__updates-meta {
+    margin-top: 4px;
+    font-size: 0.92rem;
+}
+
+.section--settings .settings__updates-hint {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color, #d7d7d7);
+}
+
+.section--settings .settings__status-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.section--settings .settings__status-badge--idle {
+    background: color-mix(in srgb, var(--primary) 10%, white);
+    color: var(--primary);
+    border-color: color-mix(in srgb, var(--primary) 24%, white);
+}
+
+.section--settings .settings__status-badge--checking {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+.section--settings .settings__status-badge--ready {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+.section--settings .settings__status-badge--refreshed {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.section--settings .settings__status-badge--offline {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.section--settings .settings__status-badge--applying {
+    background: color-mix(in srgb, var(--accent) 18%, white);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 32%, white);
+}
+
+.section--settings .settings__status-badge--error {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+
+.section--settings .settings-auth-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.section--settings .settings-auth-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section--settings .settings-auth-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+.section--settings .settings-auth-btn--loading {
+    opacity: 0.7;
+    cursor: progress;
+}
+
+.section--settings .settings-auth-btn--danger {
+    color: #ef4444;
+}
+
+
+.section--settings .settings__runtime-card {
+    padding: 15px;
+    background: var(--bg-color);
+}
+
+.section--settings .settings__runtime-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section--settings .settings__runtime-item {
+    margin: 0;
+    line-height: 1.7;
+}
+
+.section--settings .settings__runtime-item strong {
+    color: var(--text-color, #222);
+}
+
+
+.section--settings .settings__diagnostics-list {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.section--settings .settings__diagnostics-item {
+    border: 1px solid var(--border-color, #e5e5e5);
+    border-radius: 12px;
+    padding: 12px;
+    background: var(--surface-color, #fff);
+}
+
+.section--settings .settings__diagnostics-item--error {
+    border-color: rgba(190, 24, 93, 0.25);
+}
+
+.section--settings .settings__diagnostics-item--warning {
+    border-color: rgba(217, 119, 6, 0.25);
+}
+
+.section--settings .settings__diagnostics-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.section--settings .settings__diagnostics-title {
+    font-size: 0.95rem;
+}
+
+.section--settings .settings__diagnostics-level {
+    font-size: 0.78rem;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 4px 10px;
+}
+
+.section--settings .settings__diagnostics-level--error {
+    background: rgba(190, 24, 93, 0.12);
+    color: #9f1239;
+}
+
+.section--settings .settings__diagnostics-level--warning {
+    background: rgba(217, 119, 6, 0.12);
+    color: #b45309;
+}
+
+.section--settings .settings__diagnostics-message,
+.section--settings .settings__diagnostics-meta,
+.section--settings .settings__diagnostics-empty {
+    margin: 0;
+    color: var(--muted-text, #666);
+}
+
+.section--settings .settings__diagnostics-message {
+    margin-bottom: 6px;
+}
+
+.section--settings .settings__diagnostics-meta {
+    font-size: 0.82rem;
+}
+
+.section--settings .settings__diagnostics-empty {
+    padding: 12px;
+    border: 1px dashed var(--border-color, #ddd);
+    border-radius: 12px;
+    background: var(--surface-color, #fff);
+}
+
+
+.section--settings .settings__diagnostics-head-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.section--settings .settings__diagnostics-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.section--settings .settings__diagnostics-code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--primary) 12%, white);
+    color: var(--primary);
+    border: 1px solid color-mix(in srgb, var(--primary) 24%, white);
+    font-size: 0.78rem;
+    font-weight: 800;
+    direction: ltr;
+}
+
+.section--settings .settings__diagnostics-action {
+    margin: 0 0 6px;
+    color: var(--text-color, #222);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.section--settings .settings__support-note {
+    margin: 0;
+    line-height: 1.7;
+}
+
+.section--settings .settings__support-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

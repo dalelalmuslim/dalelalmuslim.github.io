@@ -1,0 +1,207 @@
+/* ==========================================
+   Buttons (Base)
+   ========================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease,
+        filter 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.btn:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn:disabled,
+.btn[disabled],
+.btn[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+    filter: saturate(0.8);
+}
+
+.btn--primary {
+    background: var(--primary); /* سطر البديل الآمن للمتصفحات القديمة */
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--primary) 92%, white),
+        var(--primary)
+    );
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+
+.btn--primary:hover {
+    filter: brightness(1.03);
+}
+
+.btn--accent {
+    background: var(--accent); /* سطر البديل الآمن */
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--accent) 92%, white),
+        var(--accent)
+    );
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+
+.btn--accent:hover {
+    filter: brightness(1.03);
+}
+
+[data-theme="royal"] .btn--primary,
+[data-theme="royal"] .btn--accent {
+    color: #0A2E24;
+}
+
+.btn--ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--primary);
+}
+
+.btn--ghost:hover {
+    background: var(--primary-light);
+}
+
+.btn--ghost:active {
+    background: var(--primary-light);
+}
+
+.btn--full {
+    width: 100%;
+}
+
+.btn--start {
+    justify-content: flex-start;
+}
+
+.btn--compact {
+    min-height: auto;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.icon-btn:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.icon-btn:active {
+    transform: scale(0.95);
+}
+
+.icon-btn:disabled,
+.icon-btn[disabled],
+.icon-btn[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
+
+.icon-btn--transparent {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--primary);
+}
+
+.icon-btn--danger {
+    color: #ef4444;
+}
+
+/* ==========================================
+   Inputs
+   ========================================== */
+.input {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--card-bg); 
+    background: color-mix(in srgb, var(--card-bg) 96%, white);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+.input::placeholder {
+    color: var(--text-sub);
+    opacity: 0.9;
+}
+
+.input:focus,
+.input:focus-visible {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 12%, transparent);
+    background: var(--card-bg);
+}
+
+.input:disabled,
+.input[disabled],
+.input[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

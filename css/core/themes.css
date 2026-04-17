@@ -1,0 +1,70 @@
+/* ==========================================
+   1. السمة الافتراضية (زمردي هادئ ومريح - Calm Teal)
+   ========================================== */
+:root {
+    --primary: #125B50; 
+    --primary-light: rgba(18, 91, 80, 0.1);
+    --accent: #D8A25E; 
+    --accent-light: rgba(216, 162, 94, 0.1);
+
+    /* خلفيات نظيفة وفاتحة لراحة العين في القراءة */
+    --bg-color: #F8FBFB; 
+    --bg-gradient: none; 
+    --card-bg: #FFFFFF; 
+
+    /* نصوص واضحة ومريحة */
+    --text-main: #2C3E50; 
+    --text-sub: #7F8C8D; 
+    --border: #E2E8F0; 
+
+    /* ظلال خفيفة لإعطاء عمق بدون إزعاج */
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 2px 8px rgba(18, 91, 80, 0.08);
+    --shadow-md: 0 8px 20px rgba(18, 91, 80, 0.12);
+    --shadow-modal: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+    /* المسافات */
+    --gap-lg: 15px;
+    --gap-md: 12px;
+    --gap-sm: 8px;
+}
+/* ==========================================
+   2. السمة الليلية (Dark Mode)
+   ========================================== */
+[data-theme="dark"] {
+    --primary: #10B981;
+    --primary-light: rgba(16, 185, 129, 0.1);
+    --accent: #FBBF24;
+    --accent-light: rgba(251, 191, 36, 0.1);
+    
+    --bg-color: #111827;
+    --bg-gradient: none;
+    --card-bg: #1F2937;
+    
+    --text-main: #F9FAFB;
+    --text-sub: #9CA3AF;
+    --border: #374151;
+
+    --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   3. السمة الملكية (Royal Emerald & Gold)
+   ========================================== */
+[data-theme="royal"] {
+    --primary: #F3D582; 
+    --primary-light: rgba(243, 213, 130, 0.15); 
+    --accent: #BB9441; 
+    --accent-light: rgba(187, 148, 65, 0.15);
+    
+    --bg-color: #0A2E24; 
+    --bg-gradient: radial-gradient(circle at top center, #16624D 0%, #0A2E24 100%); 
+    --card-bg: rgba(22, 98, 77, 0.3); 
+    
+    --text-main: #F3D582; 
+    --text-sub: #BB9441; 
+    --border: rgba(243, 213, 130, 0.15);
+}

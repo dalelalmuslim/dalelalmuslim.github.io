@@ -1,0 +1,70 @@
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════
+     Bottom Navigation Bar
+     Tabs: الرئيسية | الأذكار | المسبحة | القرآن | المزيد
+     Active state managed by js/app/ui/bottom-nav.js
+     Section navigation handled by global click-action-map via data-nav-section
+     ═══════════════════════════════════════════════ -->
+<nav class="bottom-nav no-select" id="bottomNav" aria-label="التنقل الرئيسي" role="navigation">
+  <button class="bottom-nav__tab is-active" data-nav-section="home" data-nav-title="دليل المسلم" type="button" aria-label="الرئيسية" aria-current="page">
+    <i class="fa-solid fa-house" aria-hidden="true"></i>
+    <span class="bottom-nav__label">الرئيسية</span>
+  </button>
+  <button class="bottom-nav__tab" data-nav-section="azkar" data-nav-title="الأذكار اليومية" type="button" aria-label="الأذكار">
+    <i class="fa-solid fa-moon" aria-hidden="true"></i>
+    <span class="bottom-nav__label">الأذكار</span>
+  </button>
+  <button class="bottom-nav__tab bottom-nav__tab--center" data-nav-section="masbaha" data-nav-title="المسبحة الذكية" type="button" aria-label="المسبحة">
+    <i class="fa-solid fa-fingerprint" aria-hidden="true"></i>
+    <span class="bottom-nav__label">المسبحة</span>
+  </button>
+  <button class="bottom-nav__tab" data-nav-section="quran" data-nav-title="القرآن الكريم" type="button" aria-label="القرآن">
+    <i class="fa-solid fa-book-quran" aria-hidden="true"></i>
+    <span class="bottom-nav__label">القرآن</span>
+  </button>
+  <button class="bottom-nav__tab" data-bottom-nav-more="true" type="button" aria-label="المزيد" aria-expanded="false" aria-controls="moreDrawer">
+    <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+    <span class="bottom-nav__label">المزيد</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     More Drawer — secondary sections not in bottom nav
+     ═══════════════════════════════════════════════ -->
+<div class="more-drawer" id="moreDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="أقسام إضافية">
+  <div class="more-drawer__backdrop" id="moreDrawerBackdrop"></div>
+  <div class="more-drawer__sheet">
+    <div class="more-drawer__handle" aria-hidden="true"></div>
+    <p class="more-drawer__title">المزيد من الأقسام</p>
+    <nav class="more-drawer__grid" aria-label="أقسام إضافية">
+      <button class="more-drawer__item" data-nav-section="duas" data-nav-title="الأدعية" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-hands-praying" aria-hidden="true"></i></div>
+        <span>الأدعية</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="tasks" data-nav-title="المهام اليومية" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></div>
+        <span>المهام</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="stats" data-nav-title="الإحصائيات" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+        <span>الإحصائيات</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="names" data-nav-title="أسماء الله الحسنى" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-star-and-crescent" aria-hidden="true"></i></div>
+        <span>أسماء الله</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="stories" data-nav-title="قصص وعبر" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-book-journal-whills" aria-hidden="true"></i></div>
+        <span>قصص وعبر</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="settings" data-nav-title="الإعدادات والحساب" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-gear" aria-hidden="true"></i></div>
+        <span>الإعدادات</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<script src="js/main.js" type="module"></script>

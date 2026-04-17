@@ -1,0 +1,107 @@
+<div aria-labelledby="masbahaZikrSheetTitle" aria-modal="true"
+     class="masbaha-zikr-sheet" id="masbahaZikrSheet"
+     role="dialog" aria-hidden="true">
+  <div class="masbaha-zikr-sheet__backdrop" id="masbahaZikrBackdrop"></div>
+  <div class="masbaha-zikr-sheet__panel">
+    <div class="masbaha-zikr-sheet__handle" aria-hidden="true"></div>
+    <h2 class="masbaha-zikr-sheet__title" id="masbahaZikrSheetTitle">اختر الذكر</h2>
+
+    <!-- Target row: how many taps per cycle -->
+    <div class="masbaha-zikr-sheet__target-row">
+      <label class="masbaha-zikr-sheet__target-label" for="masbahaTargetInput">عدد مرات التكرار:</label>
+      <input class="input masbaha-zikr-sheet__target-input"
+             id="masbahaTargetInput"
+             type="number" value="33" min="1" max="9999"
+             aria-label="عدد مرات الذكر قبل الانتقال للتالي"
+             data-masbaha-action="update-target"/>
+    </div>
+
+    <!-- Zikr list (built by JS) -->
+    <div class="masbaha-zikr-sheet__list" id="masbahaZikrList"
+         aria-label="قائمة الأذكار" role="listbox"
+         aria-live="polite"></div>
+
+    <!-- Add custom zikr -->
+    <div class="masbaha-zikr-sheet__add-section">
+      <p class="masbaha-zikr-sheet__add-label">إضافة ذكر مخصص</p>
+      <div class="masbaha-zikr-sheet__add-row">
+        <input class="input"
+               id="newMasbahaEntryInput"
+               type="text" maxlength="200"
+               placeholder="اكتب ذكراً جديداً..."
+               aria-label="ذكر مخصص جديد"
+               data-masbaha-entry-enter-save="true"/>
+        <button class="btn btn--primary masbaha-zikr-sheet__add-btn"
+                data-masbaha-action="save-custom-entry"
+                type="button"
+                aria-label="إضافة الذكر">
+          <i aria-hidden="true" class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn--ghost w-full"
+            data-masbaha-action="close-zikr-sheet"
+            type="button">تم</button>
+  </div>
+</div>
+
+<div aria-labelledby="updateModalTitle" aria-modal="true" class="modal-overlay" id="updateModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-accent modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-cloud-arrow-down"></i></div>
+<h2 class="cardx__title justify-center modal-title" id="updateModalTitle">تحديث جديد متاح! 🎉</h2>
+<p class="muted mb-20">لقد قمنا بإضافة تحسينات ومميزات جديدة للتطبيق. هل تود تحديث التطبيق الآن للحصول على أفضل تجربة؟</p>
+<div class="flex-gap">
+<button class="btn btn--primary flex-1" data-app-modal-action="apply-update" type="button">تحديث الآن</button>
+<button class="btn btn--ghost flex-1" data-app-modal-action="close-update" type="button">لاحقاً</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="masbahaDeleteEntryModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="masbahaDeleteEntryModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-danger modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i></div>
+<h2 class="cardx__title justify-center color-danger modal-title" id="masbahaDeleteEntryModalTitle">تأكيد الحذف</h2>
+<p class="muted mb-20">هل أنت متأكد من حذف هذا الذكر من قائمتك؟</p>
+<div class="flex-gap">
+<button class="btn btn--danger-solid flex-1" data-masbaha-action="confirm-delete-entry" type="button">نعم، احذف</button>
+<button class="btn btn--ghost flex-1" data-masbaha-action="close-delete-entry-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="resetMasbahaModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="resetMasbahaModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 modal-icon modal-icon--warning modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-rotate-right"></i></div>
+<h2 class="cardx__title justify-center modal-title modal-title--warning" id="resetMasbahaModalTitle">تصفير المسبحة</h2>
+<p class="muted mb-20">هل أنت متأكد من تصفير العداد الحالي؟<br/>(لن يؤثر هذا على الإجمالي اليومي)</p>
+<div class="flex-gap">
+<button class="btn btn--warning-solid flex-1" data-masbaha-action="confirm-reset" type="button">نعم، صفر العداد</button>
+<button class="btn btn--ghost flex-1" data-masbaha-action="close-reset-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="deleteTaskModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="deleteTaskModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-danger modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-trash-can"></i></div>
+<h2 class="cardx__title justify-center color-danger modal-title" id="deleteTaskModalTitle">حذف مهمة</h2>
+<p class="muted mb-20">هل أنت متأكد من حذف هذه المهمة من وردك اليومي؟</p>
+<div class="flex-gap">
+<button class="btn btn--danger-solid flex-1" data-tasks-action="confirm-delete-task" type="button">نعم، احذف</button>
+<button class="btn btn--ghost flex-1" data-tasks-action="close-delete-task-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="restoreTasksModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="restoreTasksModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-primary modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-rotate-left"></i></div>
+<h2 class="cardx__title justify-center color-primary modal-title" id="restoreTasksModalTitle">استعادة المهام</h2>
+<p class="muted mb-20">هل تود استعادة المهام الافتراضية؟<br/>(لن يتم مسح مهامك الحالية، سيتم فقط إضافة المهام الناقصة)</p>
+<div class="flex-gap">
+<button class="btn btn--primary flex-1" data-tasks-action="confirm-restore" type="button">نعم، استعد</button>
+<button class="btn btn--ghost flex-1" data-tasks-action="close-restore-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>

@@ -1,0 +1,138 @@
+/* ==========================================
+   Toast
+   ========================================== */
+.app-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%) translateY(120%);
+    width: min(92vw, 420px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+    background: color-mix(in srgb, var(--card-bg) 96%, white);
+    color: var(--text-main);
+    box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.12),
+        0 6px 18px rgba(0, 0, 0, 0.07);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.26s ease,
+        opacity 0.26s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.app-toast--visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.app-toast__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.05rem;
+}
+
+.app-toast__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.app-toast__label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+    opacity: 0.85;
+}
+
+.app-toast__message {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.app-toast--success .app-toast__icon {
+    background: color-mix(in srgb, var(--primary) 14%, white);
+    color: var(--primary);
+}
+
+.app-toast--error .app-toast__icon {
+    background: color-mix(in srgb, #ef4444 14%, white);
+    color: #ef4444;
+}
+
+.app-toast--warning .app-toast__icon {
+    background: color-mix(in srgb, #f59e0b 16%, white);
+    color: #d97706;
+}
+
+.app-toast--info .app-toast__icon {
+    background: color-mix(in srgb, var(--accent) 16%, white);
+    color: var(--accent);
+}
+
+/* ==========================================
+   Skeleton Loading
+   ========================================== */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--bg-color) 88%, white);
+    border-radius: 10px;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.45),
+        transparent
+    );
+    animation: skeleton-loading 1.4s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.skeleton-card {
+    min-height: 80px;
+    border-radius: 14px;
+}
+
+.skeleton-text {
+    height: 16px;
+    border-radius: 6px;
+}
+
+.skeleton-text-lg {
+    height: 22px;
+    border-radius: 6px;
+}
+
+.skeleton-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}

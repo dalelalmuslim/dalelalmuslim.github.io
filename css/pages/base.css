@@ -1,0 +1,55 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Tajawal', 'Segoe UI', Tahoma, Arial, sans-serif;
+  line-height: 1.9;
+  margin: 0;
+  color: #1a2b36;
+}
+
+a {
+  color: #125b50;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  color: #0d473b;
+  text-decoration: underline;
+}
+
+.container,
+.page-shell {
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 15px 40px rgba(0, 30, 20, 0.08);
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 40px;
+  border-radius: 50px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.footer-note {
+  margin-top: 40px;
+  font-size: 0.95rem;
+  color: #3a5a6f;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #d5e0e5;
+  margin: 40px 0;
+}

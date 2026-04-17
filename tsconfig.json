@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "lib": ["ES2022", "DOM"],
+    "types": []
+  },
+  "include": [
+    "js/app/app-config.js",
+    "js/shared/contracts/**/*.js",
+    "js/services/auth/index.js",
+    "js/services/cache/**/*.js",
+    "js/services/versions/**/*.js",
+    "js/services/content/**/*.js",
+    "js/domains/home/home-feed-data.js",
+    "js/domains/azkar/azkar-repository.js",
+    "js/domains/duas/duas-repository.js",
+    "js/domains/stories/stories-repository.js"
+  ]
+}

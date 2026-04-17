@@ -1,0 +1,301 @@
+<section aria-hidden="true" class="tab-content section section--names" id="names" role="tabpanel">
+<h2 class="sr-only">أسماء الله الحسنى</h2>
+<div aria-hidden="true" class="cardx names-surface names-surface--daily mb-15 is-hidden" id="namesDailyCard">
+<div class="names-surface__eyebrow">اسم اليوم</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesDailyTitle"></h3>
+<p class="muted names-surface__desc" id="namesDailyDesc"></p>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--ghost names-favorite-btn" data-names-action="toggle-favorite" id="namesDailyFavoriteBtn" type="button"></button>
+<button class="btn btn--ghost names-wird-btn" data-names-action="toggle-wird" id="namesDailyWirdBtn" type="button"></button>
+<button class="btn btn--primary names-practice-btn" data-names-action="mark-daily-complete" id="namesDailyPracticeBtn" type="button"></button>
+<button class="btn btn--primary" data-names-action="open-daily-name" type="button">افتح الاسم</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-surface mb-15 is-hidden" id="namesResumeCard">
+<div class="names-surface__eyebrow">تابع التعرف</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesResumeTitle"></h3>
+<p class="muted names-surface__desc" id="namesResumeHint"></p>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--primary" data-names-action="resume-name" id="namesResumeButton" type="button">تابع الآن</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-surface names-surface--wird mb-15 is-hidden" id="namesWirdCard">
+<div class="names-surface__eyebrow">وردي</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesWirdTitle"></h3>
+<p class="muted names-surface__desc" id="namesWirdDesc"></p>
+<div class="names-focus-card__meta mt-8" id="namesWirdMeta"></div>
+<div aria-live="polite" class="names-chip-list mt-12" id="namesWirdChips"></div>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--ghost" data-name-filter="wird" data-names-action="set-filter" id="namesWirdFilterBtn" type="button">اعرض وردي</button>
+<button class="btn btn--primary" data-names-action="open-next-wird" id="namesWirdOpenBtn" type="button">الاسم التالي</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-focus-card mb-15 is-hidden" id="namesFocusCard">
+<div class="names-surface__eyebrow">بطاقة مركزة</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesFocusTitle"></h3>
+<p class="muted names-surface__desc" id="namesFocusDesc"></p>
+<div class="names-focus-card__meta" id="namesFocusMeta"></div>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--ghost names-favorite-btn" data-names-action="toggle-favorite" id="namesFocusFavoriteBtn" type="button"></button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-detail-card mb-15 is-hidden" id="namesDetailCard">
+<div class="names-surface__eyebrow">تفصيل الاسم</div>
+<div class="names-detail-card__head mb-15">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesDetailTitle"></h3>
+<p class="muted names-detail-card__transliteration" id="namesDetailTransliteration"></p>
+</div>
+<div class="names-detail-card__actions">
+<button aria-pressed="false" class="btn btn--ghost" data-names-action="toggle-wird" id="namesDetailWirdBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-book-open-reader"></i><span>أضف لوردي</span>
+</button>
+<button class="btn btn--ghost" data-names-action="copy-detail" id="namesDetailCopyBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-copy"></i><span>نسخ البطاقة</span>
+</button>
+</div>
+</div>
+<div class="names-detail-grid">
+<article class="cardx names-detail-panel">
+<h4 class="cardx__title mb-8">المعنى المختصر</h4>
+<p class="muted names-detail-card__copy" id="namesDetailMeaning"></p>
+</article>
+<article class="cardx names-detail-panel">
+<h4 class="cardx__title mb-8">مفتاح التدبر</h4>
+<p class="muted names-detail-card__copy" id="namesDetailReflection"></p>
+</article>
+<article class="cardx names-detail-panel names-detail-panel--full">
+<h4 class="cardx__title mb-8">كيف تستخدمه اليوم؟</h4>
+<p class="muted names-detail-card__copy" id="namesDetailPractice"></p>
+</article>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-learn-card mb-15 is-hidden" id="namesLearnCard">
+<div class="names-surface__eyebrow">تعلم واختبر نفسك</div>
+<div class="names-learn-card__head mb-15">
+<div>
+<h3 class="cardx__title mb-8" id="namesLearnTitle">جولة التعلم</h3>
+<p class="muted names-learn-card__meta" id="namesLearnMeta"></p>
+</div>
+<div aria-label="أوضاع التعلم" class="names-learn-card__modes">
+<button aria-pressed="false" class="btn btn--ghost names-quiz-mode-btn" data-name-quiz-mode="name-to-meaning" data-names-action="set-quiz-mode" type="button">الاسم → المعنى</button>
+<button aria-pressed="false" class="btn btn--ghost names-quiz-mode-btn" data-name-quiz-mode="meaning-to-name" data-names-action="set-quiz-mode" type="button">المعنى → الاسم</button>
+</div>
+</div>
+<div class="names-learn-grid">
+<article class="cardx names-learn-panel">
+<h4 class="cardx__title mb-8" id="namesLearnPromptLabel">السؤال</h4>
+<p class="muted names-learn-card__copy" id="namesLearnPrompt"></p>
+</article>
+<article aria-hidden="true" class="cardx names-learn-panel is-hidden" id="namesLearnAnswerPanel">
+<h4 class="cardx__title mb-8" id="namesLearnAnswerLabel">الإجابة</h4>
+<p class="names-learn-card__answer mb-8" id="namesLearnAnswer"></p>
+<p class="muted names-learn-card__copy" id="namesLearnAnswerHint"></p>
+</article>
+</div>
+<div aria-live="polite" class="names-chip-list mt-12" id="namesLearnWeakChips"></div>
+<div class="names-learn-card__actions mt-15">
+<button class="btn btn--ghost" data-names-action="reveal-quiz-answer" id="namesLearnRevealBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-eye"></i><span>اكشف الإجابة</span>
+</button>
+<button class="btn btn--primary" data-names-action="mark-quiz-known" id="namesLearnKnownBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-check"></i><span>عرفته</span>
+</button>
+<button class="btn btn--ghost" data-names-action="mark-quiz-review" id="namesLearnReviewBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i><span>أحتاج مراجعة</span>
+</button>
+<button class="btn btn--ghost" data-names-action="select-name" id="namesLearnOpenBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i><span>افتح البطاقة</span>
+</button>
+<button class="btn btn--ghost" data-names-action="restart-quiz" id="namesLearnRestartBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-rotate-right"></i><span>أعد الجولة</span>
+</button>
+<button class="btn btn--ghost" data-names-action="review-weak-quiz" id="namesLearnWeakBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i><span>راجع الضعيف</span>
+</button>
+</div>
+</div>
+<div class="cardx names-catalog-shell">
+<div class="flex-between mb-15 names-catalog-shell__head">
+<div>
+<h3 class="cardx__title mb-8">تأمل أسماء الله الحسنى</h3>
+<p class="muted">حفظ يومي هادئ مع مفضلة واستئناف سريع داخل القسم</p>
+</div>
+<div aria-live="polite" class="names-catalog-shell__summary" id="namesCatalogSummary"></div>
+</div>
+<div aria-label="فلاتر أسماء الله الحسنى" class="names-filters mb-15" id="namesFilters"></div>
+<div aria-live="polite" class="home-grid home-grid--catalog names-grid" id="namesGrid"></div>
+</div>
+<!-- ===== إعلان قسم الأسماء ===== -->
+</section>
+
+<section aria-hidden="true" class="tab-content section section--stories" id="stories" role="tabpanel">
+<h2 class="sr-only">قصص وعبر</h2>
+<div aria-live="polite" id="storiesGrid"></div>
+<!-- ===== إعلان قسم القصص ===== -->
+</section>
+
+<section aria-hidden="true" class="tab-content section section--settings" id="settings" role="tabpanel">
+<h2 class="sr-only">الإعدادات</h2>
+<div class="cardx">
+<div class="surface-row mb-15">
+<div class="flex-gap align-center">
+<img alt="صورة المستخدم" class="avatar" id="modalUserAvatar" src="./assets/images/avatar.png"/>
+<span class="text-strong" id="userName">حسابي</span>
+</div>
+<div id="authButtonArea"></div>
+</div>
+<label class="muted mb-8 text-strong settings__label" for="dailyTargetInput">
+<i aria-hidden="true" class="fa-solid fa-bullseye"></i> هدف التسبيح اليومي
+        </label>
+<input aria-label="هدف التسبيح اليومي" class="input mb-20" id="dailyTargetInput" placeholder="100" type="number"/>
+<label class="muted mb-8 text-strong settings__label">
+<i aria-hidden="true" class="fa-solid fa-bell"></i> إشعارات الأذكار
+        </label>
+<p class="muted mb-8 settings__notifications-hint">أي تغيير هنا يتزامن مع تفضيلات التذكير داخل قسم الأذكار.</p>
+<div class="cardx mb-20 settings__notifications-card">
+<div class="flex-between mb-15">
+<div>
+<div class="text-strong">أذكار الصباح</div>
+<input class="input mt-8 settings__time-input" data-notify-time="morning" id="timeMorning" type="time" value="06:00"/>
+</div>
+<label class="toggle-switch">
+<input data-notify-toggle="morning" id="notifyMorning" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex-between mb-15">
+<div>
+<div class="text-strong">أذكار المساء</div>
+<input class="input mt-8 settings__time-input" data-notify-time="evening" id="timeEvening" type="time" value="16:00"/>
+</div>
+<label class="toggle-switch">
+<input data-notify-toggle="evening" id="notifyEvening" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex-between mb-15">
+<div>
+<div class="text-strong">أذكار ما بعد الصلاة</div>
+<input class="input mt-8 settings__time-input" data-notify-time="prayer" id="timePrayer" type="time" value="13:30"/>
+</div>
+<label class="toggle-switch">
+<input data-notify-toggle="prayer" id="notifyPrayer" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<button class="btn btn--primary btn--full mt-15" id="saveNotificationsBtn" type="button">
+<i class="fa-solid fa-check"></i> حفظ أوقات التنبيه
+          </button>
+</div>
+<label class="muted mb-8 text-strong settings__label">
+<i aria-hidden="true" class="fa-solid fa-palette"></i> المظهر
+        </label>
+<div aria-label="اختيار المظهر" class="flex-gap mb-20" role="group">
+<button class="btn" data-theme-btn="default" type="button">زمردي</button>
+<button class="btn" data-theme-btn="dark" type="button">ليلي</button>
+<button class="btn" data-theme-btn="royal" type="button">ملكي</button>
+</div>
+<hr class="divider"/>
+<div aria-live="polite" class="mb-12 settings__install-container" id="installAppContainer"></div>
+<hr class="divider"/>
+<!-- ===== روابط الصفحات الثابتة ===== -->
+<div class="settings-links">
+<a class="settings-link-btn" href="./about.html" rel="noopener" target="_blank">
+<i aria-hidden="true" class="fa-solid fa-circle-info"></i>
+<span>عن التطبيق</span>
+</a>
+<a class="settings-link-btn" href="./privacy.html" rel="noopener" target="_blank">
+<i aria-hidden="true" class="fa-solid fa-shield-halved"></i>
+<span>سياسة الخصوصية</span>
+</a>
+<a class="settings-link-btn" href="./contact.html" rel="noopener" target="_blank">
+<i aria-hidden="true" class="fa-solid fa-envelope"></i>
+<span>تواصل معنا</span>
+</a>
+</div>
+<button class="btn btn--ghost btn--full btn--start mb-12" data-app-action="share" type="button">
+<i aria-hidden="true" class="fa-solid fa-share-nodes"></i> شارك التطبيق كصدقة جارية
+        </button>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__updates-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-cloud-arrow-down"></i> حالة التحديثات</div>
+<p class="muted settings__updates-text" id="updateStatusText">جاهز للتحقق من التحديثات.</p>
+<p class="muted settings__updates-meta" id="updateStatusMeta">آخر فحص: لم يتم بعد</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="updateStatusBadge">جاهز</span>
+</div>
+<div class="muted settings__updates-hint is-hidden" id="updateChangesHint"></div>
+</div>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__runtime-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-heart-pulse"></i> صحة التشغيل الحالية</div>
+<p class="muted settings__updates-text" id="runtimeHealthSummaryText">يتم تجميع حالة التشغيل الحالية...</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="runtimeHealthStatusBadge">قيد التهيئة</span>
+</div>
+<div class="settings__runtime-list">
+<p class="muted settings__runtime-item"><strong>التهيئة:</strong> <span id="runtimeHealthStartupText">—</span></p>
+<p class="muted settings__runtime-item"><strong>التخزين:</strong> <span id="runtimeHealthStorageText">—</span></p>
+<p class="muted settings__runtime-item"><strong>المحتوى:</strong> <span id="runtimeHealthContentText">—</span></p>
+<p class="muted settings__runtime-item"><strong>بداية يوم جديد:</strong> <span id="runtimeHealthDayCycleText">—</span></p>
+<p class="muted settings__runtime-item"><strong>الأقسام:</strong> <span id="runtimeHealthFeaturesText">—</span></p>
+<p class="muted settings__runtime-item"><strong>السجل التشغيلي:</strong> <span id="runtimeHealthLogsText">—</span></p>
+</div>
+</div>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__runtime-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-stethoscope"></i> تشخيصات التشغيل</div>
+<p class="muted settings__updates-text" id="runtimeDiagnosticsSummaryText">يتم تجهيز تشخيصات التشغيل الحالية...</p>
+<p class="muted settings__updates-meta" id="runtimeDiagnosticsUpdatedAtText">آخر تحديث: —</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="runtimeDiagnosticsStatusBadge">قيد التهيئة</span>
+</div>
+<ul class="settings__diagnostics-list" id="runtimeDiagnosticsList"></ul>
+<button class="btn btn--ghost btn--full btn--start" data-app-action="copy-diagnostics" id="copyDiagnosticsBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-clipboard-list"></i> نسخ تشخيصات التشغيل
+</button>
+</div>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__runtime-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-suitcase-medical"></i> حزمة الدعم والتشخيص</div>
+<p class="muted settings__updates-text" id="supportBundleSummaryText">يتم تجهيز ملخص حزمة الدعم الحالية...</p>
+<p class="muted settings__updates-meta" id="supportBundleMetaText">لم تُولد حزمة دعم بعد.</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="supportBundleStatusBadge">جاهز</span>
+</div>
+<p class="muted settings__support-note mb-12" id="supportBundlePrivacyText">الحزمة لا تتضمن بيانات شخصية، بل حالة التشغيل والأعطال الحديثة فقط.</p>
+<div class="settings__support-actions">
+<button class="btn btn--ghost btn--full btn--start" data-app-action="copy-support-bundle" id="copySupportBundleBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-file-export"></i> نسخ حزمة الدعم
+</button>
+<button class="btn btn--primary btn--full btn--start" data-app-action="download-support-bundle" id="downloadSupportBundleBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-download"></i> تنزيل حزمة الدعم JSON
+</button>
+</div>
+</div>
+<button aria-describedby="updateStatusText updateStatusMeta" class="btn btn--ghost btn--full btn--start" data-app-action="updates" id="checkUpdatesBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrows-rotate"></i> البحث عن تحديثات
+        </button>
+</div>
+</section>

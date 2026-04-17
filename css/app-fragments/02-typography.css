@@ -1,0 +1,25 @@
+/* ==========================================
+   Typography
+   ========================================== */
+.amiri-text {
+    font-family: "Amiri", serif;
+    line-height: 2;
+}
+
+.muted {
+    color: var(--text-sub);
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-strong {
+    font-weight: 700;
+}

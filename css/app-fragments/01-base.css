@@ -1,0 +1,56 @@
+/* ==========================================
+   CSS Reset & Base
+   ========================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: "Tajawal", sans-serif;
+    background-color: var(--bg-color);
+    background-image: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-main);
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1.7;
+    padding-bottom: 20px;
+    overflow-x: hidden;
+    transition:
+        background-color 0.3s ease,
+        background-image 0.3s ease,
+        color 0.3s ease;
+}
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe {
+    display: block;
+    max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    border: none;
+    background: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}

@@ -1,0 +1,53 @@
+.section--tasks .tasks__add-btn {
+    width: 55px;
+}
+
+.section--tasks .tasks__empty-state {
+    margin: 10px 0;
+}
+
+.section--tasks .tasks__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.section--tasks .task-card {
+    gap: 12px;
+    min-height: 62px;
+}
+
+.section--tasks .task-text {
+    flex: 1;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+.section--tasks .tasks__card {
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.section--tasks .tasks__card-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.section--tasks .tasks__toggle-icon {
+    color: var(--text-sub);
+    font-size: 1.3rem;
+}
+
+.section--tasks .tasks__toggle-icon--done {
+    color: var(--primary);
+}
+
+.section--tasks .task-card.is-completed {
+    opacity: 0.7;
+    background: color-mix(in srgb, var(--card-bg) 98%, var(--primary));
+}
+
+.section--tasks .task-card.is-completed .task-text {
+    text-decoration: line-through;
+    color: var(--text-sub);
+}

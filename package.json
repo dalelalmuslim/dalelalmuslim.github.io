@@ -1,0 +1,17 @@
+{
+  "name": "dalil-almuslim",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:shell": "node tools/build-static-shell.mjs",
+    "build:shell:check": "node tools/build-static-shell.mjs --check",
+    "verify:architecture": "node tools/verify-architecture.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "check": "npm run build:shell:check && npm run verify:architecture && npm run typecheck",
+    "verify:repo-readiness": "node tools/verify-repo-readiness.mjs",
+    "ready:local": "npm run check && npm run verify:repo-readiness"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

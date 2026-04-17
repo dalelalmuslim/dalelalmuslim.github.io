@@ -1,0 +1,199 @@
+<section aria-hidden="true" class="tab-content section section--quran" id="quran" role="tabpanel">
+<h2 class="sr-only">القرآن الكريم</h2>
+<div class="cardx">
+<div aria-hidden="true" class="cardx--center is-hidden mb-15 quran__resume-card" id="resumeReadingCard">
+<div class="muted mb-8 quran__resume-meta" id="lastReadResumeMeta"></div>
+<button class="btn btn--primary quran__resume-action" data-quran-action="resume-reading" type="button">
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> أكمل: <span id="lastReadSurahName"></span>
+</button>
+</div>
+<div id="surahListContainer">
+<div class="mb-15">
+<label class="muted mb-8 quran__search-label" for="searchSurah">ابحث عن سورة</label>
+<input aria-label="البحث عن سورة" class="input" id="searchSurah" placeholder="ابحث عن سورة..." type="text">
+</input></div>
+<div aria-live="polite" class="home-grid home-grid--catalog home-grid--surahs" id="surahList">
+<p class="muted cardx--center quran__loading-state">جاري التحميل...</p>
+</div>
+</div>
+<div class="is-hidden" id="surahReader">
+<div class="quran__reader-actions mb-15">
+<button class="btn" data-quran-action="close-surah" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-right"></i> الفهرس
+              </button>
+<button class="btn btn--ghost" data-quran-action="save-bookmark" id="saveQuranBookmarkBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> حفظ علامة
+              </button>
+</div>
+<div aria-hidden="true" class="quran-review-card is-hidden mb-15" id="quranReviewSummary">
+<div class="quran-review-card__head">
+<div>
+<div class="quran-review-card__count" id="quranReviewSummaryCount">0 آية للمراجعة</div>
+<div class="muted quran-review-card__hint" id="quranReviewSummaryHint"></div>
+</div>
+<button class="btn btn--ghost" data-quran-action="open-next-review" id="quranReviewNextBtn" type="button">
+                  مراجعة التالية
+                </button>
+</div>
+<div class="muted quran-review-card__meta" id="quranReviewMemorizedCount"></div>
+</div>
+<h3 aria-live="polite" class="amiri-text cardx__title cardx--center justify-center mt-15 mb-15 quran__surah-title" id="currentSurahTitle"></h3>
+<div class="amiri-text quran__ayahs" id="ayahsContainer"></div>
+<section aria-hidden="true" aria-label="لوحة دراسة الآية" aria-live="polite" class="quran-study-panel is-hidden mt-15" id="quranStudyPanel">
+<div class="quran-study-panel__head">
+<h4 class="cardx__title quran-study-panel__title" id="quranStudyPanelTitle">تأمل الآية</h4>
+<button class="btn btn--ghost btn--compact" data-quran-action="close-study-panel" type="button">
+                  إغلاق
+                </button>
+</div>
+<div class="muted mb-8" id="quranStudyPanelMeta"></div>
+<div class="quran-study-panel__status muted mb-8" id="quranStudyPanelStatus"></div>
+<div class="quran-study-panel__audio-status muted mb-8" id="quranStudyAudioStatus"></div>
+<div class="amiri-text quran-study-panel__text" id="quranStudyPanelText"></div>
+<div class="quran-study-panel__content mt-15">
+<article class="quran-study-card">
+<h5 class="quran-study-card__title">الترجمة</h5>
+<p class="quran-study-card__body muted" id="quranStudyTranslation"></p>
+</article>
+<article class="quran-study-card">
+<h5 class="quran-study-card__title">التفسير المختصر</h5>
+<p class="quran-study-card__body muted" id="quranStudyTafsir"></p>
+</article>
+<article class="quran-study-card">
+<h5 class="quran-study-card__title">مفتاح التدبر</h5>
+<p class="quran-study-card__body" id="quranStudyReflection"></p>
+</article>
+</div>
+<div class="quran-study-panel__actions mt-15">
+<button class="btn btn--ghost" data-quran-action="add-to-review" id="quranAddReviewBtn" type="button">أضف للمراجعة</button>
+<button class="btn btn--ghost" data-quran-action="mark-memorized" id="quranMarkMemorizedBtn" type="button">تم حفظها</button>
+<button class="btn btn--ghost" data-quran-action="copy-ayah" type="button">نسخ</button>
+<button class="btn btn--ghost" data-quran-action="share-ayah" type="button">مشاركة</button>
+<button class="btn btn--ghost" data-quran-action="repeat-ayah" id="quranRepeatAyahBtn" type="button">تكرار صوتي ×3</button>
+</div>
+</section>
+</div>
+<!-- ===== إعلان أسفل قسم القرآن ===== -->
+</div>
+</section>
+
+<section aria-hidden="true" class="tab-content section section--tasks" id="tasks" role="tabpanel">
+<h2 class="sr-only">المهام اليومية</h2>
+<div class="cardx cardx--center mb-15">
+<div aria-live="polite" class="mb-8 text-strong color-accent" id="tasksBadgeText">🌱 بداية طيبة</div>
+<div aria-live="polite" class="muted text-strong" id="tasksMotivationText">ابدأ بأول مهمة اليوم ✨</div>
+</div>
+<div class="cardx">
+<div class="flex-between mb-15">
+<h2 class="cardx__title mb-0">
+<i aria-hidden="true" class="fa-solid fa-list-check"></i>
+            ورد المهام
+          </h2>
+<button class="btn btn--ghost btn--compact" data-tasks-action="restore-defaults" type="button">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i>
+            استعادة الافتراضي
+          </button>
+</div>
+<div class="flex-gap mb-15">
+<input aria-label="إضافة مهمة جديدة" class="input" data-tasks-enter-add="true" id="newTaskInput" maxlength="200" placeholder="أضف مهمة..." type="text"/>
+<button aria-label="إضافة المهمة" class="btn btn--accent tasks__add-btn" data-tasks-action="add-task" type="button">
+<i aria-hidden="true" class="fa-solid fa-plus"></i>
+</button>
+</div>
+<div class="muted cardx--center tasks__empty-state" hidden="" id="tasksEmptyState">لا توجد مهام حالياً</div>
+<div aria-live="polite" class="tasks__list" id="tasksList"></div>
+</div>
+</section>
+
+<section aria-hidden="true" class="tab-content section section--stats" id="stats" role="tabpanel">
+<h2 class="sr-only">الإحصائيات والمتابعة</h2>
+<div class="muted cardx--center stats__empty-state" hidden="" id="statsEmptyState">لا توجد بيانات كافية بعد</div>
+<div class="cardx mb-15">
+<div class="flex-between mb-8">
+<span class="text-strong">حالة اليوم</span>
+<span aria-live="polite" class="muted" id="statsActivityLabel">ابدأ اليوم</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="tasksProgressBar"></div>
+</div>
+<div class="muted mt-15 stats__center-line">
+          نسبة إنجاز اليوم:
+          <span aria-live="polite" class="text-strong" id="statTasksPercentInline">0%</span>
+</div>
+<div class="muted mt-15 stats__center-line">
+          التسبيح اليومي:
+          <span aria-live="polite" class="text-strong" id="statDailyTasbeehInline">0</span>
+          /
+          <span aria-live="polite" class="text-strong" id="statDailyTasbeehTargetInline">100</span>
+</div>
+<div class="stats-subprogress">
+<div class="stats-subprogress__head">
+<span class="stats-subprogress__label">تقدم هدف التسبيح</span>
+<span aria-live="polite" class="stats-subprogress__value" id="statTasbeehPercentInline">0%</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="statTasbeehProgressBar"></div>
+<div class="stats__compat-progress" hidden="" id="tasbeehProgressBar"></div>
+</div>
+</div>
+<div class="stats-panel-grid">
+<div class="stats-mini-card">
+<div class="stats-mini-card__label">إنجاز المهام</div>
+<div aria-live="polite" class="stats-mini-card__value" id="statTasksProgressDetails">0 / 0</div>
+</div>
+<div class="stats-mini-card">
+<div class="stats-mini-card__label">إنجاز التسبيح</div>
+<div aria-live="polite" class="stats-mini-card__value" id="statTasbeehProgressDetails">0 / 100</div>
+</div>
+<div class="stats-mini-card stats-mini-card--full">
+<div class="stats-mini-card__label">المتبقي من اليوم</div>
+<div aria-live="polite" class="stats-mini-card__value" id="statRemainingSummary">اكتمل هدف اليوم بالكامل ✅</div>
+</div>
+</div>
+<div class="stats__secondary-progress">
+<div class="flex-between muted small">
+<span>تقدم المهام</span>
+<span id="statTasksProgressPercent">0%</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="statTasksProgressBar"></div>
+</div>
+</div>
+<div class="stats-smart-box">
+<div class="stats-smart-box__title">ملاحظة ذكية</div>
+<div aria-live="polite" class="stats-smart-box__text" id="statsSmartMessage">ابدأ بخطوة صغيرة: مهمة واحدة أو دفعة تسبيح، والباقي سيأتي بسهولة ✨</div>
+</div>
+</div>
+<div class="stats-grid">
+<div class="stats-card">
+<div class="stats-card__icon color-primary"><i aria-hidden="true" class="fa-solid fa-fingerprint"></i></div>
+<div class="stats-card__label">تسابيح اليوم</div>
+<div aria-live="polite" class="stats-card__value color-primary" id="statDailyTasbeeh">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon stats-card__icon--orange"><i aria-hidden="true" class="fa-solid fa-fire"></i></div>
+<div class="stats-card__label">أيام الالتزام</div>
+<div aria-live="polite" class="stats-card__value stats-card__value--orange" id="statStreak">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon color-accent"><i aria-hidden="true" class="fa-solid fa-calendar-days"></i></div>
+<div class="stats-card__label">تسابيح الشهر</div>
+<div aria-live="polite" class="stats-card__value color-accent" id="statMonthlyTasbeeh">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon stats-card__icon--purple"><i aria-hidden="true" class="fa-solid fa-circle-check"></i></div>
+<div class="stats-card__label">المهام المنجزة</div>
+<div aria-live="polite" class="stats-card__value stats-card__value--purple" id="statTasksCompleted">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon color-primary"><i aria-hidden="true" class="fa-solid fa-list-ul"></i></div>
+<div class="stats-card__label">عدد المهام</div>
+<div aria-live="polite" class="stats-card__value color-primary" id="statTasksTotal">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon color-accent"><i aria-hidden="true" class="fa-solid fa-chart-simple"></i></div>
+<div class="stats-card__label">نسبة الإنجاز</div>
+<div aria-live="polite" class="stats-card__value color-accent" id="statTasksPercent">0%</div>
+</div>
+</div>
+</section>

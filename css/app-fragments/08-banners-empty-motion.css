@@ -1,0 +1,71 @@
+/* ==========================================
+   Banners (Offline & Update)
+   ========================================== */
+.banner {
+    position: sticky;
+    top: 72px; /* ارتفاع الهيدر */
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.banner--warning {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+.banner--info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+.banner .btn--small {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    min-height: auto;
+}
+
+/* ==========================================
+   Empty States
+   ========================================== */
+.empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-sub);
+    font-size: 1rem;
+}
+
+/* ==========================================
+   Silent button active state
+   ========================================== */
+.silent-active {
+    color: var(--accent);
+}
+
+/* ==========================================
+   Motion Preferences
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

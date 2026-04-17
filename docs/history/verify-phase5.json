@@ -1,0 +1,24 @@
+{
+  "syntaxCheckedFiles": 121,
+  "syntaxErrors": [],
+  "missingLocalImports": [],
+  "legacyRuntimeImports": [],
+  "crossFeatureImports": [],
+  "missingSwUrls": [],
+  "legacyFiles": [],
+  "inlineHandlersCount": 0,
+  "inlineStylesCount": 1,
+  "zeroInboundJsFiles": [
+    "scaffolds/js/domains/domain-template.example.js",
+    "js/domains/tasks/tasks-actions.js",
+    "scaffolds/js/features/feature-template.example.js",
+    "scaffolds/js/features/section-template.example.js",
+    "js/main.js",
+    "js/services/ads/ads-manager.js",
+    "js/services/engagement/achievements-service.js",
+    "js/services/engagement/rewards-service.js",
+    "js/services/notifications/notifications-controller.js",
+    "js/services/storage/storage-manager.js",
+    "js/state/index.js"
+  ]
+}

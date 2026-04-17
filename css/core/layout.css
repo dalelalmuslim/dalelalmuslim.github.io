@@ -1,0 +1,129 @@
+/* ==========================================
+   Shell Layout
+   ========================================== */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 72px;
+    padding: 14px 16px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--card-bg) 78%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.header__title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.page {
+    width: min(100%, 920px);
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeInSection 0.24s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeInSection {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 14px;
+    }
+
+    .header {
+        min-height: 68px;
+        padding: 12px 14px;
+    }
+
+    .header__title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .page {
+        padding: 12px;
+    }
+
+    .header {
+        gap: 8px;
+    }
+
+    .header__title {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 10px;
+    }
+}
+
+
+@supports (padding: max(0px)) {
+    .header {
+        padding-top: max(14px, env(safe-area-inset-top));
+        padding-inline-start: max(16px, env(safe-area-inset-left));
+        padding-inline-end: max(16px, env(safe-area-inset-right));
+    }
+
+    .page {
+        padding-inline-start: max(16px, env(safe-area-inset-left));
+        padding-inline-end: max(16px, env(safe-area-inset-right));
+        /* Clear the fixed bottom nav + safe area */
+        padding-bottom: calc(var(--bottom-nav-height, 60px) + max(12px, env(safe-area-inset-bottom)));
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            padding-top: max(12px, env(safe-area-inset-top));
+            padding-inline-start: max(14px, env(safe-area-inset-left));
+            padding-inline-end: max(14px, env(safe-area-inset-right));
+        }
+
+        .page {
+            padding-inline-start: max(14px, env(safe-area-inset-left));
+            padding-inline-end: max(14px, env(safe-area-inset-right));
+            padding-bottom: calc(var(--bottom-nav-height, 60px) + max(10px, env(safe-area-inset-bottom)));
+        }
+    }
+
+    @media (max-width: 400px) {
+        .page {
+            padding-inline-start: max(10px, env(safe-area-inset-left));
+            padding-inline-end: max(10px, env(safe-area-inset-right));
+        }
+    }
+}

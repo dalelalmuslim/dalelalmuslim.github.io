@@ -1,0 +1,14 @@
+.section--example {
+    /* section-scoped styles only */
+}
+
+.section--example .example__surface {
+    display: grid;
+    gap: 12px;
+}
+
+@media (max-width: 560px) {
+    .section--example .example__surface {
+        gap: 10px;
+    }
+}

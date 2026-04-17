@@ -1,0 +1,157 @@
+/* ==========================================
+   Shared Surfaces & Component Primitives
+   ========================================== */
+.cardx {
+    background: var(--card-bg);
+    background: color-mix(in srgb, var(--card-bg) 97%, white);
+    border: 1px solid var(--border);
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.035),
+        0 2px 8px rgba(0, 0, 0, 0.03);
+    margin-bottom: 16px;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
+}
+
+.cardx:hover {
+    box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.05),
+        0 4px 12px rgba(0, 0, 0, 0.035);
+}
+
+.cardx__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 14px;
+}
+
+.cardx--center {
+    text-align: center;
+}
+
+.cardx--hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 9%, var(--card-bg)), var(--card-bg));
+}
+
+.cardx--hero .fa-quote-left {
+    position: absolute;
+    inset-inline-end: 16px;
+    bottom: 16px;
+    font-size: 1.3rem;
+    opacity: 0.12;
+    color: var(--primary);
+}
+
+.cardx--message {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 7%, var(--card-bg)), var(--card-bg));
+}
+
+.flex-gap {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.skeleton-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+}
+
+.back-btn {
+    min-height: 44px;
+}
+
+.surface-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--bg-color);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.inline-stat {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-top: 5px;
+}
+
+.section-accent-line {
+    width: 60px;
+    height: 4px;
+    background: var(--primary);
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+.section-accent-line--sm {
+    width: 50px;
+    height: 3px;
+}
+
+@media (max-width: 768px) {
+    .cardx {
+        padding: 14px;
+        border-radius: 20px;
+    }
+}
+
+@media (max-width: 560px) {
+    .skeleton-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .flex-between {
+        align-items: stretch;
+    }
+
+    .flex-gap {
+        gap: 8px;
+    }
+
+    .cardx__title {
+        font-size: 1.02rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .cardx {
+        padding: 12px;
+    }
+
+    .skeleton-item {
+        padding: 12px;
+    }
+}

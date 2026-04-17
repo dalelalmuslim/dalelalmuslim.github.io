@@ -1,0 +1,207 @@
+/* ============================================================
+   Bottom Navigation Bar
+   Responsibility: visual layout of the fixed bottom nav + more drawer.
+   No logic. No feature coupling.
+   ============================================================ */
+
+:root {
+    --bottom-nav-height: 60px;
+}
+
+/* Override base body padding — bottom nav owns this space */
+body {
+    padding-bottom: 0;
+}
+
+/* ── Bar ──────────────────────────────────────────────────── */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    z-index: 900;
+    display: flex;
+    align-items: stretch;
+    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: color-mix(in srgb, var(--card-bg) 90%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.055);
+}
+
+/* ── Tab ──────────────────────────────────────────────────── */
+
+.bottom-nav__tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-sub);
+    font-family: "Tajawal", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    transition: color 0.18s ease;
+    /* min tap target */
+    min-height: 48px;
+}
+
+.bottom-nav__tab i {
+    font-size: 1.18rem;
+    line-height: 1;
+    transition: transform 0.18s ease;
+    pointer-events: none;
+}
+
+.bottom-nav__label {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* Active indicator: thin line at top */
+.bottom-nav__tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    inset-inline: 28%;
+    height: 2.5px;
+    border-radius: 0 0 3px 3px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transition: transform 0.22s ease;
+}
+
+.bottom-nav__tab.is-active {
+    color: var(--primary);
+}
+
+.bottom-nav__tab.is-active i {
+    transform: scale(1.1);
+}
+
+.bottom-nav__tab.is-active::before {
+    transform: scaleX(1);
+}
+
+/* Center tab (المسبحة) — subtle emphasis, no floating button */
+.bottom-nav__tab--center i {
+    font-size: 1.28rem;
+}
+
+/* ── More Drawer Overlay ──────────────────────────────────── */
+
+.more-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.more-drawer.is-open {
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.more-drawer__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.42);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.more-drawer.is-open .more-drawer__backdrop {
+    opacity: 1;
+}
+
+/* ── Bottom Sheet ─────────────────────────────────────────── */
+
+.more-drawer__sheet {
+    position: absolute;
+    bottom: 0;
+    inset-inline: 0;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 10px 18px;
+    /* Leave space above the bottom nav */
+    padding-bottom: calc(var(--bottom-nav-height) + max(12px, env(safe-area-inset-bottom, 12px)));
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.more-drawer.is-open .more-drawer__sheet {
+    transform: translateY(0);
+}
+
+.more-drawer__handle {
+    width: 36px;
+    height: 4px;
+    background: color-mix(in srgb, var(--border) 90%, var(--text-sub));
+    border-radius: 2px;
+    margin: 0 auto 14px;
+}
+
+.more-drawer__title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-sub);
+    text-align: center;
+    margin-bottom: 14px;
+    font-family: "Tajawal", sans-serif;
+    letter-spacing: 0.3px;
+}
+
+/* ── More Items Grid ──────────────────────────────────────── */
+
+.more-drawer__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.more-drawer__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 8px 12px;
+    background: var(--bg-color);
+    border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+    font-family: "Tajawal", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.more-drawer__item:active {
+    transform: scale(0.95);
+    background: var(--primary-light);
+}
+
+.more-drawer__icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    border-radius: var(--radius-sm);
+    color: var(--primary);
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}

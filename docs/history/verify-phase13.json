@@ -1,0 +1,17 @@
+{
+  "syntaxCheckedFiles": 119,
+  "syntaxErrors": [],
+  "missingLocalImports": [],
+  "legacyRuntimeImports": [],
+  "stateLayerImports": [],
+  "crossFeatureImports": [],
+  "swManifestExists": true,
+  "staleGeneratedSwManifest": false,
+  "swManifestCheckMessage": "[SW Manifest] sw-manifest.js is up to date.",
+  "missingSwUrls": [],
+  "legacyFiles": [],
+  "stateFiles": [],
+  "inlineHandlersCount": 0,
+  "inlineStylesCount": 1,
+  "zeroInboundJsFiles": []
+}

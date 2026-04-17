@@ -1,0 +1,120 @@
+<template id="tpl-dashboard-btn">
+<button class="home-btn" type="button">
+<div class="home-icon-box"><i aria-hidden="true" class="fa-solid"></i></div>
+<span class="home-btn-text"></span>
+</button>
+</template>
+
+<template id="tpl-subview-header">
+<button class="btn back-btn mb-20" data-app-action="go-back" data-back-button="true" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-right"></i> العودة
+</button>
+<div class="cardx--center mb-20">
+<h2 class="amiri-text cardx__title subview-title justify-center"></h2>
+<div class="section-accent-line section-accent-line--sm"></div>
+</div>
+</template>
+
+<template id="tpl-dua-card">
+<div class="cardx cardx--message mb-15">
+<p class="amiri-text dua-text mb-15"></p>
+<div class="flex-gap">
+<button class="btn btn--ghost copy-btn flex-1" type="button"><i aria-hidden="true" class="fa-solid fa-copy"></i> نسخ</button>
+<button class="btn btn--ghost share-btn flex-1" type="button"><i aria-hidden="true" class="fa-solid fa-share-nodes"></i> مشاركة</button>
+</div>
+</div>
+</template>
+
+<template id="tpl-name-card">
+<div class="cardx cardx--center mb-0">
+<h3 class="amiri-text name-title color-primary mb-8"></h3>
+<p class="muted name-desc"></p>
+</div>
+</template>
+
+<template id="tpl-story-card">
+<div class="cardx mb-15">
+<h3 class="story-title color-accent mb-12"></h3>
+<p class="amiri-text story-content mb-15"></p>
+<div class="rounded-sm story-lesson-box">
+<p class="story-lesson"></p>
+</div>
+</div>
+</template>
+
+<!-- ========== AZKAR REDESIGNED TEMPLATES ========== -->
+<!-- 1. Category Card: Minimal, only icon + title + thin progress -->
+<template id="tpl-azkar-category-card">
+<button class="azkar-category-card" type="button">
+<span class="azkar-category-card__topline">
+<span class="azkar-category-card__icon"><i aria-hidden="true" class="fa-solid"></i></span>
+<span class="azkar-category-card__state is-hidden"></span>
+</span>
+<span class="azkar-category-card__content">
+<span class="azkar-category-card__eyebrow"></span>
+<span class="azkar-category-card__title"></span>
+<span class="azkar-category-card__progress">
+<span class="azkar-category-card__progress-track"><span class="azkar-category-card__progress-fill"></span></span>
+</span>
+</span>
+</button>
+</template>
+
+<template id="tpl-azkar-favorite-item-card">
+<button class="azkar-favorite-item-card" type="button">
+<span class="azkar-favorite-item-card__topline">
+<span class="azkar-favorite-item-card__category"></span>
+<span class="azkar-favorite-item-card__star"><i aria-hidden="true" class="fa-solid fa-star"></i></span>
+</span>
+<span class="azkar-favorite-item-card__snippet"></span>
+<span class="azkar-favorite-item-card__meta"></span>
+</button>
+</template>
+
+<!-- 2. Zekr Item Card: Clean, centered text, large counter button, minimal extras -->
+<template id="tpl-azkar-item-card">
+<div class="azkar-item-card">
+<div class="azkar-item-topline">
+<span class="azkar-item-index-badge"></span>
+<button aria-label="إضافة إلى المفضلة" aria-pressed="false" class="azkar-item-favorite-btn" type="button">
+<i aria-hidden="true" class="fa-regular fa-star"></i>
+</button>
+</div>
+<p class="amiri-text azkar-item-text"></p>
+<div class="azkar-item-meta"></div>
+<div class="azkar-item-progress">
+<div class="azkar-progress-track azkar-progress-track--item">
+<span class="azkar-progress-fill azkar-item-progress__fill"></span>
+</div>
+</div>
+<div class="azkar-item-counter-wrapper">
+<button class="azkar-item-counter-btn" type="button">
+<span class="azkar-item-counter-value"></span>
+<span class="azkar-item-counter-label">عد</span>
+</button>
+</div>
+<div class="azkar-item-actions">
+<button class="azkar-item-copy-btn" type="button"><i aria-hidden="true" class="fa-solid fa-copy"></i><span>نسخ</span></button>
+</div>
+</div>
+</template>
+
+<template id="tpl-task-card">
+<div class="cardx flex-between task-card tasks__card mb-0">
+<span class="task-text tasks__card-text" data-role="task-text"></span>
+<div class="flex-gap">
+<button aria-label="تبديل حالة المهمة" class="icon-btn icon-btn--transparent toggle-btn" data-role="toggle-task" type="button"><i aria-hidden="true" class="fa-solid"></i></button>
+<button aria-label="حذف المهمة" class="icon-btn icon-btn--transparent delete-btn color-danger" data-role="delete-task" type="button"><i aria-hidden="true" class="fa-solid fa-trash"></i></button>
+</div>
+</div>
+</template>
+
+<template id="tpl-surah-btn">
+<button class="home-btn surah-item" type="button">
+<div class="flex-gap align-center">
+<div class="home-icon-box surah-item__icon"><i aria-hidden="true" class="fa-solid fa-book-quran"></i></div>
+<span class="home-btn-text surah-name"></span>
+</div>
+<span class="muted surah-num rounded-sm border-soft bg-soft"></span>
+</button>
+</template>

@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="strict-origin-when-cross-origin" name="referrer"/>
+<meta content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; img-src 'self' data: blob:; media-src 'self' data: blob:; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://www.googleapis.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com https://firebaseinstallations.googleapis.com https://www.gstatic.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self';" http-equiv="Content-Security-Policy"/>
+
+<meta content="#125B50" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="دليل المسلم" name="application-name"/>
+<title>دليل المسلم | Dalil Almuslim</title>
+<link href="manifest.json" rel="manifest"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Tajawal:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="css/core/themes.css" rel="stylesheet"/>
+<link href="css/app.css" rel="stylesheet"/>
+<link href="css/core/layout.css" rel="stylesheet"/>
+<link href="css/shared/surfaces.css" rel="stylesheet"/>
+<link href="css/shared/utilities.css" rel="stylesheet"/>
+<link href="css/shared/modals.css" rel="stylesheet"/>
+<link href="css/shared/bottom-nav.css" rel="stylesheet"/>
+<link href="css/features/home.css" rel="stylesheet"/>
+<link href="css/features/duas.css" rel="stylesheet"/>
+<link href="css/features/quran.css" rel="stylesheet"/>
+<link href="css/features/tasks.css" rel="stylesheet"/>
+<link href="css/features/stats.css" rel="stylesheet"/>
+<link href="css/features/masbaha.css" rel="stylesheet"/>
+<link href="css/features/azkar.css" rel="stylesheet"/>
+<link href="css/features/names.css" rel="stylesheet"/>
+<link href="css/features/stories.css" rel="stylesheet"/>
+<link href="css/features/settings.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="banner banner--warning" hidden="" id="offlineBanner" role="alert">
+<i aria-hidden="true" class="fa-solid fa-wifi"></i>
+<span>أنت الآن تعمل بدون إنترنت</span>
+</div>
+<div class="banner banner--warning" hidden="" id="storageDegradedBanner" role="alert">
+<i aria-hidden="true" class="fa-solid fa-database"></i>
+<span id="storageDegradedBannerText">الحفظ الدائم غير متاح حاليًا. ستعمل بعض الميزات بدون حفظ دائم.</span>
+</div>
+<div class="banner banner--info" hidden="" id="updateAvailableBanner" role="alert">
+<i aria-hidden="true" class="fa-solid fa-cloud-arrow-down"></i>
+<span id="updateBannerText">يوجد تحديث جديد للتطبيق</span>
+<button class="btn btn--small" id="applyUpdateBtn">تحديث الآن</button>
+</div>
+<header class="header no-select">
+<button aria-label="الرجوع" class="icon-btn icon-btn--transparent is-hidden" id="backBtn" title="الرجوع" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-right"></i>
+</button>
+<h1 class="header__title" id="headerTitle">دليل المسلم</h1>
+<button aria-label="فتح صفحة الإعدادات والحساب" class="icon-btn icon-btn--transparent" data-nav-section="settings" data-nav-title="حسابي" title="الحساب" type="button">
+<i aria-hidden="true" class="fa-solid fa-user"></i>
+</button>
+</header>
+
+<main id="mainContent">
+  <div class="page">
+
+<section aria-hidden="false" class="tab-content active section section--home" id="home" role="tabpanel">
+<h2 class="sr-only">دليل المسلم - الصفحة الرئيسية</h2>
+
+<!-- آية اليوم -->
+<article class="home-ayah-card cardx">
+<p class="home-ayah-card__text amiri-text" id="dailyAyahText" aria-live="polite">جاري التحميل...</p>
+</article>
+
+<!-- Smart Resume Card: Azkar priority > Quran. Populated and shown/hidden by JS. -->
+<div class="home-resume-card cardx is-hidden" id="homeSmartResumeCard" aria-live="polite" aria-hidden="true">
+<div class="home-resume-card__body">
+<div class="home-resume-card__info">
+<p class="home-resume-card__eyebrow muted" id="homeResumeEyebrow"></p>
+<h3 class="home-resume-card__title" id="homeResumeTitle"></h3>
+<p class="home-resume-card__meta muted" id="homeResumeMeta"></p>
+</div>
+<button class="btn btn--primary home-resume-card__action" id="homeResumeButton" type="button" aria-label="استئناف">
+<span id="homeResumeActionText">استئناف</span>
+</button>
+</div>
+</div>
+
+<!-- Progress Strip -->
+<div class="home-progress-strip" id="homeProgressStrip" aria-label="ملخص التقدم اليومي">
+<div class="home-progress-strip__item">
+<span class="home-progress-strip__value" id="miniStreak" aria-live="polite">0</span>
+<span class="home-progress-strip__label">الالتزام</span>
+</div>
+<span class="home-progress-strip__sep" aria-hidden="true"></span>
+<div class="home-progress-strip__item">
+<span class="home-progress-strip__value" id="miniTasbeeh" aria-live="polite">0</span>
+<span class="home-progress-strip__label">تسبيح</span>
+</div>
+<span class="home-progress-strip__sep" aria-hidden="true"></span>
+<div class="home-progress-strip__item">
+<span class="home-progress-strip__value" id="miniTasks" aria-live="polite">0/0</span>
+<span class="home-progress-strip__label">مهام</span>
+</div>
+<span class="home-progress-strip__sep" aria-hidden="true"></span>
+<div class="home-progress-strip__item">
+<span class="home-progress-strip__value" id="miniProgress" aria-live="polite">0%</span>
+<span class="home-progress-strip__label">إنجاز</span>
+</div>
+</div>
+
+<!-- رسالة اليوم -->
+<div class="home-message">
+<p class="home-message__text amiri-text" id="dailyMessageText" aria-live="polite"></p>
+</div>
+
+<!-- أقسام التطبيق -->
+<nav class="home-sections-grid no-select" id="homeSectionsGrid" aria-label="أقسام التطبيق الرئيسية">
+<button class="home-section-btn" data-nav-section="masbaha" data-nav-title="المسبحة الذكية" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-fingerprint"></i></div>
+<span class="home-section-btn__label">المسبحة الذكية</span>
+</button>
+<button class="home-section-btn" data-nav-section="azkar" data-nav-title="الأذكار اليومية" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-moon"></i></div>
+<span class="home-section-btn__label">الأذكار اليومية</span>
+</button>
+<button class="home-section-btn" data-nav-section="duas" data-nav-title="الأدعية" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-hands-praying"></i></div>
+<span class="home-section-btn__label">الأدعية</span>
+</button>
+<button class="home-section-btn" data-nav-section="quran" data-nav-title="القرآن الكريم" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-book-quran"></i></div>
+<span class="home-section-btn__label">القرآن الكريم</span>
+</button>
+<button class="home-section-btn" data-nav-section="tasks" data-nav-title="المهام اليومية" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-list-check"></i></div>
+<span class="home-section-btn__label">المهام اليومية</span>
+</button>
+<button class="home-section-btn" data-nav-section="stats" data-nav-title="الإحصائيات والمتابعة" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-chart-line"></i></div>
+<span class="home-section-btn__label">الإحصائيات</span>
+</button>
+<button class="home-section-btn" data-nav-section="names" data-nav-title="أسماء الله الحسنى" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-star-and-crescent"></i></div>
+<span class="home-section-btn__label">أسماء الله</span>
+</button>
+<button class="home-section-btn" data-nav-section="stories" data-nav-title="قصص وعبر" type="button">
+<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-book-journal-whills"></i></div>
+<span class="home-section-btn__label">قصص وعبر</span>
+</button>
+</nav>
+
+</section>
+
+<section aria-hidden="true" class="tab-content section section--masbaha" id="masbaha" role="tabpanel">
+<h2 class="sr-only">المسبحة الذكية</h2>
+
+<div class="masbaha-layout">
+
+  <!-- ① Current Zikr — clickable header opens selection sheet -->
+  <div class="masbaha-zikr-header-wrap">
+    <button class="masbaha-zikr-header no-select"
+            id="masbahaZikrHeaderBtn"
+            data-masbaha-action="open-zikr-sheet"
+            type="button"
+            aria-label="تغيير الذكر"
+            aria-haspopup="dialog">
+      <span class="amiri-text masbaha-zikr-name" id="masbahaCurrentEntryDisplay">سبحان الله</span>
+      <i class="fa-solid fa-chevron-down masbaha-zikr-chevron" aria-hidden="true"></i>
+    </button>
+    <!-- Next zikr hint — hidden in custom mode via JS -->
+    <p class="masbaha-next-hint" id="masbahaNextHint" aria-hidden="true">
+      التالي: <span id="masbahaNextText">الحمد لله</span>
+    </p>
+  </div>
+
+  <!-- ② Huge Tap Surface -->
+  <button class="masbaha-tap-surface no-select"
+          id="mashabaTapBtn"
+          data-masbaha-action="increment"
+          type="button"
+          aria-label="اضغط للتسبيح">
+    <span class="amiri-text masbaha-tap-count" id="totalCounter"
+          aria-live="polite" aria-atomic="true">0</span>
+    <span class="masbaha-tap-batch" id="batchCounter">0 / 33</span>
+  </button>
+
+  <!-- ③ Batch Progress (dots ≤50 | bar >50 — built by JS) -->
+  <div class="masbaha-batch-progress" id="mashabaBatchProgress"
+       role="progressbar"
+       aria-label="تقدم الدورة الحالية"
+       aria-valuemin="0" aria-valuenow="0" aria-valuemax="33">
+  </div>
+
+  <!-- ④ Daily Goal -->
+  <div class="masbaha-daily-goal">
+    <div class="masbaha-daily-goal__bar">
+      <div class="masbaha-daily-goal__fill" id="mashabaDailyFill"></div>
+    </div>
+    <span class="masbaha-daily-goal__label" id="mashabaDailyLabel">٠ / ١٠٠ اليوم</span>
+  </div>
+
+  <!-- ⑤ Controls Row -->
+  <div class="masbaha-controls no-select" aria-label="أدوات المسبحة">
+    <div class="masbaha-streak" id="mashabaStreakDisplay">
+      <i class="fa-solid fa-fire" aria-hidden="true"></i>
+      <span id="mashabaStreakCount">0</span>
+      <span class="masbaha-streak__unit">أيام متابعة</span>
+    </div>
+    <div class="masbaha-controls__actions">
+      <button class="masbaha-ctrl-btn"
+              id="mashabaSilentToggle"
+              data-masbaha-action="toggle-silent"
+              type="button"
+              aria-label="تبديل الصوت"
+              aria-pressed="false"
+              title="الصوت">
+        <i class="fa-solid fa-volume-high" id="silentIcon" aria-hidden="true"></i>
+      </button>
+      <button class="masbaha-ctrl-btn"
+              data-masbaha-action="reset"
+              type="button"
+              aria-label="تصفير العداد"
+              title="تصفير">
+        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+      </button>
+      <button class="masbaha-ctrl-btn"
+              data-masbaha-action="open-zikr-sheet"
+              type="button"
+              aria-label="اختر أو أضف ذكراً"
+              title="أذكاري">
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ========== AZKAR REDESIGNED SECTION ========== -->
+<section aria-hidden="true" class="tab-content section section--azkar" id="azkar" role="tabpanel">
+<h2 class="sr-only">الأذكار اليومية</h2>
+
+<!-- Main View: Categories Grid Only -->
+<div id="azkarMainView">
+<div class="azkar-header">
+<h3 class="azkar-header__title">الأذكار</h3>
+<button class="azkar-favorite-filter" id="azkarFavoriteFilterBtn" type="button" aria-pressed="false" title="إظهار الأذكار المفضلة">
+<i aria-hidden="true" class="fa-regular fa-star"></i>
+</button>
+</div>
+
+<div class="azkar-primary-action is-hidden" id="azkarPrimaryAction"></div>
+
+<div aria-live="polite" class="home-grid home-grid--catalog azkar-categories-grid" id="azkarCategoriesGrid">
+<p class="muted cardx--center azkar-loading-placeholder">جاري تحميل الأذكار...</p>
+</div>
+
+<!-- Hidden: Resume button (appears only when there's an incomplete session) -->
+<div class="azkar-resume-mini is-hidden" id="azkarResumeMini">
+<button class="azkar-resume-mini__btn" id="azkarResumeMiniBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-left"></i>
+<span id="azkarResumeMiniText">وردك الأخير</span>
+</button>
+</div>
+</div>
+
+<!-- Session View: Clean Zekr List -->
+<div class="is-hidden azkar-session-view" id="azkarListView">
+<div class="azkar-session-header">
+<h2 class="amiri-text azkar-session-title" id="azkarListTitle"></h2>
+<div class="azkar-session-progress">
+<div class="azkar-progress-track azkar-progress-track--session">
+<span class="azkar-progress-fill" id="azkarSessionProgressFill"></span>
+</div>
+<span class="azkar-session-progress-text" id="azkarSessionProgressText"></span>
+</div>
+</div>
+
+<div aria-live="polite" class="azkar-list-stack" id="azkarList"></div>
+</div>
+</section>
+
+<section aria-hidden="true" class="tab-content section section--duas" id="duas" role="tabpanel">
+<h2 class="sr-only">الأدعية</h2>
+<div aria-live="polite" id="duasList"></div>
+<!-- ===== إعلان قسم الأدعية ===== -->
+</section>
+
+<section aria-hidden="true" class="tab-content section section--quran" id="quran" role="tabpanel">
+<h2 class="sr-only">القرآن الكريم</h2>
+<div class="cardx">
+<div aria-hidden="true" class="cardx--center is-hidden mb-15 quran__resume-card" id="resumeReadingCard">
+<div class="muted mb-8 quran__resume-meta" id="lastReadResumeMeta"></div>
+<button class="btn btn--primary quran__resume-action" data-quran-action="resume-reading" type="button">
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> أكمل: <span id="lastReadSurahName"></span>
+</button>
+</div>
+<div id="surahListContainer">
+<div class="mb-15">
+<label class="muted mb-8 quran__search-label" for="searchSurah">ابحث عن سورة</label>
+<input aria-label="البحث عن سورة" class="input" id="searchSurah" placeholder="ابحث عن سورة..." type="text">
+</input></div>
+<div aria-live="polite" class="home-grid home-grid--catalog home-grid--surahs" id="surahList">
+<p class="muted cardx--center quran__loading-state">جاري التحميل...</p>
+</div>
+</div>
+<div class="is-hidden" id="surahReader">
+<div class="quran__reader-actions mb-15">
+<button class="btn" data-quran-action="close-surah" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-right"></i> الفهرس
+              </button>
+<button class="btn btn--ghost" data-quran-action="save-bookmark" id="saveQuranBookmarkBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> حفظ علامة
+              </button>
+</div>
+<div aria-hidden="true" class="quran-review-card is-hidden mb-15" id="quranReviewSummary">
+<div class="quran-review-card__head">
+<div>
+<div class="quran-review-card__count" id="quranReviewSummaryCount">0 آية للمراجعة</div>
+<div class="muted quran-review-card__hint" id="quranReviewSummaryHint"></div>
+</div>
+<button class="btn btn--ghost" data-quran-action="open-next-review" id="quranReviewNextBtn" type="button">
+                  مراجعة التالية
+                </button>
+</div>
+<div class="muted quran-review-card__meta" id="quranReviewMemorizedCount"></div>
+</div>
+<h3 aria-live="polite" class="amiri-text cardx__title cardx--center justify-center mt-15 mb-15 quran__surah-title" id="currentSurahTitle"></h3>
+<div class="amiri-text quran__ayahs" id="ayahsContainer"></div>
+<section aria-hidden="true" aria-label="لوحة دراسة الآية" aria-live="polite" class="quran-study-panel is-hidden mt-15" id="quranStudyPanel">
+<div class="quran-study-panel__head">
+<h4 class="cardx__title quran-study-panel__title" id="quranStudyPanelTitle">تأمل الآية</h4>
+<button class="btn btn--ghost btn--compact" data-quran-action="close-study-panel" type="button">
+                  إغلاق
+                </button>
+</div>
+<div class="muted mb-8" id="quranStudyPanelMeta"></div>
+<div class="quran-study-panel__status muted mb-8" id="quranStudyPanelStatus"></div>
+<div class="quran-study-panel__audio-status muted mb-8" id="quranStudyAudioStatus"></div>
+<div class="amiri-text quran-study-panel__text" id="quranStudyPanelText"></div>
+<div class="quran-study-panel__content mt-15">
+<article class="quran-study-card">
+<h5 class="quran-study-card__title">الترجمة</h5>
+<p class="quran-study-card__body muted" id="quranStudyTranslation"></p>
+</article>
+<article class="quran-study-card">
+<h5 class="quran-study-card__title">التفسير المختصر</h5>
+<p class="quran-study-card__body muted" id="quranStudyTafsir"></p>
+</article>
+<article class="quran-study-card">
+<h5 class="quran-study-card__title">مفتاح التدبر</h5>
+<p class="quran-study-card__body" id="quranStudyReflection"></p>
+</article>
+</div>
+<div class="quran-study-panel__actions mt-15">
+<button class="btn btn--ghost" data-quran-action="add-to-review" id="quranAddReviewBtn" type="button">أضف للمراجعة</button>
+<button class="btn btn--ghost" data-quran-action="mark-memorized" id="quranMarkMemorizedBtn" type="button">تم حفظها</button>
+<button class="btn btn--ghost" data-quran-action="copy-ayah" type="button">نسخ</button>
+<button class="btn btn--ghost" data-quran-action="share-ayah" type="button">مشاركة</button>
+<button class="btn btn--ghost" data-quran-action="repeat-ayah" id="quranRepeatAyahBtn" type="button">تكرار صوتي ×3</button>
+</div>
+</section>
+</div>
+<!-- ===== إعلان أسفل قسم القرآن ===== -->
+</div>
+</section>
+
+<section aria-hidden="true" class="tab-content section section--tasks" id="tasks" role="tabpanel">
+<h2 class="sr-only">المهام اليومية</h2>
+<div class="cardx cardx--center mb-15">
+<div aria-live="polite" class="mb-8 text-strong color-accent" id="tasksBadgeText">🌱 بداية طيبة</div>
+<div aria-live="polite" class="muted text-strong" id="tasksMotivationText">ابدأ بأول مهمة اليوم ✨</div>
+</div>
+<div class="cardx">
+<div class="flex-between mb-15">
+<h2 class="cardx__title mb-0">
+<i aria-hidden="true" class="fa-solid fa-list-check"></i>
+            ورد المهام
+          </h2>
+<button class="btn btn--ghost btn--compact" data-tasks-action="restore-defaults" type="button">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i>
+            استعادة الافتراضي
+          </button>
+</div>
+<div class="flex-gap mb-15">
+<input aria-label="إضافة مهمة جديدة" class="input" data-tasks-enter-add="true" id="newTaskInput" maxlength="200" placeholder="أضف مهمة..." type="text"/>
+<button aria-label="إضافة المهمة" class="btn btn--accent tasks__add-btn" data-tasks-action="add-task" type="button">
+<i aria-hidden="true" class="fa-solid fa-plus"></i>
+</button>
+</div>
+<div class="muted cardx--center tasks__empty-state" hidden="" id="tasksEmptyState">لا توجد مهام حالياً</div>
+<div aria-live="polite" class="tasks__list" id="tasksList"></div>
+</div>
+</section>
+
+<section aria-hidden="true" class="tab-content section section--stats" id="stats" role="tabpanel">
+<h2 class="sr-only">الإحصائيات والمتابعة</h2>
+<div class="muted cardx--center stats__empty-state" hidden="" id="statsEmptyState">لا توجد بيانات كافية بعد</div>
+<div class="cardx mb-15">
+<div class="flex-between mb-8">
+<span class="text-strong">حالة اليوم</span>
+<span aria-live="polite" class="muted" id="statsActivityLabel">ابدأ اليوم</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="tasksProgressBar"></div>
+</div>
+<div class="muted mt-15 stats__center-line">
+          نسبة إنجاز اليوم:
+          <span aria-live="polite" class="text-strong" id="statTasksPercentInline">0%</span>
+</div>
+<div class="muted mt-15 stats__center-line">
+          التسبيح اليومي:
+          <span aria-live="polite" class="text-strong" id="statDailyTasbeehInline">0</span>
+          /
+          <span aria-live="polite" class="text-strong" id="statDailyTasbeehTargetInline">100</span>
+</div>
+<div class="stats-subprogress">
+<div class="stats-subprogress__head">
+<span class="stats-subprogress__label">تقدم هدف التسبيح</span>
+<span aria-live="polite" class="stats-subprogress__value" id="statTasbeehPercentInline">0%</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="statTasbeehProgressBar"></div>
+<div class="stats__compat-progress" hidden="" id="tasbeehProgressBar"></div>
+</div>
+</div>
+<div class="stats-panel-grid">
+<div class="stats-mini-card">
+<div class="stats-mini-card__label">إنجاز المهام</div>
+<div aria-live="polite" class="stats-mini-card__value" id="statTasksProgressDetails">0 / 0</div>
+</div>
+<div class="stats-mini-card">
+<div class="stats-mini-card__label">إنجاز التسبيح</div>
+<div aria-live="polite" class="stats-mini-card__value" id="statTasbeehProgressDetails">0 / 100</div>
+</div>
+<div class="stats-mini-card stats-mini-card--full">
+<div class="stats-mini-card__label">المتبقي من اليوم</div>
+<div aria-live="polite" class="stats-mini-card__value" id="statRemainingSummary">اكتمل هدف اليوم بالكامل ✅</div>
+</div>
+</div>
+<div class="stats__secondary-progress">
+<div class="flex-between muted small">
+<span>تقدم المهام</span>
+<span id="statTasksProgressPercent">0%</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="statTasksProgressBar"></div>
+</div>
+</div>
+<div class="stats-smart-box">
+<div class="stats-smart-box__title">ملاحظة ذكية</div>
+<div aria-live="polite" class="stats-smart-box__text" id="statsSmartMessage">ابدأ بخطوة صغيرة: مهمة واحدة أو دفعة تسبيح، والباقي سيأتي بسهولة ✨</div>
+</div>
+</div>
+<div class="stats-grid">
+<div class="stats-card">
+<div class="stats-card__icon color-primary"><i aria-hidden="true" class="fa-solid fa-fingerprint"></i></div>
+<div class="stats-card__label">تسابيح اليوم</div>
+<div aria-live="polite" class="stats-card__value color-primary" id="statDailyTasbeeh">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon stats-card__icon--orange"><i aria-hidden="true" class="fa-solid fa-fire"></i></div>
+<div class="stats-card__label">أيام الالتزام</div>
+<div aria-live="polite" class="stats-card__value stats-card__value--orange" id="statStreak">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon color-accent"><i aria-hidden="true" class="fa-solid fa-calendar-days"></i></div>
+<div class="stats-card__label">تسابيح الشهر</div>
+<div aria-live="polite" class="stats-card__value color-accent" id="statMonthlyTasbeeh">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon stats-card__icon--purple"><i aria-hidden="true" class="fa-solid fa-circle-check"></i></div>
+<div class="stats-card__label">المهام المنجزة</div>
+<div aria-live="polite" class="stats-card__value stats-card__value--purple" id="statTasksCompleted">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon color-primary"><i aria-hidden="true" class="fa-solid fa-list-ul"></i></div>
+<div class="stats-card__label">عدد المهام</div>
+<div aria-live="polite" class="stats-card__value color-primary" id="statTasksTotal">0</div>
+</div>
+<div class="stats-card">
+<div class="stats-card__icon color-accent"><i aria-hidden="true" class="fa-solid fa-chart-simple"></i></div>
+<div class="stats-card__label">نسبة الإنجاز</div>
+<div aria-live="polite" class="stats-card__value color-accent" id="statTasksPercent">0%</div>
+</div>
+</div>
+</section>
+
+<section aria-hidden="true" class="tab-content section section--names" id="names" role="tabpanel">
+<h2 class="sr-only">أسماء الله الحسنى</h2>
+<div aria-hidden="true" class="cardx names-surface names-surface--daily mb-15 is-hidden" id="namesDailyCard">
+<div class="names-surface__eyebrow">اسم اليوم</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesDailyTitle"></h3>
+<p class="muted names-surface__desc" id="namesDailyDesc"></p>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--ghost names-favorite-btn" data-names-action="toggle-favorite" id="namesDailyFavoriteBtn" type="button"></button>
+<button class="btn btn--ghost names-wird-btn" data-names-action="toggle-wird" id="namesDailyWirdBtn" type="button"></button>
+<button class="btn btn--primary names-practice-btn" data-names-action="mark-daily-complete" id="namesDailyPracticeBtn" type="button"></button>
+<button class="btn btn--primary" data-names-action="open-daily-name" type="button">افتح الاسم</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-surface mb-15 is-hidden" id="namesResumeCard">
+<div class="names-surface__eyebrow">تابع التعرف</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesResumeTitle"></h3>
+<p class="muted names-surface__desc" id="namesResumeHint"></p>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--primary" data-names-action="resume-name" id="namesResumeButton" type="button">تابع الآن</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-surface names-surface--wird mb-15 is-hidden" id="namesWirdCard">
+<div class="names-surface__eyebrow">وردي</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesWirdTitle"></h3>
+<p class="muted names-surface__desc" id="namesWirdDesc"></p>
+<div class="names-focus-card__meta mt-8" id="namesWirdMeta"></div>
+<div aria-live="polite" class="names-chip-list mt-12" id="namesWirdChips"></div>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--ghost" data-name-filter="wird" data-names-action="set-filter" id="namesWirdFilterBtn" type="button">اعرض وردي</button>
+<button class="btn btn--primary" data-names-action="open-next-wird" id="namesWirdOpenBtn" type="button">الاسم التالي</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-focus-card mb-15 is-hidden" id="namesFocusCard">
+<div class="names-surface__eyebrow">بطاقة مركزة</div>
+<div class="names-surface__head">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesFocusTitle"></h3>
+<p class="muted names-surface__desc" id="namesFocusDesc"></p>
+<div class="names-focus-card__meta" id="namesFocusMeta"></div>
+</div>
+<div class="names-surface__actions">
+<button class="btn btn--ghost names-favorite-btn" data-names-action="toggle-favorite" id="namesFocusFavoriteBtn" type="button"></button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-detail-card mb-15 is-hidden" id="namesDetailCard">
+<div class="names-surface__eyebrow">تفصيل الاسم</div>
+<div class="names-detail-card__head mb-15">
+<div>
+<h3 class="amiri-text cardx__title mb-8 names-surface__title" id="namesDetailTitle"></h3>
+<p class="muted names-detail-card__transliteration" id="namesDetailTransliteration"></p>
+</div>
+<div class="names-detail-card__actions">
+<button aria-pressed="false" class="btn btn--ghost" data-names-action="toggle-wird" id="namesDetailWirdBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-book-open-reader"></i><span>أضف لوردي</span>
+</button>
+<button class="btn btn--ghost" data-names-action="copy-detail" id="namesDetailCopyBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-copy"></i><span>نسخ البطاقة</span>
+</button>
+</div>
+</div>
+<div class="names-detail-grid">
+<article class="cardx names-detail-panel">
+<h4 class="cardx__title mb-8">المعنى المختصر</h4>
+<p class="muted names-detail-card__copy" id="namesDetailMeaning"></p>
+</article>
+<article class="cardx names-detail-panel">
+<h4 class="cardx__title mb-8">مفتاح التدبر</h4>
+<p class="muted names-detail-card__copy" id="namesDetailReflection"></p>
+</article>
+<article class="cardx names-detail-panel names-detail-panel--full">
+<h4 class="cardx__title mb-8">كيف تستخدمه اليوم؟</h4>
+<p class="muted names-detail-card__copy" id="namesDetailPractice"></p>
+</article>
+</div>
+</div>
+<div aria-hidden="true" class="cardx names-learn-card mb-15 is-hidden" id="namesLearnCard">
+<div class="names-surface__eyebrow">تعلم واختبر نفسك</div>
+<div class="names-learn-card__head mb-15">
+<div>
+<h3 class="cardx__title mb-8" id="namesLearnTitle">جولة التعلم</h3>
+<p class="muted names-learn-card__meta" id="namesLearnMeta"></p>
+</div>
+<div aria-label="أوضاع التعلم" class="names-learn-card__modes">
+<button aria-pressed="false" class="btn btn--ghost names-quiz-mode-btn" data-name-quiz-mode="name-to-meaning" data-names-action="set-quiz-mode" type="button">الاسم → المعنى</button>
+<button aria-pressed="false" class="btn btn--ghost names-quiz-mode-btn" data-name-quiz-mode="meaning-to-name" data-names-action="set-quiz-mode" type="button">المعنى → الاسم</button>
+</div>
+</div>
+<div class="names-learn-grid">
+<article class="cardx names-learn-panel">
+<h4 class="cardx__title mb-8" id="namesLearnPromptLabel">السؤال</h4>
+<p class="muted names-learn-card__copy" id="namesLearnPrompt"></p>
+</article>
+<article aria-hidden="true" class="cardx names-learn-panel is-hidden" id="namesLearnAnswerPanel">
+<h4 class="cardx__title mb-8" id="namesLearnAnswerLabel">الإجابة</h4>
+<p class="names-learn-card__answer mb-8" id="namesLearnAnswer"></p>
+<p class="muted names-learn-card__copy" id="namesLearnAnswerHint"></p>
+</article>
+</div>
+<div aria-live="polite" class="names-chip-list mt-12" id="namesLearnWeakChips"></div>
+<div class="names-learn-card__actions mt-15">
+<button class="btn btn--ghost" data-names-action="reveal-quiz-answer" id="namesLearnRevealBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-eye"></i><span>اكشف الإجابة</span>
+</button>
+<button class="btn btn--primary" data-names-action="mark-quiz-known" id="namesLearnKnownBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-check"></i><span>عرفته</span>
+</button>
+<button class="btn btn--ghost" data-names-action="mark-quiz-review" id="namesLearnReviewBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i><span>أحتاج مراجعة</span>
+</button>
+<button class="btn btn--ghost" data-names-action="select-name" id="namesLearnOpenBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i><span>افتح البطاقة</span>
+</button>
+<button class="btn btn--ghost" data-names-action="restart-quiz" id="namesLearnRestartBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-rotate-right"></i><span>أعد الجولة</span>
+</button>
+<button class="btn btn--ghost" data-names-action="review-weak-quiz" id="namesLearnWeakBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i><span>راجع الضعيف</span>
+</button>
+</div>
+</div>
+<div class="cardx names-catalog-shell">
+<div class="flex-between mb-15 names-catalog-shell__head">
+<div>
+<h3 class="cardx__title mb-8">تأمل أسماء الله الحسنى</h3>
+<p class="muted">حفظ يومي هادئ مع مفضلة واستئناف سريع داخل القسم</p>
+</div>
+<div aria-live="polite" class="names-catalog-shell__summary" id="namesCatalogSummary"></div>
+</div>
+<div aria-label="فلاتر أسماء الله الحسنى" class="names-filters mb-15" id="namesFilters"></div>
+<div aria-live="polite" class="home-grid home-grid--catalog names-grid" id="namesGrid"></div>
+</div>
+<!-- ===== إعلان قسم الأسماء ===== -->
+</section>
+
+<section aria-hidden="true" class="tab-content section section--stories" id="stories" role="tabpanel">
+<h2 class="sr-only">قصص وعبر</h2>
+<div aria-live="polite" id="storiesGrid"></div>
+<!-- ===== إعلان قسم القصص ===== -->
+</section>
+
+<section aria-hidden="true" class="tab-content section section--settings" id="settings" role="tabpanel">
+<h2 class="sr-only">الإعدادات</h2>
+<div class="cardx">
+<div class="surface-row mb-15">
+<div class="flex-gap align-center">
+<img alt="صورة المستخدم" class="avatar" id="modalUserAvatar" src="./assets/images/avatar.png"/>
+<span class="text-strong" id="userName">حسابي</span>
+</div>
+<div id="authButtonArea"></div>
+</div>
+<label class="muted mb-8 text-strong settings__label" for="dailyTargetInput">
+<i aria-hidden="true" class="fa-solid fa-bullseye"></i> هدف التسبيح اليومي
+        </label>
+<input aria-label="هدف التسبيح اليومي" class="input mb-20" id="dailyTargetInput" placeholder="100" type="number"/>
+<label class="muted mb-8 text-strong settings__label">
+<i aria-hidden="true" class="fa-solid fa-bell"></i> إشعارات الأذكار
+        </label>
+<p class="muted mb-8 settings__notifications-hint">أي تغيير هنا يتزامن مع تفضيلات التذكير داخل قسم الأذكار.</p>
+<div class="cardx mb-20 settings__notifications-card">
+<div class="flex-between mb-15">
+<div>
+<div class="text-strong">أذكار الصباح</div>
+<input class="input mt-8 settings__time-input" data-notify-time="morning" id="timeMorning" type="time" value="06:00"/>
+</div>
+<label class="toggle-switch">
+<input data-notify-toggle="morning" id="notifyMorning" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex-between mb-15">
+<div>
+<div class="text-strong">أذكار المساء</div>
+<input class="input mt-8 settings__time-input" data-notify-time="evening" id="timeEvening" type="time" value="16:00"/>
+</div>
+<label class="toggle-switch">
+<input data-notify-toggle="evening" id="notifyEvening" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex-between mb-15">
+<div>
+<div class="text-strong">أذكار ما بعد الصلاة</div>
+<input class="input mt-8 settings__time-input" data-notify-time="prayer" id="timePrayer" type="time" value="13:30"/>
+</div>
+<label class="toggle-switch">
+<input data-notify-toggle="prayer" id="notifyPrayer" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<button class="btn btn--primary btn--full mt-15" id="saveNotificationsBtn" type="button">
+<i class="fa-solid fa-check"></i> حفظ أوقات التنبيه
+          </button>
+</div>
+<label class="muted mb-8 text-strong settings__label">
+<i aria-hidden="true" class="fa-solid fa-palette"></i> المظهر
+        </label>
+<div aria-label="اختيار المظهر" class="flex-gap mb-20" role="group">
+<button class="btn" data-theme-btn="default" type="button">زمردي</button>
+<button class="btn" data-theme-btn="dark" type="button">ليلي</button>
+<button class="btn" data-theme-btn="royal" type="button">ملكي</button>
+</div>
+<hr class="divider"/>
+<div aria-live="polite" class="mb-12 settings__install-container" id="installAppContainer"></div>
+<hr class="divider"/>
+<!-- ===== روابط الصفحات الثابتة ===== -->
+<div class="settings-links">
+<a class="settings-link-btn" href="./about.html" rel="noopener" target="_blank">
+<i aria-hidden="true" class="fa-solid fa-circle-info"></i>
+<span>عن التطبيق</span>
+</a>
+<a class="settings-link-btn" href="./privacy.html" rel="noopener" target="_blank">
+<i aria-hidden="true" class="fa-solid fa-shield-halved"></i>
+<span>سياسة الخصوصية</span>
+</a>
+<a class="settings-link-btn" href="./contact.html" rel="noopener" target="_blank">
+<i aria-hidden="true" class="fa-solid fa-envelope"></i>
+<span>تواصل معنا</span>
+</a>
+</div>
+<button class="btn btn--ghost btn--full btn--start mb-12" data-app-action="share" type="button">
+<i aria-hidden="true" class="fa-solid fa-share-nodes"></i> شارك التطبيق كصدقة جارية
+        </button>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__updates-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-cloud-arrow-down"></i> حالة التحديثات</div>
+<p class="muted settings__updates-text" id="updateStatusText">جاهز للتحقق من التحديثات.</p>
+<p class="muted settings__updates-meta" id="updateStatusMeta">آخر فحص: لم يتم بعد</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="updateStatusBadge">جاهز</span>
+</div>
+<div class="muted settings__updates-hint is-hidden" id="updateChangesHint"></div>
+</div>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__runtime-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-heart-pulse"></i> صحة التشغيل الحالية</div>
+<p class="muted settings__updates-text" id="runtimeHealthSummaryText">يتم تجميع حالة التشغيل الحالية...</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="runtimeHealthStatusBadge">قيد التهيئة</span>
+</div>
+<div class="settings__runtime-list">
+<p class="muted settings__runtime-item"><strong>التهيئة:</strong> <span id="runtimeHealthStartupText">—</span></p>
+<p class="muted settings__runtime-item"><strong>التخزين:</strong> <span id="runtimeHealthStorageText">—</span></p>
+<p class="muted settings__runtime-item"><strong>المحتوى:</strong> <span id="runtimeHealthContentText">—</span></p>
+<p class="muted settings__runtime-item"><strong>بداية يوم جديد:</strong> <span id="runtimeHealthDayCycleText">—</span></p>
+<p class="muted settings__runtime-item"><strong>الأقسام:</strong> <span id="runtimeHealthFeaturesText">—</span></p>
+<p class="muted settings__runtime-item"><strong>السجل التشغيلي:</strong> <span id="runtimeHealthLogsText">—</span></p>
+</div>
+</div>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__runtime-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-stethoscope"></i> تشخيصات التشغيل</div>
+<p class="muted settings__updates-text" id="runtimeDiagnosticsSummaryText">يتم تجهيز تشخيصات التشغيل الحالية...</p>
+<p class="muted settings__updates-meta" id="runtimeDiagnosticsUpdatedAtText">آخر تحديث: —</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="runtimeDiagnosticsStatusBadge">قيد التهيئة</span>
+</div>
+<ul class="settings__diagnostics-list" id="runtimeDiagnosticsList"></ul>
+<button class="btn btn--ghost btn--full btn--start" data-app-action="copy-diagnostics" id="copyDiagnosticsBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-clipboard-list"></i> نسخ تشخيصات التشغيل
+</button>
+</div>
+<div aria-atomic="true" aria-live="polite" class="cardx settings__runtime-card mb-12">
+<div class="settings__updates-head mb-8">
+<div>
+<div class="text-strong settings__updates-title"><i aria-hidden="true" class="fa-solid fa-suitcase-medical"></i> حزمة الدعم والتشخيص</div>
+<p class="muted settings__updates-text" id="supportBundleSummaryText">يتم تجهيز ملخص حزمة الدعم الحالية...</p>
+<p class="muted settings__updates-meta" id="supportBundleMetaText">لم تُولد حزمة دعم بعد.</p>
+</div>
+<span class="settings__status-badge settings__status-badge--idle" id="supportBundleStatusBadge">جاهز</span>
+</div>
+<p class="muted settings__support-note mb-12" id="supportBundlePrivacyText">الحزمة لا تتضمن بيانات شخصية، بل حالة التشغيل والأعطال الحديثة فقط.</p>
+<div class="settings__support-actions">
+<button class="btn btn--ghost btn--full btn--start" data-app-action="copy-support-bundle" id="copySupportBundleBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-file-export"></i> نسخ حزمة الدعم
+</button>
+<button class="btn btn--primary btn--full btn--start" data-app-action="download-support-bundle" id="downloadSupportBundleBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-download"></i> تنزيل حزمة الدعم JSON
+</button>
+</div>
+</div>
+<button aria-describedby="updateStatusText updateStatusMeta" class="btn btn--ghost btn--full btn--start" data-app-action="updates" id="checkUpdatesBtn" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrows-rotate"></i> البحث عن تحديثات
+        </button>
+</div>
+</section>
+
+<div aria-labelledby="masbahaZikrSheetTitle" aria-modal="true"
+     class="masbaha-zikr-sheet" id="masbahaZikrSheet"
+     role="dialog" aria-hidden="true">
+  <div class="masbaha-zikr-sheet__backdrop" id="masbahaZikrBackdrop"></div>
+  <div class="masbaha-zikr-sheet__panel">
+    <div class="masbaha-zikr-sheet__handle" aria-hidden="true"></div>
+    <h2 class="masbaha-zikr-sheet__title" id="masbahaZikrSheetTitle">اختر الذكر</h2>
+
+    <!-- Target row: how many taps per cycle -->
+    <div class="masbaha-zikr-sheet__target-row">
+      <label class="masbaha-zikr-sheet__target-label" for="masbahaTargetInput">عدد مرات التكرار:</label>
+      <input class="input masbaha-zikr-sheet__target-input"
+             id="masbahaTargetInput"
+             type="number" value="33" min="1" max="9999"
+             aria-label="عدد مرات الذكر قبل الانتقال للتالي"
+             data-masbaha-action="update-target"/>
+    </div>
+
+    <!-- Zikr list (built by JS) -->
+    <div class="masbaha-zikr-sheet__list" id="masbahaZikrList"
+         aria-label="قائمة الأذكار" role="listbox"
+         aria-live="polite"></div>
+
+    <!-- Add custom zikr -->
+    <div class="masbaha-zikr-sheet__add-section">
+      <p class="masbaha-zikr-sheet__add-label">إضافة ذكر مخصص</p>
+      <div class="masbaha-zikr-sheet__add-row">
+        <input class="input"
+               id="newMasbahaEntryInput"
+               type="text" maxlength="200"
+               placeholder="اكتب ذكراً جديداً..."
+               aria-label="ذكر مخصص جديد"
+               data-masbaha-entry-enter-save="true"/>
+        <button class="btn btn--primary masbaha-zikr-sheet__add-btn"
+                data-masbaha-action="save-custom-entry"
+                type="button"
+                aria-label="إضافة الذكر">
+          <i aria-hidden="true" class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn--ghost w-full"
+            data-masbaha-action="close-zikr-sheet"
+            type="button">تم</button>
+  </div>
+</div>
+
+<div aria-labelledby="updateModalTitle" aria-modal="true" class="modal-overlay" id="updateModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-accent modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-cloud-arrow-down"></i></div>
+<h2 class="cardx__title justify-center modal-title" id="updateModalTitle">تحديث جديد متاح! 🎉</h2>
+<p class="muted mb-20">لقد قمنا بإضافة تحسينات ومميزات جديدة للتطبيق. هل تود تحديث التطبيق الآن للحصول على أفضل تجربة؟</p>
+<div class="flex-gap">
+<button class="btn btn--primary flex-1" data-app-modal-action="apply-update" type="button">تحديث الآن</button>
+<button class="btn btn--ghost flex-1" data-app-modal-action="close-update" type="button">لاحقاً</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="masbahaDeleteEntryModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="masbahaDeleteEntryModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-danger modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i></div>
+<h2 class="cardx__title justify-center color-danger modal-title" id="masbahaDeleteEntryModalTitle">تأكيد الحذف</h2>
+<p class="muted mb-20">هل أنت متأكد من حذف هذا الذكر من قائمتك؟</p>
+<div class="flex-gap">
+<button class="btn btn--danger-solid flex-1" data-masbaha-action="confirm-delete-entry" type="button">نعم، احذف</button>
+<button class="btn btn--ghost flex-1" data-masbaha-action="close-delete-entry-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="resetMasbahaModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="resetMasbahaModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 modal-icon modal-icon--warning modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-rotate-right"></i></div>
+<h2 class="cardx__title justify-center modal-title modal-title--warning" id="resetMasbahaModalTitle">تصفير المسبحة</h2>
+<p class="muted mb-20">هل أنت متأكد من تصفير العداد الحالي؟<br/>(لن يؤثر هذا على الإجمالي اليومي)</p>
+<div class="flex-gap">
+<button class="btn btn--warning-solid flex-1" data-masbaha-action="confirm-reset" type="button">نعم، صفر العداد</button>
+<button class="btn btn--ghost flex-1" data-masbaha-action="close-reset-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="deleteTaskModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="deleteTaskModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-danger modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-trash-can"></i></div>
+<h2 class="cardx__title justify-center color-danger modal-title" id="deleteTaskModalTitle">حذف مهمة</h2>
+<p class="muted mb-20">هل أنت متأكد من حذف هذه المهمة من وردك اليومي؟</p>
+<div class="flex-gap">
+<button class="btn btn--danger-solid flex-1" data-tasks-action="confirm-delete-task" type="button">نعم، احذف</button>
+<button class="btn btn--ghost flex-1" data-tasks-action="close-delete-task-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<div aria-labelledby="restoreTasksModalTitle" aria-modal="true" class="modal-overlay modal-overlay--priority" id="restoreTasksModal" role="dialog">
+<div class="modal-content cardx--center">
+<div class="mb-12 color-primary modal-icon modal-icon--xl"><i aria-hidden="true" class="fa-solid fa-rotate-left"></i></div>
+<h2 class="cardx__title justify-center color-primary modal-title" id="restoreTasksModalTitle">استعادة المهام</h2>
+<p class="muted mb-20">هل تود استعادة المهام الافتراضية؟<br/>(لن يتم مسح مهامك الحالية، سيتم فقط إضافة المهام الناقصة)</p>
+<div class="flex-gap">
+<button class="btn btn--primary flex-1" data-tasks-action="confirm-restore" type="button">نعم، استعد</button>
+<button class="btn btn--ghost flex-1" data-tasks-action="close-restore-modal" type="button">إلغاء</button>
+</div>
+</div>
+</div>
+
+<template id="tpl-dashboard-btn">
+<button class="home-btn" type="button">
+<div class="home-icon-box"><i aria-hidden="true" class="fa-solid"></i></div>
+<span class="home-btn-text"></span>
+</button>
+</template>
+
+<template id="tpl-subview-header">
+<button class="btn back-btn mb-20" data-app-action="go-back" data-back-button="true" type="button">
+<i aria-hidden="true" class="fa-solid fa-arrow-right"></i> العودة
+</button>
+<div class="cardx--center mb-20">
+<h2 class="amiri-text cardx__title subview-title justify-center"></h2>
+<div class="section-accent-line section-accent-line--sm"></div>
+</div>
+</template>
+
+<template id="tpl-dua-card">
+<div class="cardx cardx--message mb-15">
+<p class="amiri-text dua-text mb-15"></p>
+<div class="flex-gap">
+<button class="btn btn--ghost copy-btn flex-1" type="button"><i aria-hidden="true" class="fa-solid fa-copy"></i> نسخ</button>
+<button class="btn btn--ghost share-btn flex-1" type="button"><i aria-hidden="true" class="fa-solid fa-share-nodes"></i> مشاركة</button>
+</div>
+</div>
+</template>
+
+<template id="tpl-name-card">
+<div class="cardx cardx--center mb-0">
+<h3 class="amiri-text name-title color-primary mb-8"></h3>
+<p class="muted name-desc"></p>
+</div>
+</template>
+
+<template id="tpl-story-card">
+<div class="cardx mb-15">
+<h3 class="story-title color-accent mb-12"></h3>
+<p class="amiri-text story-content mb-15"></p>
+<div class="rounded-sm story-lesson-box">
+<p class="story-lesson"></p>
+</div>
+</div>
+</template>
+
+<!-- ========== AZKAR REDESIGNED TEMPLATES ========== -->
+<!-- 1. Category Card: Minimal, only icon + title + thin progress -->
+<template id="tpl-azkar-category-card">
+<button class="azkar-category-card" type="button">
+<span class="azkar-category-card__topline">
+<span class="azkar-category-card__icon"><i aria-hidden="true" class="fa-solid"></i></span>
+<span class="azkar-category-card__state is-hidden"></span>
+</span>
+<span class="azkar-category-card__content">
+<span class="azkar-category-card__eyebrow"></span>
+<span class="azkar-category-card__title"></span>
+<span class="azkar-category-card__progress">
+<span class="azkar-category-card__progress-track"><span class="azkar-category-card__progress-fill"></span></span>
+</span>
+</span>
+</button>
+</template>
+
+<template id="tpl-azkar-favorite-item-card">
+<button class="azkar-favorite-item-card" type="button">
+<span class="azkar-favorite-item-card__topline">
+<span class="azkar-favorite-item-card__category"></span>
+<span class="azkar-favorite-item-card__star"><i aria-hidden="true" class="fa-solid fa-star"></i></span>
+</span>
+<span class="azkar-favorite-item-card__snippet"></span>
+<span class="azkar-favorite-item-card__meta"></span>
+</button>
+</template>
+
+<!-- 2. Zekr Item Card: Clean, centered text, large counter button, minimal extras -->
+<template id="tpl-azkar-item-card">
+<div class="azkar-item-card">
+<div class="azkar-item-topline">
+<span class="azkar-item-index-badge"></span>
+<button aria-label="إضافة إلى المفضلة" aria-pressed="false" class="azkar-item-favorite-btn" type="button">
+<i aria-hidden="true" class="fa-regular fa-star"></i>
+</button>
+</div>
+<p class="amiri-text azkar-item-text"></p>
+<div class="azkar-item-meta"></div>
+<div class="azkar-item-progress">
+<div class="azkar-progress-track azkar-progress-track--item">
+<span class="azkar-progress-fill azkar-item-progress__fill"></span>
+</div>
+</div>
+<div class="azkar-item-counter-wrapper">
+<button class="azkar-item-counter-btn" type="button">
+<span class="azkar-item-counter-value"></span>
+<span class="azkar-item-counter-label">عد</span>
+</button>
+</div>
+<div class="azkar-item-actions">
+<button class="azkar-item-copy-btn" type="button"><i aria-hidden="true" class="fa-solid fa-copy"></i><span>نسخ</span></button>
+</div>
+</div>
+</template>
+
+<template id="tpl-task-card">
+<div class="cardx flex-between task-card tasks__card mb-0">
+<span class="task-text tasks__card-text" data-role="task-text"></span>
+<div class="flex-gap">
+<button aria-label="تبديل حالة المهمة" class="icon-btn icon-btn--transparent toggle-btn" data-role="toggle-task" type="button"><i aria-hidden="true" class="fa-solid"></i></button>
+<button aria-label="حذف المهمة" class="icon-btn icon-btn--transparent delete-btn color-danger" data-role="delete-task" type="button"><i aria-hidden="true" class="fa-solid fa-trash"></i></button>
+</div>
+</div>
+</template>
+
+<template id="tpl-surah-btn">
+<button class="home-btn surah-item" type="button">
+<div class="flex-gap align-center">
+<div class="home-icon-box surah-item__icon"><i aria-hidden="true" class="fa-solid fa-book-quran"></i></div>
+<span class="home-btn-text surah-name"></span>
+</div>
+<span class="muted surah-num rounded-sm border-soft bg-soft"></span>
+</button>
+</template>
+
+</div>
+</main>
+
+<!-- ═══════════════════════════════════════════════
+     Bottom Navigation Bar
+     Tabs: الرئيسية | الأذكار | المسبحة | القرآن | المزيد
+     Active state managed by js/app/ui/bottom-nav.js
+     Section navigation handled by global click-action-map via data-nav-section
+     ═══════════════════════════════════════════════ -->
+<nav class="bottom-nav no-select" id="bottomNav" aria-label="التنقل الرئيسي" role="navigation">
+  <button class="bottom-nav__tab is-active" data-nav-section="home" data-nav-title="دليل المسلم" type="button" aria-label="الرئيسية" aria-current="page">
+    <i class="fa-solid fa-house" aria-hidden="true"></i>
+    <span class="bottom-nav__label">الرئيسية</span>
+  </button>
+  <button class="bottom-nav__tab" data-nav-section="azkar" data-nav-title="الأذكار اليومية" type="button" aria-label="الأذكار">
+    <i class="fa-solid fa-moon" aria-hidden="true"></i>
+    <span class="bottom-nav__label">الأذكار</span>
+  </button>
+  <button class="bottom-nav__tab bottom-nav__tab--center" data-nav-section="masbaha" data-nav-title="المسبحة الذكية" type="button" aria-label="المسبحة">
+    <i class="fa-solid fa-fingerprint" aria-hidden="true"></i>
+    <span class="bottom-nav__label">المسبحة</span>
+  </button>
+  <button class="bottom-nav__tab" data-nav-section="quran" data-nav-title="القرآن الكريم" type="button" aria-label="القرآن">
+    <i class="fa-solid fa-book-quran" aria-hidden="true"></i>
+    <span class="bottom-nav__label">القرآن</span>
+  </button>
+  <button class="bottom-nav__tab" data-bottom-nav-more="true" type="button" aria-label="المزيد" aria-expanded="false" aria-controls="moreDrawer">
+    <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+    <span class="bottom-nav__label">المزيد</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     More Drawer — secondary sections not in bottom nav
+     ═══════════════════════════════════════════════ -->
+<div class="more-drawer" id="moreDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="أقسام إضافية">
+  <div class="more-drawer__backdrop" id="moreDrawerBackdrop"></div>
+  <div class="more-drawer__sheet">
+    <div class="more-drawer__handle" aria-hidden="true"></div>
+    <p class="more-drawer__title">المزيد من الأقسام</p>
+    <nav class="more-drawer__grid" aria-label="أقسام إضافية">
+      <button class="more-drawer__item" data-nav-section="duas" data-nav-title="الأدعية" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-hands-praying" aria-hidden="true"></i></div>
+        <span>الأدعية</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="tasks" data-nav-title="المهام اليومية" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></div>
+        <span>المهام</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="stats" data-nav-title="الإحصائيات" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+        <span>الإحصائيات</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="names" data-nav-title="أسماء الله الحسنى" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-star-and-crescent" aria-hidden="true"></i></div>
+        <span>أسماء الله</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="stories" data-nav-title="قصص وعبر" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-book-journal-whills" aria-hidden="true"></i></div>
+        <span>قصص وعبر</span>
+      </button>
+      <button class="more-drawer__item" data-nav-section="settings" data-nav-title="الإعدادات والحساب" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-gear" aria-hidden="true"></i></div>
+        <span>الإعدادات</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<script src="js/main.js" type="module"></script>
+</body>
+</html>

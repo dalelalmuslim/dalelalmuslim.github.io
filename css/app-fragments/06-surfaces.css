@@ -1,0 +1,23 @@
+/* ==========================================
+   Surfaces & Generic UI Helpers
+   ========================================== */
+.surface-soft {
+    background: var(--bg-color);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    object-fit: cover;
+    flex-shrink: 0;
+}
