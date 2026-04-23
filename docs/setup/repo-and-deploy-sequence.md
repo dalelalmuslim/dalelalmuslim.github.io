@@ -33,3 +33,13 @@
 - وجود ملف `.nvmrc` يثبّت نسخة Node المحلية والنسخة المستخدمة في CI/Cloudflare.
 - ملف `wrangler.toml` موجود كـ scaffold فقط، وليس تصريحًا بالانتقال إلى backend phase.
 - إذا لم تكن جاهزًا لـ GitHub اليوم، أكمل العمل محليًا على نفس baseline، لكن **لا تبدأ Cloudflare قبل أول push**.
+
+## بعد أول نشر حي
+بعد نجاح أول `push` إلى GitHub وأول نشر فعلي على Cloudflare، يصبح الترتيب التشغيلي كالتالي:
+
+1. اعمل التعديل داخل المشروع
+2. شغّل `npm run release:manual-cloudflare`
+3. ارفع `dalil-almuslim-dist.zip` إلى مشروع Cloudflare الحي `dalil-almuslim-web`
+4. ادفع الكود إلى GitHub كالمعتاد
+
+هذا الترتيب مؤقت إلى أن يصبح Git-integrated deploy مستقرًا بما يكفي ليعود كخط النشر الأساسي.

@@ -90,6 +90,7 @@ export function initializeApp(appApi) {
 
     appApi.setupRuntimeHealth?.();
     appApi.setupRuntimeDiagnostics?.();
+    appApi.setupContentSourceObservability?.();
 
     const canContinue = initializeStorage(appApi);
     if (!canContinue) {

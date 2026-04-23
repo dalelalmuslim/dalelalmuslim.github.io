@@ -1,0 +1,46 @@
+name: Architecture Baseline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build generated shell artifacts
+        run: npm run build:shell
+
+      - name: Verify architecture baseline
+        run: npm run verify:architecture
+
+      - name: Typecheck foundation layer
+        run: npm run typecheck
+
+      - name: Verify repo readiness
+        run: npm run verify:repo-readiness
+
+      - name: Validate names domain
+        run: |
+          node names_validation_gate.mjs
+          node names_n1_harness.mjs
+
+      - name: Validate Quran and day cycle
+        run: |
+          node quran_validation_gate.mjs
+          node day_cycle_validation_gate.mjs

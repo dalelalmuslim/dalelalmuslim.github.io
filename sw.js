@@ -112,7 +112,8 @@ const swConfig = Object.freeze({
     quranSurahsPrefix: '/data/quran/surahs/',
     azkarCategoriesPrefix: '/data/azkar/categories/',
     firebaseHosts: new Set(['www.gstatic.com']),
-    firebasePathPrefix: '/firebasejs/'
+    firebasePathPrefix: '/firebasejs/',
+    publicContentApiPrefix: '/api/public/'
 });
 
 const ROUTE_POLICIES = swCreateRoutePolicies(swConfig);

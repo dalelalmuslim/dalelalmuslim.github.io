@@ -32,6 +32,7 @@ import {
     recordCacheUpdate
 } from '../actions/update-actions.js';
 import { shareApp, shareText, copyToClipboard } from '../actions/share-actions.js';
+import { refreshPublicContent } from '../actions/content-source-actions.js';
 import { getLocalDateKey, setupDayWatcher, checkForNewDay } from '../lifecycle/day-cycle.js';
 import {
     getElement,
@@ -45,6 +46,7 @@ import {
 import { initializeApp } from './app-startup.js';
 import { setupRuntimeHealth, updateRuntimeHealth, renderRuntimeHealth, recordStartupHealth, recordStorageHealth, recordContentFoundationHealth } from '../health/runtime-health.js';
 import { setupRuntimeDiagnostics, updateRuntimeDiagnostics, renderRuntimeDiagnostics, copyRuntimeDiagnostics, buildRuntimeDiagnosticsReport, buildSupportBundle, downloadSupportBundle } from '../health/runtime-diagnostics.js';
+import { setupContentSourceObservability, renderContentSourceObservability } from '../health/content-source-observability.js';
 import * as authService from '../../services/auth/index.js';
 import * as contentClient from '../../services/content/content-client.js';
 import * as sectionCache from '../../services/cache/section-cache.js';
@@ -145,6 +147,8 @@ export const app = {
     buildRuntimeDiagnosticsReport,
     buildSupportBundle,
     downloadSupportBundle,
+    setupContentSourceObservability,
+    renderContentSourceObservability,
 
     bindGlobalEvents,
     bindUIEvents,
@@ -182,6 +186,7 @@ export const app = {
     shareApp,
     shareText,
     copyToClipboard,
+    refreshPublicContent,
 
     getLocalDateKey,
     setupDayWatcher,

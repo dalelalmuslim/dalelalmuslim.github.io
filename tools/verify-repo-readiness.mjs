@@ -11,7 +11,28 @@ const REQUIRED_FILES = Object.freeze([
   'manifest.json',
   'functions/api/health.js',
   'functions/api/public/versions.js',
-  'docs/setup/repo-and-deploy-sequence.md'
+  'functions/api/public/content/app-config.js',
+  'functions/api/public/content/azkar.js',
+  'functions/api/public/content/duas.js',
+  'functions/api/public/content/stories.js',
+  'functions/api/public/content/daily-content.js',
+  'tools/verify-pages-functions.mjs',
+  'tools/verify-content-client-remote.mjs',
+  'tools/verify-content-observability.mjs',
+  'tools/verify-content-refresh.mjs',
+  'tools/verify-d1-foundation.mjs',
+  'tools/generate-d1-public-content-seed.mjs',
+  'd1/migrations/0001_public_content_schema.sql',
+  'd1/seed/public-content.seed.json',
+  'd1/seed/0001_public_content_seed.sql',
+  'docs/cloudflare/d1-public-content-foundation.md',
+  'docs/setup/repo-and-deploy-sequence.md',
+  'docs/deploy/manual-cloudflare-direct-upload.md',
+  'docs/deploy/deploy-targets.md',
+  'tools/build-dist.mjs',
+  'tools/verify-dist-package.mjs',
+  'tools/create-release-archive.mjs',
+  'tools/run-typecheck.mjs'
 ]);
 
 function exists(filePath) {
@@ -36,7 +57,17 @@ function checkScripts(packageJson) {
     hasCheck: typeof scripts.check === 'string',
     hasBuildShellCheck: typeof scripts['build:shell:check'] === 'string',
     hasRepoReadiness: typeof scripts['verify:repo-readiness'] === 'string',
-    hasLocalReady: typeof scripts['ready:local'] === 'string'
+    hasLocalReady: typeof scripts['ready:local'] === 'string',
+    hasBuildDist: typeof scripts['build:dist'] === 'string',
+    hasVerifyDist: typeof scripts['verify:dist'] === 'string',
+    hasReleaseZip: typeof scripts['release:zip'] === 'string',
+    hasManualCloudflareRelease: typeof scripts['release:manual-cloudflare'] === 'string',
+    hasVerifyPagesFunctions: typeof scripts['verify:pages-functions'] === 'string',
+    hasVerifyContentClient: typeof scripts['verify:content-client'] === 'string',
+    hasVerifyContentObservability: typeof scripts['verify:content-observability'] === 'string',
+    hasVerifyContentRefresh: typeof scripts['verify:content-refresh'] === 'string',
+    hasVerifyD1Foundation: typeof scripts['verify:d1-foundation'] === 'string',
+    hasGenerateD1Seed: typeof scripts['generate:d1-seed'] === 'string'
   };
 }
 
@@ -55,6 +86,16 @@ function main() {
       && scripts.hasBuildShellCheck
       && scripts.hasRepoReadiness
       && scripts.hasLocalReady
+      && scripts.hasBuildDist
+      && scripts.hasVerifyDist
+      && scripts.hasReleaseZip
+      && scripts.hasManualCloudflareRelease
+      && scripts.hasVerifyPagesFunctions
+      && scripts.hasVerifyContentClient
+      && scripts.hasVerifyContentObservability
+      && scripts.hasVerifyContentRefresh
+      && scripts.hasVerifyD1Foundation
+      && scripts.hasGenerateD1Seed
       && Boolean(nvmrc)
       && hasPagesBuildDir,
     missingFiles,

@@ -5,11 +5,21 @@
   "scripts": {
     "build:shell": "node tools/build-static-shell.mjs",
     "build:shell:check": "node tools/build-static-shell.mjs --check",
+    "build:dist": "npm run build:shell && node tools/build-dist.mjs",
+    "verify:dist": "node tools/verify-dist-package.mjs",
+    "release:zip": "npm run build:dist && npm run verify:dist && node tools/create-release-archive.mjs",
+    "release:manual-cloudflare": "npm run check && npm run release:zip",
     "verify:architecture": "node tools/verify-architecture.mjs",
-    "typecheck": "tsc -p tsconfig.json",
-    "check": "npm run build:shell:check && npm run verify:architecture && npm run typecheck",
+    "typecheck": "node tools/run-typecheck.mjs",
+    "verify:pages-functions": "node tools/verify-pages-functions.mjs",
+    "verify:content-client": "node tools/verify-content-client-remote.mjs",
+    "check": "npm run build:shell:check && npm run verify:architecture && npm run typecheck && npm run verify:pages-functions && npm run verify:content-client && npm run verify:content-observability && npm run verify:content-refresh && npm run verify:d1-foundation",
     "verify:repo-readiness": "node tools/verify-repo-readiness.mjs",
-    "ready:local": "npm run check && npm run verify:repo-readiness"
+    "ready:local": "npm run check && npm run verify:repo-readiness",
+    "verify:content-observability": "node tools/verify-content-observability.mjs",
+    "verify:content-refresh": "node tools/verify-content-refresh.mjs",
+    "generate:d1-seed": "node tools/generate-d1-public-content-seed.mjs",
+    "verify:d1-foundation": "node tools/verify-d1-foundation.mjs"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

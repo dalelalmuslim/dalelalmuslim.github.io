@@ -1,6 +1,7 @@
 import { appEventBus } from '../events/app-event-bus.js';
 import { APP_CONFIG } from '../app-config.js';
 import { appLogger } from '../../shared/logging/app-logger.js';
+import { getPublicContentSourceStatus } from '../../services/content/content-source-observability.js';
 import { getDiagnosticDescriptor, resolveLogDescriptor } from './runtime-diagnostic-codes.js';
 
 const DIAGNOSTIC_LIMIT = 12;
@@ -607,6 +608,58 @@ function sanitizeContentFoundationSummary(summary = null) {
   };
 }
 
+function sanitizeContentSourceSnapshot(snapshot = null) {
+  if (!snapshot || typeof snapshot !== 'object') {
+    return null;
+  }
+
+  return {
+    summary: snapshot.summary ? {
+      tone: snapshot.summary.tone || 'idle',
+      label: normalizeMessage(snapshot.summary.label || ''),
+      text: normalizeMessage(snapshot.summary.text || ''),
+      meta: normalizeMessage(snapshot.summary.meta || ''),
+      lastUpdatedAt: snapshot.summary.lastUpdatedAt || null,
+      remoteVersionsStatus: normalizeMessage(snapshot.summary.remoteVersionsStatus || ''),
+      remoteVersionsSource: normalizeMessage(snapshot.summary.remoteVersionsSource || ''),
+      refreshStatus: normalizeMessage(snapshot.summary.refreshStatus || '')
+    } : null,
+    remoteVersions: snapshot.remoteVersions ? {
+      status: normalizeMessage(snapshot.remoteVersions.status || ''),
+      source: normalizeMessage(snapshot.remoteVersions.source || ''),
+      syncedAt: snapshot.remoteVersions.syncedAt || null,
+      error: normalizeMessage(snapshot.remoteVersions.error || '')
+    } : null,
+    refresh: snapshot.refresh ? {
+      status: normalizeMessage(snapshot.refresh.status || ''),
+      startedAt: snapshot.refresh.startedAt || null,
+      completedAt: snapshot.refresh.completedAt || null,
+      error: normalizeMessage(snapshot.refresh.error || '')
+    } : null,
+    sections: Array.isArray(snapshot.sections) ? snapshot.sections.map((section) => ({
+      sectionId: normalizeMessage(section.sectionId || ''),
+      title: normalizeMessage(section.title || ''),
+      versionKey: normalizeMessage(section.versionKey || ''),
+      version: normalizeMessage(section.version || ''),
+      source: normalizeMessage(section.source || ''),
+      sourceLabel: normalizeMessage(section.sourceLabel || ''),
+      sourceTone: normalizeMessage(section.sourceTone || ''),
+      origin: normalizeMessage(section.origin || ''),
+      endpoint: normalizeMessage(section.endpoint || ''),
+      cacheMode: normalizeMessage(section.cacheMode || ''),
+      message: normalizeMessage(section.message || ''),
+      error: normalizeMessage(section.error || ''),
+      updatedAt: section.updatedAt || null,
+      usedRemote: Boolean(section.usedRemote),
+      cachedVersion: normalizeMessage(section.cachedVersion || ''),
+      remoteVersion: normalizeMessage(section.remoteVersion || ''),
+      stale: Boolean(section.stale),
+      staleReason: normalizeMessage(section.staleReason || ''),
+      staleReasonLabel: normalizeMessage(section.staleReasonLabel || '')
+    })) : []
+  };
+}
+
 function sanitizeDayCycleSummary(summary = null) {
   if (!summary) {
     return null;
@@ -653,9 +706,10 @@ export function buildSupportBundle(appApi) {
   const storage = sanitizeStorageStatus(runtimeHealth.storage || resolvedAppApi.storageStatus || resolvedAppApi.bootstrapStatus?.storage || null);
   const dayCycle = sanitizeDayCycleSummary(runtimeHealth.dayCycle || resolvedAppApi.bootstrapStatus?.dayCycle || null);
   const contentFoundation = sanitizeContentFoundationSummary(runtimeHealth.contentFoundation || resolvedAppApi.contentFoundationStatus || resolvedAppApi.bootstrapStatus?.contentFoundation || null);
+  const contentSources = sanitizeContentSourceSnapshot(resolvedAppApi.contentSourceStatus || getPublicContentSourceStatus());
 
   const bundle = {
-    schemaVersion: 1,
+    schemaVersion: 3,
     generatedAt: new Date().toISOString(),
     app: {
       name: APP_CONFIG.APP_NAME_EN,
@@ -674,6 +728,7 @@ export function buildSupportBundle(appApi) {
       storage,
       dayCycle,
       contentFoundation,
+      contentSources,
       bootstrapStatus: {
         startupOk: startup?.ok !== false,
         storageFatal: Boolean(storage?.fatal),
@@ -706,6 +761,9 @@ function formatSupportBundleText(bundle) {
     `App Version: ${bundle.app.version}`,
     `Schema Version: ${bundle.app.schemaVersion}`,
     `Online: ${bundle.environment.online ? 'yes' : 'no'}`,
+    `Content Sources: ${bundle.runtime.contentSources?.summary?.label || 'n/a'}`,
+    `Content Sources Meta: ${bundle.runtime.contentSources?.summary?.meta || 'n/a'}`,
+    `Content Refresh: ${bundle.runtime.contentSources?.refresh?.status || 'n/a'}`,
     `Standalone: ${bundle.environment.standalone ? 'yes' : 'no'}`,
     `Route: ${bundle.environment.pathname || '/'}${bundle.environment.hash || ''}`,
     `Storage Mode: ${bundle.runtime.storage?.persistent === false ? 'ephemeral' : 'persistent'}`,
@@ -726,6 +784,28 @@ function formatSupportBundleText(bundle) {
       lines.push(`   Level: ${entry.level} • Source: ${entry.source} • At: ${entry.timestamp}`);
       lines.push(`   Message: ${entry.message}`);
       lines.push(`   Suggested Action: ${entry.action}`);
+    });
+  }
+
+  lines.push('', 'Content Source Sections:');
+  if (!(bundle.runtime.contentSources?.sections || []).length) {
+    lines.push('1. No content source sections recorded.');
+  } else {
+    bundle.runtime.contentSources.sections.forEach((section, index) => {
+      lines.push(`${index + 1}. ${section.title || section.sectionId}`);
+      lines.push(`   Source: ${section.sourceLabel || section.source} • Version: ${section.version || '—'} • Origin: ${section.origin || 'unknown'}`);
+      if (section.cachedVersion || section.remoteVersion) {
+        lines.push(`   Cache/Remote: ${section.cachedVersion || '—'} / ${section.remoteVersion || '—'}`);
+      }
+      if (section.stale) {
+        lines.push(`   Stale: yes${section.staleReasonLabel ? ` • ${section.staleReasonLabel}` : ''}`);
+      }
+      if (section.message) {
+        lines.push(`   Message: ${section.message}`);
+      }
+      if (section.error) {
+        lines.push(`   Error: ${section.error}`);
+      }
     });
   }
 

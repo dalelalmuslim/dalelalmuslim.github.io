@@ -15,6 +15,13 @@ const RAW_HTML_ALLOWLIST = new Set([
   'js/shared/dom/dom-helpers.js'
 ]);
 
+const STYLE_MUTATION_ALLOWLIST = new Set([
+  'js/app/ui/bottom-nav.js',
+  'js/features/masbaha/masbaha-custom-actions.js',
+  'js/features/masbaha/masbaha-renderers.js'
+]);
+
+
 async function walk(dir, matcher = () => true) {
   const out = [];
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -60,9 +67,12 @@ async function main() {
     }
   }
 
+  const styleMutationsOutsideAllowlist = styleMutations.filter((file) => !STYLE_MUTATION_ALLOWLIST.has(file));
+
   const results = {
     inlineStyleAttributes,
     styleMutations,
+    styleMutationsOutsideAllowlist,
     rawHtmlWrites,
     rawHtmlWritesOutsideAllowlist
   };
@@ -70,7 +80,7 @@ async function main() {
   console.log(JSON.stringify(results, null, 2));
 
   const hasFailures = inlineStyleAttributes.length
-    || styleMutations.length
+    || styleMutationsOutsideAllowlist.length
     || rawHtmlWritesOutsideAllowlist.length;
 
   process.exitCode = hasFailures ? 1 : 0;

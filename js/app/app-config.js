@@ -1,6 +1,7 @@
 // js/app/app-config.js
 
 import { getStorageItem } from '../services/platform/browser-storage.js';
+import { PUBLIC_CONTENT_DEFAULT_VERSIONS } from '../shared/contracts/public-content-manifest.js';
 
 /**
  * @param {string} primaryKey
@@ -29,6 +30,14 @@ export const APP_CONFIG = Object.freeze({
     APP_URL: 'https://azkarapp.github.io/',
     CONTENT_CACHE_NAMESPACE: 'dalil_almuslim_content_cache',
     CONTENT_VERSION_NAMESPACE: 'dalil_almuslim_content_versions',
+    PUBLIC_CONTENT_API: Object.freeze({
+        ENABLED: true,
+        BASE_PATH: '',
+        VERSIONS_ENDPOINT: '/api/public/versions',
+        TIMEOUT_MS: 3500,
+        VERSIONS_TIMEOUT_MS: 2500,
+        SECTION_TIMEOUT_MS: 4000
+    }),
 
     DEFAULTS: Object.freeze({
         DAILY_TASBEEH_TARGET: 100,
@@ -53,13 +62,7 @@ export const APP_CONFIG = Object.freeze({
         THEME: Object.freeze(['azkar_theme'])
     }),
 
-    CONTENT_DEFAULT_VERSIONS: Object.freeze({
-        app_config: 'local-static-app-config-v1',
-        azkar: 'local-static-azkar-v1',
-        duas: 'local-static-duas-v1',
-        stories: 'local-static-stories-v1',
-        daily_content: 'local-static-daily-content-v1'
-    }),
+    CONTENT_DEFAULT_VERSIONS: PUBLIC_CONTENT_DEFAULT_VERSIONS,
 
     DAILY_AYAH: Object.freeze({
         NO_REPEAT_DAYS: 100

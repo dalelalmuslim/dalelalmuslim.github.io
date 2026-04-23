@@ -160,6 +160,7 @@ export function createClickActionMap(appApi, event, target) {
             const action = target.dataset.appAction;
             if (action === 'share') appApi.shareApp();
             else if (action === 'updates') appApi.checkForUpdates();
+            else if (action === 'refresh-content') appApi.refreshPublicContent?.();
             else if (action === 'go-back') appApi.handleBackNavigation();
             else if (action === 'copy-diagnostics') appApi.copyRuntimeDiagnostics?.();
             else if (action === 'copy-support-bundle') appApi.copyRuntimeDiagnostics?.();

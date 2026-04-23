@@ -24,6 +24,14 @@
 - **Cloudflare Pages**: بعد أول push ناجح إلى GitHub، وليس قبل ذلك.
 - الإعداد العملي الكامل موجود في: `docs/setup/repo-and-deploy-sequence.md`
 
+## وضع النشر الحالي
+- **Source of truth**: GitHub
+- **النسخة الحية الحالية**: Cloudflare Direct Upload project `dalil-almuslim-web`
+- **أمر تجهيز artifact الرسمي**: `npm run release:manual-cloudflare`
+- **الوثائق المرتبطة**:
+  - `docs/deploy/manual-cloudflare-direct-upload.md`
+  - `docs/deploy/deploy-targets.md`
+
 ## طريقة التشغيل
 1. ثبّت الاعتمادات: `npm install`
 2. افحص shell المولّد: `npm run build:shell:check`

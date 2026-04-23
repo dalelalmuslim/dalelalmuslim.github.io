@@ -1,5 +1,6 @@
 import { appEventBus } from '../events/app-event-bus.js';
 import { listFeatureStartupPlans } from '../../features/feature-startup-plan.js';
+import { getPublicContentSourceStatus } from '../../services/content/content-source-observability.js';
 
 const HEALTH_BADGE_CLASS = Object.freeze({
   healthy: 'settings__status-badge--refreshed',
@@ -132,21 +133,24 @@ function formatDayCycleText(dayCycle) {
 }
 
 function formatContentFoundationText(summary) {
+  const contentSourceSummary = getPublicContentSourceStatus()?.summary || null;
+
   if (!summary?.completedAt) {
-    return 'لم تُسجل مزامنة المحتوى بعد.';
+    return contentSourceSummary?.text || 'لم تُسجل مزامنة المحتوى بعد.';
   }
 
   if (!summary.ok) {
     const failed = (summary.failures || []).map((entry) => entry.sectionId).filter(Boolean).join('، ');
-    return failed ? `فشل تهيئة: ${failed}` : 'تعذر تجهيز طبقة المحتوى.';
+    const base = failed ? `فشل تهيئة: ${failed}` : 'تعذر تجهيز طبقة المحتوى.';
+    return contentSourceSummary?.meta ? `${base} • ${contentSourceSummary.meta}` : base;
   }
 
   const sectionCount = Array.isArray(summary.sections) ? summary.sections.length : 0;
-  if (summary.deferredWarmup) {
-    return `تمت مزامنة ${sectionCount} أقسام مع warmup خلفي لبعض الـ payload.`;
-  }
+  const base = summary.deferredWarmup
+    ? `تمت مزامنة ${sectionCount} أقسام مع warmup خلفي لبعض الـ payload.`
+    : `تمت مزامنة ${sectionCount} أقسام محتوى بدون أخطاء.`;
 
-  return `تمت مزامنة ${sectionCount} أقسام محتوى بدون أخطاء.`;
+  return contentSourceSummary?.meta ? `${base} • ${contentSourceSummary.meta}` : base;
 }
 
 function formatFeaturesText(features) {

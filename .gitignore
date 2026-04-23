@@ -1,8 +1,9 @@
 node_modules/
+.npm/
+.wrangler/
 dist/
-.env
-.env.local
+coverage/
 .DS_Store
-
-# local runtime logs
+Thumbs.db
 *.log
+dalil-almuslim-dist.zip

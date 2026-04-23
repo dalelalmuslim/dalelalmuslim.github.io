@@ -49,6 +49,7 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./css/shared/modals.css",
     "./css/shared/surfaces.css",
     "./css/shared/utilities.css",
+    "./js/app/actions/content-source-actions.js",
     "./js/app/actions/navigation-actions.js",
     "./js/app/actions/settings-actions.js",
     "./js/app/actions/share-actions.js",
@@ -65,6 +66,7 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/app/events/app-event-bus.js",
     "./js/app/events/bind-app-events.js",
     "./js/app/events/click-action-map.js",
+    "./js/app/health/content-source-observability.js",
     "./js/app/health/runtime-diagnostic-codes.js",
     "./js/app/health/runtime-diagnostics.js",
     "./js/app/health/runtime-health.js",
@@ -191,6 +193,8 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/services/cache/section-cache.js",
     "./js/services/content/content-client.js",
     "./js/services/content/content-provider-local.js",
+    "./js/services/content/content-provider-remote.js",
+    "./js/services/content/content-source-observability.js",
     "./js/services/engagement/achievements-catalog.js",
     "./js/services/engagement/achievements-service.js",
     "./js/services/engagement/index.js",
@@ -230,6 +234,7 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/shared/contracts/content-sections.js",
     "./js/shared/contracts/content-types.js",
     "./js/shared/contracts/define-feature-api.js",
+    "./js/shared/contracts/public-content-manifest.js",
     "./js/shared/dom/dom-helpers.js",
     "./js/shared/logging/app-logger.js",
     "./js/shared/render/render-scheduler.js",
@@ -257,8 +262,8 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./data/quran/surahs/001.json"
   ],
   "precacheStats": {
-    "documentsKb": 89.1,
-    "shellKb": 1736.3,
+    "documentsKb": 90.2,
+    "shellKb": 1795.7,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -314,6 +319,7 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./css/shared/modals.css",
       "./css/shared/surfaces.css",
       "./css/shared/utilities.css",
+      "./js/app/actions/content-source-actions.js",
       "./js/app/actions/navigation-actions.js",
       "./js/app/actions/settings-actions.js",
       "./js/app/actions/share-actions.js",
@@ -330,6 +336,7 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/app/events/app-event-bus.js",
       "./js/app/events/bind-app-events.js",
       "./js/app/events/click-action-map.js",
+      "./js/app/health/content-source-observability.js",
       "./js/app/health/runtime-diagnostic-codes.js",
       "./js/app/health/runtime-diagnostics.js",
       "./js/app/health/runtime-health.js",
@@ -456,6 +463,8 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/services/cache/section-cache.js",
       "./js/services/content/content-client.js",
       "./js/services/content/content-provider-local.js",
+      "./js/services/content/content-provider-remote.js",
+      "./js/services/content/content-source-observability.js",
       "./js/services/engagement/achievements-catalog.js",
       "./js/services/engagement/achievements-service.js",
       "./js/services/engagement/index.js",
@@ -495,6 +504,7 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/shared/contracts/content-sections.js",
       "./js/shared/contracts/content-types.js",
       "./js/shared/contracts/define-feature-api.js",
+      "./js/shared/contracts/public-content-manifest.js",
       "./js/shared/dom/dom-helpers.js",
       "./js/shared/logging/app-logger.js",
       "./js/shared/render/render-scheduler.js",
@@ -518,5 +528,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-aebb6bfc825d"
+  "cacheVersion": "azkar-v26-phase22-1ab9d987029b"
 });

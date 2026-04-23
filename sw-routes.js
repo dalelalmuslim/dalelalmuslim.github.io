@@ -19,6 +19,10 @@ function swIsDataRequest(url, dataPrefix) {
     return url.pathname.includes(dataPrefix);
 }
 
+function swIsPublicContentApiRequest(url, publicApiPrefix) {
+    return url.pathname.startsWith(publicApiPrefix);
+}
+
 function swIsFirebaseSdkRequest(url, firebaseHosts, firebasePathPrefix) {
     return firebaseHosts.has(url.hostname) && url.pathname.includes(firebasePathPrefix);
 }
@@ -64,6 +68,15 @@ function swCreateRoutePolicies(config) {
                 cacheName: config.cacheNames.data,
                 maxEntries: config.cacheLimits.data,
                 plugins: [swOkResponsePlugin(), swBroadcastUpdatePlugin('data')]
+            })
+        },
+        {
+            name: 'public-content-api',
+            match: ({ url }) => swIsPublicContentApiRequest(url, config.publicContentApiPrefix),
+            handler: swCreateNetworkFirstStrategy({
+                cacheName: config.cacheNames.runtime,
+                maxEntries: config.cacheLimits.runtime,
+                plugins: [swOkResponsePlugin(), swBroadcastUpdatePlugin('public-content-api')]
             })
         },
         {

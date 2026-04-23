@@ -11,6 +11,7 @@ import { getDuasManifest, getDuaManifestEntryByKey, resolveDuaSlug } from '../..
 import { STORIES_JSON } from '../../../data/stories/stories-data.js';
 import { getStoriesManifest, getStoryManifestEntryByKey, resolveStoryCategorySlug } from '../../../data/stories/manifest.js';
 import { DAILY_MESSAGES } from '../../../data/home/home-messages-data.js';
+import { getPublicContentVersionSnapshot } from '../../shared/contracts/public-content-manifest.js';
 
 const splitModuleCache = new Map();
 let legacyPayloadCache = null;
@@ -443,11 +444,5 @@ export async function getDailyContent() {
 }
 
 export function getPublicVersions() {
-    return {
-        app_config_version: APP_CONFIG.CONTENT_DEFAULT_VERSIONS.app_config,
-        azkar_version: APP_CONFIG.CONTENT_DEFAULT_VERSIONS.azkar,
-        duas_version: APP_CONFIG.CONTENT_DEFAULT_VERSIONS.duas,
-        stories_version: APP_CONFIG.CONTENT_DEFAULT_VERSIONS.stories,
-        daily_content_version: APP_CONFIG.CONTENT_DEFAULT_VERSIONS.daily_content
-    };
+    return getPublicContentVersionSnapshot();
 }

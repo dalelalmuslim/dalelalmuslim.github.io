@@ -39,3 +39,9 @@
 - إضافة telemetry واضحة لترحيل التخزين من المفتاح القديم إلى المفتاح الجديد.
 - توسيع support bundle ليشمل حالة content foundation وتفاصيل migration.
 - إضافة scaffold أولي لـ Cloudflare Pages Functions بدون ربط runtime الحالي بعد.
+
+## Phase 1 closeout additions
+- تم اعتماد `dist/` كـ deployable package boundary واضح
+- تم اعتماد `dalil-almuslim-dist.zip` كـ artifact رسمي للنشر اليدوي
+- تم توثيق Cloudflare Direct Upload كخط نشر حي مؤقت
+- تم فصل live target الحالي عن Git-integrated build target غير المستقر
