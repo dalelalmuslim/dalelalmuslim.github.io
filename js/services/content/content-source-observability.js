@@ -319,16 +319,27 @@ export function recordSectionSourceStatus(sectionId, patch = {}) {
     return resolveNextState((draft) => {
         const currentIndex = draft.sections.findIndex((entry) => entry.sectionId === sectionId);
         const current = currentIndex >= 0 ? draft.sections[currentIndex] : createSectionState(definition);
-        const source = typeof patch.source === 'string' && patch.source.trim() ? patch.source.trim() : current.source;
+        const requestedSource = typeof patch.source === 'string' && patch.source.trim()
+            ? patch.source.trim()
+            : current.source;
+        const nextVersion = typeof patch.version === 'string' ? patch.version : current.version;
+        const shouldPreserveRemoteCache = requestedSource === 'cache-reused'
+            && current.source === 'remote-cached'
+            && current.origin === 'remote'
+            && current.version === nextVersion;
+
+        const source = shouldPreserveRemoteCache ? current.source : requestedSource;
         const sourceMeta = normalizeSourceMeta(source);
-        const origin = patch.origin ? normalizeOrigin(patch.origin) : current.origin;
+        const origin = shouldPreserveRemoteCache
+            ? current.origin
+            : (patch.origin ? normalizeOrigin(patch.origin) : current.origin);
         const stale = typeof patch.stale === 'boolean' ? patch.stale : current.stale;
         const staleReason = typeof patch.staleReason === 'string' ? patch.staleReason : current.staleReason;
         const staleReasonLabel = resolveStaleReasonLabel(staleReason);
 
         const next = {
             ...current,
-            version: typeof patch.version === 'string' ? patch.version : current.version,
+            version: nextVersion,
             pending: typeof patch.pending === 'boolean' ? patch.pending : current.pending,
             source,
             sourceLabel: patch.sourceLabel || sourceMeta.label,
@@ -339,7 +350,9 @@ export function recordSectionSourceStatus(sectionId, patch = {}) {
             message: typeof patch.message === 'string' ? patch.message : current.message,
             error: typeof patch.error === 'string' ? patch.error : current.error,
             updatedAt: patch.updatedAt || new Date().toISOString(),
-            usedRemote: typeof patch.usedRemote === 'boolean' ? patch.usedRemote : current.usedRemote,
+            usedRemote: shouldPreserveRemoteCache
+                ? true
+                : (typeof patch.usedRemote === 'boolean' ? patch.usedRemote : current.usedRemote),
             remoteVersionSource: patch.remoteVersionSource || current.remoteVersionSource,
             remoteVersionError: patch.remoteVersionError || current.remoteVersionError,
             endpoint: definition.endpoint,

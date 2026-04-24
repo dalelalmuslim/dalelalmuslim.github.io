@@ -117,15 +117,16 @@ async function main() {
   contentClient.getDuasCatalog();
   const afterRead = contentClient.getPublicContentSourceSnapshot();
   const duasAfterRead = afterRead.sections.find((entry) => entry.sectionId === 'duas');
-  assert.equal(duasAfterRead?.source, 'cache-reused', 'sync reads should update source to cache-reused');
-  assert.equal(duasAfterRead?.origin, 'cache', 'sync reads should expose cache origin');
+  assert.equal(duasAfterRead?.source, 'remote-cached', 'sync reads should preserve remote-cached source for the same version');
+  assert.equal(duasAfterRead?.origin, 'remote', 'sync reads should preserve remote origin for the same version');
+  assert.equal(duasAfterRead?.usedRemote, true, 'sync reads should preserve usedRemote=true for remote-backed cache');
 
   console.log(JSON.stringify({
     ok: true,
     checked: [
       'remote versions observability',
       'per-section source tracking',
-      'cache reuse source updates'
+      'remote-backed cache preservation'
     ]
   }, null, 2));
 }
