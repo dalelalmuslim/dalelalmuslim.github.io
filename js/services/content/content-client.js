@@ -410,10 +410,13 @@ function getSectionLocalLoader(sectionId) {
  * @param {() => T | Promise<T>} loader
  * @returns {Promise<ContentFoundationRuntimeResult>}
  */
-async function prepareSectionFoundation(sectionId, targetVersion, validator, loader) {
+async function prepareSectionFoundation(sectionId, targetVersion, validator, loader, options = {}) {
     const definition = getContentSectionDefinition(sectionId);
     const storedVersion = sectionVersions.getStoredSectionVersion(sectionId);
-    const cachedTargetPayload = readFreshCachedPayload(sectionId, targetVersion, validator);
+    const forcePayloadRefresh = Boolean(options.forcePayloadRefresh);
+    const cachedTargetPayload = forcePayloadRefresh
+        ? null
+        : readFreshCachedPayload(sectionId, targetVersion, validator);
 
     if (cachedTargetPayload) {
         rememberSectionVersion(sectionId, targetVersion);
@@ -732,7 +735,12 @@ function scheduleFoundationWarmup() {
         foundationWarmupScheduled = false;
 
         try {
-            await primePublicContentFoundation({ forceRemoteSync: true, eager: true, silent: true });
+            await primePublicContentFoundation({
+                forceRemoteSync: true,
+                forcePayloadRefresh: true,
+                eager: true,
+                silent: true
+            });
             appLogger.info('[ContentClient] Background content refresh completed', {
                 versions: getPublicContentVersions()
             });
@@ -771,7 +779,9 @@ export async function primePublicContentFoundation(options = {}) {
             return prepareFastFoundationSection(section.id, validator, loader);
         }
 
-        return prepareSectionFoundation(section.id, targetVersion, validator, loader);
+        return prepareSectionFoundation(section.id, targetVersion, validator, loader, {
+            forcePayloadRefresh: Boolean(options.forcePayloadRefresh)
+        });
     }));
 
     const failures = sections.filter((entry) => entry.status === 'failed');
@@ -820,6 +830,7 @@ export async function refreshPublicContentFoundation(options = {}) {
     try {
         const summary = await primePublicContentFoundation({
             forceRemoteSync: true,
+            forcePayloadRefresh: true,
             eager: true,
             silent: true,
             ...options
