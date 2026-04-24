@@ -9,6 +9,7 @@ import { onRequest as onDuasRequest } from '../functions/api/public/content/duas
 import { onRequest as onStoriesRequest } from '../functions/api/public/content/stories.js';
 import { onRequest as onDailyContentRequest } from '../functions/api/public/content/daily-content.js';
 import { onRequest as onApiNotFoundRequest } from '../functions/api/[[path]].js';
+import { onRequest as onAdminWhoamiRequest } from '../functions/api/admin/whoami.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,9 +22,13 @@ function assert(condition, message) {
     }
 }
 
-function createContext(pathname, method = 'GET') {
+function createContext(pathname, method = 'GET', init = {}) {
     return {
-        request: new Request(`https://dalil-almuslim.test${pathname}`, { method })
+        request: new Request(`https://dalil-almuslim.test${pathname}`, {
+            method,
+            headers: init.headers || {}
+        }),
+        env: init.env || {}
     };
 }
 
@@ -71,6 +76,20 @@ async function main() {
         const versionsPostResponse = await onVersionsRequest(createContext('/api/public/versions', 'POST'));
         assert(versionsPostResponse.status === 405, 'versions POST should return HTTP 405');
 
+
+        const adminWhoamiMissingTokenResponse = await onAdminWhoamiRequest(createContext('/api/admin/whoami', 'GET', {
+            env: { ADMIN_EMAIL_ALLOWLIST: 'admin@example.com' }
+        }));
+        const adminWhoamiMissingTokenJson = await readJsonResponse(adminWhoamiMissingTokenResponse);
+        assert(adminWhoamiMissingTokenResponse.status === 401, 'admin whoami without token should return HTTP 401');
+        assert(adminWhoamiMissingTokenJson?.ok === false, 'admin whoami without token should return ok=false');
+        assert(adminWhoamiMissingTokenJson?.error?.code === 'AUTH_REQUIRED', 'admin whoami without token should return AUTH_REQUIRED');
+
+        const adminWhoamiPostResponse = await onAdminWhoamiRequest(createContext('/api/admin/whoami', 'POST', {
+            env: { ADMIN_EMAIL_ALLOWLIST: 'admin@example.com' }
+        }));
+        assert(adminWhoamiPostResponse.status === 405, 'admin whoami POST should return HTTP 405');
+
         const unknownApiResponse = await onApiNotFoundRequest(createContext('/api/internal/seed-public-content'));
         const unknownApiJson = await readJsonResponse(unknownApiResponse);
         assert(unknownApiResponse.status === 404, 'unknown API endpoints should return HTTP 404');
@@ -113,6 +132,7 @@ async function main() {
                 '/api/public/content/duas',
                 '/api/public/content/stories',
                 '/api/public/content/daily-content',
+                '/api/admin/whoami auth guard',
                 '/api/* 404 catch-all'
             ]
         }, null, 2));
