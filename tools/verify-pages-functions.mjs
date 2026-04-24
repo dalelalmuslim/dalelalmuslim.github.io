@@ -78,7 +78,7 @@ async function main() {
 
 
         const adminWhoamiMissingTokenResponse = await onAdminWhoamiRequest(createContext('/api/admin/whoami', 'GET', {
-            env: { ADMIN_EMAIL_ALLOWLIST: 'admin@example.com' }
+            env: { ADMIN_EMAIL_ALLOWLIST: 'admin@example.com', CF_ACCESS_ISSUER: 'https://dalil-team.cloudflareaccess.com', CF_ACCESS_AUD: 'access-audience-tag' }
         }));
         const adminWhoamiMissingTokenJson = await readJsonResponse(adminWhoamiMissingTokenResponse);
         assert(adminWhoamiMissingTokenResponse.status === 401, 'admin whoami without token should return HTTP 401');
@@ -86,7 +86,7 @@ async function main() {
         assert(adminWhoamiMissingTokenJson?.error?.code === 'AUTH_REQUIRED', 'admin whoami without token should return AUTH_REQUIRED');
 
         const adminWhoamiPostResponse = await onAdminWhoamiRequest(createContext('/api/admin/whoami', 'POST', {
-            env: { ADMIN_EMAIL_ALLOWLIST: 'admin@example.com' }
+            env: { ADMIN_EMAIL_ALLOWLIST: 'admin@example.com', CF_ACCESS_ISSUER: 'https://dalil-team.cloudflareaccess.com', CF_ACCESS_AUD: 'access-audience-tag' }
         }));
         assert(adminWhoamiPostResponse.status === 405, 'admin whoami POST should return HTTP 405');
 

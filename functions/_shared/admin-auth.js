@@ -1,7 +1,3 @@
-const DEFAULT_FIREBASE_PROJECT_ID = 'azkar-app-2bd85';
-const FIREBASE_SECURE_TOKEN_JWKS_URL =
-    'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com';
-
 const AUTH_ERROR_MESSAGES = Object.freeze({
     AUTH_REQUIRED: 'Admin authentication is required.',
     AUTH_INVALID: 'Admin authentication token is invalid.',
@@ -44,10 +40,33 @@ function base64UrlDecodeJson(value) {
     return JSON.parse(new TextDecoder().decode(bytes));
 }
 
-function parseBearerToken(request) {
+function parseCookieToken(request) {
+    const cookieHeader = request?.headers?.get('cookie') || '';
+    const cookies = cookieHeader.split(';').map((part) => part.trim());
+
+    for (const cookie of cookies) {
+        const [name, ...valueParts] = cookie.split('=');
+        if (name === 'CF_Authorization') {
+            return decodeURIComponent(valueParts.join('=') || '').trim();
+        }
+    }
+
+    return '';
+}
+
+function parseAccessToken(request) {
+    const headerToken = request?.headers?.get('cf-access-jwt-assertion') || '';
+    if (headerToken.trim()) {
+        return headerToken.trim();
+    }
+
     const authorization = request?.headers?.get('authorization') || '';
-    const match = authorization.match(/^Bearer\s+(.+)$/i);
-    return match ? match[1].trim() : '';
+    const bearerMatch = authorization.match(/^Bearer\s+(.+)$/i);
+    if (bearerMatch?.[1]?.trim()) {
+        return bearerMatch[1].trim();
+    }
+
+    return parseCookieToken(request);
 }
 
 function parseAllowlist(env) {
@@ -63,16 +82,43 @@ function parseAllowlist(env) {
         .filter(Boolean);
 }
 
-function resolveFirebaseProjectId(env) {
-    return String(env?.FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_PROJECT_ID).trim();
+function normalizeIssuer(value) {
+    const raw = String(value || '').trim().replace(/\/+$/g, '');
+
+    if (!raw) {
+        return '';
+    }
+
+    if (raw.startsWith('https://')) {
+        return raw;
+    }
+
+    return `https://${raw}`;
+}
+
+function resolveAccessIssuer(env) {
+    const explicitIssuer = normalizeIssuer(env?.CF_ACCESS_ISSUER);
+    if (explicitIssuer) {
+        return explicitIssuer;
+    }
+
+    return normalizeIssuer(env?.CF_ACCESS_TEAM_DOMAIN);
+}
+
+function resolveAccessAudiences(env) {
+    return String(env?.CF_ACCESS_AUD || '')
+        .split(/[\s,;]+/g)
+        .map((audience) => audience.trim())
+        .filter(Boolean);
 }
 
 function resolveJwksUrl(env, options = {}) {
-    return String(
-        options.jwksUrl ||
-        env?.FIREBASE_SECURE_TOKEN_JWKS_URL ||
-        FIREBASE_SECURE_TOKEN_JWKS_URL
-    ).trim();
+    if (options.jwksUrl) {
+        return String(options.jwksUrl).trim();
+    }
+
+    const issuer = resolveAccessIssuer(env);
+    return issuer ? `${issuer}/cdn-cgi/access/certs` : '';
 }
 
 function parseCacheMaxAge(headers) {
@@ -87,28 +133,33 @@ function parseCacheMaxAge(headers) {
     return Math.min(maxAgeSeconds, 3600);
 }
 
-async function fetchFirebaseJwks(env, options = {}) {
+async function fetchAccessJwks(env, options = {}) {
     const nowMs = Number(options.nowMs || Date.now());
 
     if (cachedJwks && cachedJwks.expiresAt > nowMs && Array.isArray(cachedJwks.keys)) {
         return cachedJwks.keys;
     }
 
+    const jwksUrl = resolveJwksUrl(env, options);
+    if (!jwksUrl) {
+        throw new Error('Cloudflare Access JWKS URL is not configured.');
+    }
+
     const fetchImpl = options.fetchImpl || fetch;
-    const response = await fetchImpl(resolveJwksUrl(env, options), {
+    const response = await fetchImpl(jwksUrl, {
         method: 'GET',
         headers: { accept: 'application/json' }
     });
 
     if (!response?.ok) {
-        throw new Error(`Unable to load Firebase JWKS: HTTP ${response?.status || 0}`);
+        throw new Error(`Unable to load Cloudflare Access JWKS: HTTP ${response?.status || 0}`);
     }
 
     const payload = await response.json();
     const keys = Array.isArray(payload?.keys) ? payload.keys : [];
 
     if (!keys.length) {
-        throw new Error('Firebase JWKS response did not include keys.');
+        throw new Error('Cloudflare Access JWKS response did not include keys.');
     }
 
     cachedJwks = {
@@ -127,11 +178,11 @@ async function verifyJwtSignature(token, header, env, options = {}) {
     const [encodedHeader, encodedPayload, encodedSignature] = token.split('.');
     const signingInput = new TextEncoder().encode(`${encodedHeader}.${encodedPayload}`);
     const signature = base64UrlDecodeToBytes(encodedSignature);
-    const keys = await fetchFirebaseJwks(env, options);
+    const keys = await fetchAccessJwks(env, options);
     const jwk = keys.find((candidate) => candidate?.kid === header.kid);
 
     if (!jwk) {
-        throw new Error('No matching Firebase public key was found.');
+        throw new Error('No matching Cloudflare Access public key was found.');
     }
 
     const publicKey = await crypto.subtle.importKey(
@@ -157,59 +208,69 @@ async function verifyJwtSignature(token, header, env, options = {}) {
     }
 }
 
-function validateFirebaseClaims(claims, env, options = {}) {
-    const projectId = resolveFirebaseProjectId(env);
+function tokenHasExpectedAudience(claimAudience, expectedAudiences) {
+    const actualAudiences = Array.isArray(claimAudience)
+        ? claimAudience.map(String)
+        : [String(claimAudience || '')];
+
+    return expectedAudiences.some((expectedAudience) => actualAudiences.includes(expectedAudience));
+}
+
+function validateAccessClaims(claims, env, options = {}) {
+    const expectedIssuer = resolveAccessIssuer(env);
+    const expectedAudiences = resolveAccessAudiences(env);
     const nowSeconds = Math.floor(Number(options.nowMs || Date.now()) / 1000);
     const leewaySeconds = Number(options.leewaySeconds || 60);
-    const expectedIssuer = `https://securetoken.google.com/${projectId}`;
     const email = typeof claims?.email === 'string' ? claims.email.trim().toLowerCase() : '';
     const subject = typeof claims?.sub === 'string' ? claims.sub.trim() : '';
 
+    if (!expectedIssuer || !expectedAudiences.length) {
+        throw new Error('Cloudflare Access issuer/audience is not configured.');
+    }
+
     if (claims?.iss !== expectedIssuer) {
-        throw new Error('Invalid token issuer.');
+        throw new Error('Invalid Cloudflare Access token issuer.');
     }
 
-    if (claims?.aud !== projectId) {
-        throw new Error('Invalid token audience.');
+    if (!tokenHasExpectedAudience(claims?.aud, expectedAudiences)) {
+        throw new Error('Invalid Cloudflare Access token audience.');
     }
 
-    if (!subject || subject.length > 128) {
-        throw new Error('Invalid token subject.');
+    if (!subject) {
+        throw new Error('Invalid Cloudflare Access token subject.');
     }
 
     if (!Number.isFinite(Number(claims?.exp)) || Number(claims.exp) <= nowSeconds - leewaySeconds) {
-        throw new Error('Token has expired.');
+        throw new Error('Cloudflare Access token has expired.');
     }
 
     if (!Number.isFinite(Number(claims?.iat)) || Number(claims.iat) > nowSeconds + leewaySeconds) {
-        throw new Error('Token issued-at timestamp is invalid.');
+        throw new Error('Cloudflare Access token issued-at timestamp is invalid.');
     }
 
     if (!email) {
-        throw new Error('Token does not include an email.');
-    }
-
-    if (env?.ADMIN_REQUIRE_VERIFIED_EMAIL !== 'false' && claims?.email_verified !== true) {
-        throw new Error('Admin email must be verified.');
+        throw new Error('Cloudflare Access token does not include an email.');
     }
 
     return {
         uid: subject,
         email,
-        emailVerified: claims.email_verified === true,
+        provider: 'cloudflare-access',
         name: typeof claims?.name === 'string' ? claims.name : '',
-        picture: typeof claims?.picture === 'string' ? claims.picture : '',
-        provider: claims?.firebase?.sign_in_provider || ''
+        identityNonce: typeof claims?.identity_nonce === 'string' ? claims.identity_nonce : ''
     };
 }
 
 export async function authenticateAdminRequest(request, env, options = {}) {
     const allowlist = parseAllowlist(env);
-    if (!allowlist.length) {
+    const issuer = resolveAccessIssuer(env);
+    const audiences = resolveAccessAudiences(env);
+
+    if (!allowlist.length || !issuer || !audiences.length) {
         return createAuthFailure('AUTH_CONFIG_MISSING', 500);
     }
 
-    const token = parseBearerToken(request);
+    const token = parseAccessToken(request);
     if (!token) {
         return createAuthFailure('AUTH_REQUIRED', 401);
     }
@@ -224,7 +285,7 @@ export async function authenticateAdminRequest(request, env, options = {}) {
         const claims = base64UrlDecodeJson(parts[1]);
 
         await verifyJwtSignature(token, header, env, options);
-        const admin = validateFirebaseClaims(claims, env, options);
+        const admin = validateAccessClaims(claims, env, options);
 
         if (!allowlist.includes(admin.email)) {
             return createAuthFailure('ADMIN_FORBIDDEN', 403);
@@ -238,7 +299,7 @@ export async function authenticateAdminRequest(request, env, options = {}) {
         return createAuthFailure(
             'AUTH_INVALID',
             401,
-            error instanceof Error ? error.message : 'Invalid admin token.'
+            error instanceof Error ? error.message : 'Invalid Cloudflare Access token.'
         );
     }
 }
