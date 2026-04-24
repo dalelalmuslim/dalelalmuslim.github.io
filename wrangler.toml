@@ -2,9 +2,7 @@ name = "dalil-almuslim"
 compatibility_date = "2026-04-16"
 pages_build_output_dir = "."
 
-# D1 binding example for Pages Functions:
-# [[d1_databases]]
-# binding = "PUBLIC_CONTENT_DB"
-# database_name = "dalil-almuslim-content"
-# database_id = "<production-database-id>"
-# preview_database_id = "<preview-database-id>"
+[[d1_databases]]
+binding = "PUBLIC_CONTENT_DB"
+database_name = "dalil-almuslim-content-prod"
+database_id = "5c006421-d687-4333-9570-fe9b19b06507"
