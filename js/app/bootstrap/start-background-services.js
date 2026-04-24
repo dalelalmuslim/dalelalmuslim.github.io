@@ -31,6 +31,10 @@ export function startBackgroundServices(appApi) {
         appApi.safeInit('notifications.init', () => notifications?.init?.());
 
         scheduleIdleTask(() => {
+            appApi.safeInit('content.foundation.warm', () => appApi.syncContentFoundation?.());
+        }, { timeout: 1200, delay: 100 });
+
+        scheduleIdleTask(() => {
             appApi.safeInit('catalog.warm', () => warmCatalogContentLoader());
         }, { timeout: 1500, delay: 200 });
 
