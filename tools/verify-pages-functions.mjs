@@ -8,6 +8,7 @@ import { onRequest as onAzkarRequest } from '../functions/api/public/content/azk
 import { onRequest as onDuasRequest } from '../functions/api/public/content/duas.js';
 import { onRequest as onStoriesRequest } from '../functions/api/public/content/stories.js';
 import { onRequest as onDailyContentRequest } from '../functions/api/public/content/daily-content.js';
+import { onRequest as onApiNotFoundRequest } from '../functions/api/[[path]].js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -70,6 +71,12 @@ async function main() {
         const versionsPostResponse = await onVersionsRequest(createContext('/api/public/versions', 'POST'));
         assert(versionsPostResponse.status === 405, 'versions POST should return HTTP 405');
 
+        const unknownApiResponse = await onApiNotFoundRequest(createContext('/api/internal/seed-public-content'));
+        const unknownApiJson = await readJsonResponse(unknownApiResponse);
+        assert(unknownApiResponse.status === 404, 'unknown API endpoints should return HTTP 404');
+        assert(unknownApiJson?.ok === false, 'unknown API endpoints should return ok=false');
+        assert(unknownApiJson?.error?.code === 'NOT_FOUND', 'unknown API endpoints should return NOT_FOUND code');
+
         const appConfigResponse = await onAppConfigRequest(createContext('/api/public/content/app-config'));
         const appConfigJson = await readJsonResponse(appConfigResponse);
         assert(appConfigResponse.status === 200, 'app-config endpoint should return HTTP 200');
@@ -105,7 +112,8 @@ async function main() {
                 '/api/public/content/azkar',
                 '/api/public/content/duas',
                 '/api/public/content/stories',
-                '/api/public/content/daily-content'
+                '/api/public/content/daily-content',
+                '/api/* 404 catch-all'
             ]
         }, null, 2));
     } finally {
