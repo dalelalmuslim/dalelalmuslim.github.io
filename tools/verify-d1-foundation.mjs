@@ -73,6 +73,7 @@ class FakeD1Database {
 
 async function main() {
     assert(exists('d1/migrations/0001_public_content_schema.sql'), 'D1 schema migration must exist');
+    assert(exists('d1/migrations/0002_admin_audit_log.sql'), 'D1 admin audit migration must exist');
     assert(exists('d1/seed/public-content.seed.json'), 'D1 seed JSON must exist');
     assert(exists('d1/seed/0001_public_content_seed.sql'), 'D1 seed SQL must exist');
     assert(exists('functions/_shared/public-content-d1.js'), 'D1 repository helper must exist');
@@ -123,6 +124,7 @@ async function main() {
         ok: true,
         checkedFiles: [
             'd1/migrations/0001_public_content_schema.sql',
+            'd1/migrations/0002_admin_audit_log.sql',
             'd1/seed/public-content.seed.json',
             'd1/seed/0001_public_content_seed.sql'
         ],
