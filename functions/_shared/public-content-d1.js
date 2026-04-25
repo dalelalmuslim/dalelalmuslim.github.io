@@ -114,3 +114,147 @@ export const PUBLIC_CONTENT_D1_QUERIES = Object.freeze({
     SELECT_PUBLISHED_ROWS_SQL,
     SELECT_PUBLISHED_SECTION_SQL
 });
+
+const INSERT_CONTENT_DOCUMENT_SQL = `
+    INSERT INTO public_content_documents (
+        section_id,
+        version,
+        payload_json,
+        payload_hash,
+        schema_version,
+        source_kind,
+        created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+`;
+
+const UPSERT_CONTENT_PUBLICATION_SQL = `
+    INSERT INTO public_content_publications (
+        section_id,
+        version,
+        published_at,
+        published_by,
+        notes
+    )
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(section_id) DO UPDATE SET
+        version = excluded.version,
+        published_at = excluded.published_at,
+        published_by = excluded.published_by,
+        notes = excluded.notes
+`;
+
+const INSERT_ADMIN_AUDIT_LOG_SQL = `
+    INSERT INTO admin_audit_log (
+        id,
+        action,
+        section_id,
+        version,
+        actor_email,
+        actor_provider,
+        metadata_json,
+        created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`;
+
+function createStableJson(value) {
+    return JSON.stringify(value);
+}
+
+async function hashPayloadJson(payloadJson) {
+    const bytes = new TextEncoder().encode(payloadJson);
+    const digest = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(digest)]
+        .map((byte) => byte.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+function createAuditId(sectionId, version) {
+    const randomPart = typeof crypto?.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    return `audit_${sectionId}_${version}_${randomPart}`.replace(/[^a-zA-Z0-9_.:-]/g, '_');
+}
+
+export async function writeAndPublishPublicContentDocument(db, input) {
+    const section = getPublicContentSectionById(input?.sectionId);
+    if (!section) {
+        throw new Error('Unknown public content section.');
+    }
+
+    const version = String(input?.version || '').trim();
+    if (!version) {
+        throw new Error('Content version is required.');
+    }
+
+    const actorEmail = String(input?.actor?.email || '').trim().toLowerCase();
+    if (!actorEmail) {
+        throw new Error('Admin actor email is required.');
+    }
+
+    const now = new Date().toISOString();
+    const payloadJson = typeof input.payloadJson === 'string'
+        ? input.payloadJson
+        : createStableJson(input.payload);
+
+    JSON.parse(payloadJson);
+
+    const payloadHash = String(input.payloadHash || await hashPayloadJson(payloadJson));
+    const schemaVersion = String(input.schemaVersion || 'public-content-v1');
+    const sourceKind = String(input.sourceKind || 'admin-publish');
+    const notes = String(input.notes || '');
+    const metadataJson = createStableJson({
+        notes,
+        payloadHash,
+        schemaVersion,
+        sourceKind,
+        ...(input.metadata && typeof input.metadata === 'object' ? input.metadata : {})
+    });
+
+    await db.batch([
+        db.prepare(INSERT_CONTENT_DOCUMENT_SQL).bind(
+            section.id,
+            version,
+            payloadJson,
+            payloadHash,
+            schemaVersion,
+            sourceKind,
+            now
+        ),
+        db.prepare(UPSERT_CONTENT_PUBLICATION_SQL).bind(
+            section.id,
+            version,
+            now,
+            actorEmail,
+            notes
+        ),
+        db.prepare(INSERT_ADMIN_AUDIT_LOG_SQL).bind(
+            createAuditId(section.id, version),
+            'public_content.publish',
+            section.id,
+            version,
+            actorEmail,
+            String(input?.actor?.provider || 'cloudflare-access'),
+            metadataJson,
+            now
+        )
+    ]);
+
+    return {
+        sectionId: section.id,
+        version,
+        payloadHash,
+        schemaVersion,
+        sourceKind,
+        publishedAt: now,
+        publishedBy: actorEmail
+    };
+}
+
+export const PUBLIC_CONTENT_D1_WRITE_QUERIES = Object.freeze({
+    INSERT_CONTENT_DOCUMENT_SQL,
+    UPSERT_CONTENT_PUBLICATION_SQL,
+    INSERT_ADMIN_AUDIT_LOG_SQL
+});
