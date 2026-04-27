@@ -19,6 +19,7 @@ Auth environment, choose one:
   CF_ACCESS_JWT_ASSERTION=<jwt>
   CF_AUTHORIZATION_COOKIE=<CF_Authorization cookie value>
   ADMIN_AUTHORIZATION_BEARER=<bearer token>
+  CF_ACCESS_CLIENT_ID=<service token client id> CF_ACCESS_CLIENT_SECRET=<service token client secret>
 `);
 }
 
@@ -138,11 +139,27 @@ export function buildAccessHeaders(env = process.env) {
     headers.authorization = `Bearer ${bearer}`;
   }
 
+  const serviceClientId = pickString(env.CF_ACCESS_CLIENT_ID);
+  const serviceClientSecret = pickString(env.CF_ACCESS_CLIENT_SECRET);
+  if (serviceClientId || serviceClientSecret) {
+    if (!serviceClientId || !serviceClientSecret) {
+      throw new Error('Both CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET are required for Cloudflare Access service token auth.');
+    }
+
+    headers['cf-access-client-id'] = serviceClientId;
+    headers['cf-access-client-secret'] = serviceClientSecret;
+  }
+
   return headers;
 }
 
 export function hasAccessAuth(headers) {
-  return Boolean(headers['cf-access-jwt-assertion'] || headers.cookie || headers.authorization);
+  return Boolean(
+    headers['cf-access-jwt-assertion']
+    || headers.cookie
+    || headers.authorization
+    || (headers['cf-access-client-id'] && headers['cf-access-client-secret'])
+  );
 }
 
 function parsePayloadDocument(rawContent, filePath) {
@@ -281,7 +298,7 @@ export async function runControlledPublicContentPublish(argv = process.argv.slic
   const headers = buildAccessHeaders(env);
 
   if (!hasAccessAuth(headers)) {
-    throw new Error('Cloudflare Access auth is required. Set CF_ACCESS_JWT_ASSERTION, CF_AUTHORIZATION_COOKIE, or ADMIN_AUTHORIZATION_BEARER.');
+    throw new Error('Cloudflare Access auth is required. Set CF_ACCESS_JWT_ASSERTION, CF_AUTHORIZATION_COOKIE, ADMIN_AUTHORIZATION_BEARER, or CF_ACCESS_CLIENT_ID/CF_ACCESS_CLIENT_SECRET.');
   }
 
   const client = createAdminPublicContentClient({
