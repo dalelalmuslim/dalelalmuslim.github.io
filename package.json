@@ -13,7 +13,7 @@
     "typecheck": "node tools/run-typecheck.mjs",
     "verify:pages-functions": "node tools/verify-pages-functions.mjs",
     "verify:content-client": "node tools/verify-content-client-remote.mjs",
-    "check": "npm run build:shell:check && npm run verify:architecture && npm run typecheck && npm run verify:pages-functions && npm run verify:content-client && npm run verify:content-observability && npm run verify:content-refresh && npm run verify:d1-foundation && npm run verify:admin-auth && npm run verify:d1-write-helper && npm run verify:admin-public-content-publish && npm run verify:admin-public-content-preview",
+    "check": "npm run build:shell:check && npm run verify:architecture && npm run typecheck && npm run verify:pages-functions && npm run verify:content-client && npm run verify:content-observability && npm run verify:content-refresh && npm run verify:d1-foundation && npm run verify:admin-auth && npm run verify:d1-write-helper && npm run verify:admin-public-content-publish && npm run verify:admin-public-content-preview && npm run verify:admin-public-content-tool",
     "verify:repo-readiness": "node tools/verify-repo-readiness.mjs",
     "ready:local": "npm run check && npm run verify:repo-readiness",
     "verify:content-observability": "node tools/verify-content-observability.mjs",
@@ -23,7 +23,9 @@
     "verify:admin-auth": "node tools/verify-admin-auth.mjs",
     "verify:d1-write-helper": "node tools/verify-d1-write-helper.mjs",
     "verify:admin-public-content-publish": "node tools/verify-admin-public-content-publish.mjs",
-    "verify:admin-public-content-preview": "node tools/verify-admin-public-content-preview.mjs"
+    "verify:admin-public-content-preview": "node tools/verify-admin-public-content-preview.mjs",
+    "verify:admin-public-content-tool": "node tools/verify-admin-public-content-tool.mjs",
+    "admin:public-content": "node tools/admin-public-content-publish.mjs"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
