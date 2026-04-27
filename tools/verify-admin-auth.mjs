@@ -4,6 +4,7 @@ import { authenticateAdminRequest, resetAdminAuthJwksCache } from '../functions/
 const ACCESS_ISSUER = 'https://dalil-team.cloudflareaccess.com';
 const ACCESS_AUD = 'access-audience-tag';
 const ADMIN_EMAIL = 'admin@example.com';
+const SERVICE_TOKEN_ID = 'dalil-admin-cli.access';
 const NOW_MS = Date.parse('2026-04-24T12:00:00.000Z');
 
 function base64UrlEncodeBytes(bytes) {
@@ -81,6 +82,10 @@ function createRequest(token = '', mode = 'header') {
     headers['cf-access-jwt-assertion'] = token;
   }
 
+  if (token && mode === 'raw-header') {
+    headers['cf-access-token'] = token;
+  }
+
   if (token && mode === 'bearer') {
     headers.authorization = `Bearer ${token}`;
   }
@@ -97,6 +102,7 @@ function createEnv(overrides = {}) {
     CF_ACCESS_ISSUER: ACCESS_ISSUER,
     CF_ACCESS_AUD: ACCESS_AUD,
     ADMIN_EMAIL_ALLOWLIST: ADMIN_EMAIL,
+    ADMIN_SERVICE_TOKEN_ALLOWLIST: SERVICE_TOKEN_ID,
     ...overrides
   };
 }
@@ -153,6 +159,43 @@ async function main() {
   assert.equal(missingToken.ok, false, 'missing token should fail');
   assert.equal(missingToken.error.code, 'AUTH_REQUIRED', 'missing token should return AUTH_REQUIRED');
 
+  const serviceToken = await signAccessToken(privateKey, {
+    sub: 'service-token-subject',
+    email: undefined,
+    name: undefined,
+    identity_nonce: undefined,
+    common_name: SERVICE_TOKEN_ID,
+    service_token_status: true
+  });
+  const serviceTokenResult = await authenticateAdminRequest(
+    createRequest(serviceToken, 'raw-header'),
+    createEnv(),
+    { fetchImpl, nowMs: NOW_MS }
+  );
+
+  assert.equal(serviceTokenResult.ok, true, 'allowlisted service token should authenticate');
+  assert.equal(serviceTokenResult.admin.email, `service-token:${SERVICE_TOKEN_ID}`, 'service token admin email should be synthetic');
+  assert.equal(serviceTokenResult.admin.provider, 'cloudflare-access-service-token', 'service token provider should be explicit');
+  assert.equal(serviceTokenResult.admin.serviceTokenId, SERVICE_TOKEN_ID, 'service token id should be preserved');
+
+  const forbiddenServiceToken = await signAccessToken(privateKey, {
+    sub: 'service-token-subject',
+    email: undefined,
+    name: undefined,
+    identity_nonce: undefined,
+    common_name: 'other-service-token.access',
+    service_token_status: true
+  });
+  const forbiddenServiceTokenResult = await authenticateAdminRequest(
+    createRequest(forbiddenServiceToken, 'raw-header'),
+    createEnv(),
+    { fetchImpl, nowMs: NOW_MS }
+  );
+
+  assert.equal(forbiddenServiceTokenResult.ok, false, 'non-allowlisted service token should fail');
+  assert.equal(forbiddenServiceTokenResult.status, 403, 'non-allowlisted service token should be forbidden');
+  assert.equal(forbiddenServiceTokenResult.error.code, 'ADMIN_FORBIDDEN', 'non-allowlisted service token should return ADMIN_FORBIDDEN');
+
   const forbiddenToken = await signAccessToken(privateKey, { email: 'other@example.com' });
   const forbiddenResult = await authenticateAdminRequest(
     createRequest(forbiddenToken),
@@ -186,7 +229,7 @@ async function main() {
 
   const missingConfigResult = await authenticateAdminRequest(
     createRequest(validToken),
-    createEnv({ CF_ACCESS_AUD: '' }),
+    createEnv({ CF_ACCESS_AUD: '', ADMIN_SERVICE_TOKEN_ALLOWLIST: '' }),
     { fetchImpl, nowMs: NOW_MS }
   );
 
@@ -200,7 +243,9 @@ async function main() {
       'cloudflare access jwt signature verification',
       'cf-access-jwt-assertion header',
       'CF_Authorization cookie fallback',
+      'Cloudflare Access service token auth',
       'admin email allowlist',
+      'admin service token allowlist',
       'missing token rejection',
       'invalid issuer/audience rejection',
       'fail-closed access config'

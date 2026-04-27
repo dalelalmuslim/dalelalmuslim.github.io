@@ -42,6 +42,19 @@ async function main() {
   assert.equal(hasAccessAuth(headers), true, 'auth headers should be detected');
   assert.equal(hasAccessAuth({ 'content-type': 'application/json' }), false, 'missing auth should be detected');
 
+  const serviceTokenHeaders = buildAccessHeaders({
+    CF_ACCESS_CLIENT_ID: 'service-client-id.access',
+    CF_ACCESS_CLIENT_SECRET: 'service-client-secret'
+  });
+  assert.equal(serviceTokenHeaders['cf-access-client-id'], 'service-client-id.access', 'service token client id header should be set');
+  assert.equal(serviceTokenHeaders['cf-access-client-secret'], 'service-client-secret', 'service token client secret header should be set');
+  assert.equal(hasAccessAuth(serviceTokenHeaders), true, 'service token auth should be detected');
+  assert.throws(
+    () => buildAccessHeaders({ CF_ACCESS_CLIENT_ID: 'service-client-id.access' }),
+    /Both CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET/,
+    'partial service token auth should fail closed'
+  );
+
   const wrapperRequest = await buildPublicContentRequest({
     filePath: 'payload.json',
     section: '',
@@ -149,7 +162,8 @@ async function main() {
     '--version', 'azkar-2026-04-27-v1',
     '--site', 'https://example.com'
   ], {
-    CF_ACCESS_JWT_ASSERTION: 'token'
+    CF_ACCESS_CLIENT_ID: 'service-client-id.access',
+    CF_ACCESS_CLIENT_SECRET: 'service-client-secret'
   }, {
     async readFile() {
       return JSON.stringify({ categories: [] });
@@ -175,6 +189,7 @@ async function main() {
   assert.equal(dryRun.published, false, 'dry-run should not publish');
   assert.equal(dryRunFetches.length, 1, 'dry-run should only call preview');
   assert.match(dryRunFetches[0].url, /\/preview$/, 'dry-run should call preview endpoint');
+  assert.equal(dryRunFetches[0].init.headers['cf-access-client-id'], 'service-client-id.access', 'dry-run should send service token client id');
 
   const publishFetches = [];
   const publishRun = await runControlledPublicContentPublish([
@@ -230,6 +245,7 @@ async function main() {
     checked: [
       'CLI argument parsing',
       'Cloudflare Access header selection',
+      'Cloudflare Access service token headers',
       'wrapper payload files',
       'direct payload files',
       'preview gate enforcement',

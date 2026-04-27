@@ -60,6 +60,11 @@ function parseAccessToken(request) {
         return headerToken.trim();
     }
 
+    const rawHeaderToken = request?.headers?.get('cf-access-token') || '';
+    if (rawHeaderToken.trim()) {
+        return rawHeaderToken.trim();
+    }
+
     const authorization = request?.headers?.get('authorization') || '';
     const bearerMatch = authorization.match(/^Bearer\s+(.+)$/i);
     if (bearerMatch?.[1]?.trim()) {
@@ -69,8 +74,8 @@ function parseAccessToken(request) {
     return parseCookieToken(request);
 }
 
-function parseAllowlist(env) {
-    const raw = String(env?.ADMIN_EMAIL_ALLOWLIST || '').trim();
+function parseList(value, normalize = (item) => item) {
+    const raw = String(value || '').trim();
 
     if (!raw) {
         return [];
@@ -78,8 +83,16 @@ function parseAllowlist(env) {
 
     return raw
         .split(/[\s,;]+/g)
-        .map((email) => email.trim().toLowerCase())
+        .map((item) => normalize(item.trim()))
         .filter(Boolean);
+}
+
+function parseEmailAllowlist(env) {
+    return parseList(env?.ADMIN_EMAIL_ALLOWLIST, (email) => email.toLowerCase());
+}
+
+function parseServiceTokenAllowlist(env) {
+    return parseList(env?.ADMIN_SERVICE_TOKEN_ALLOWLIST || env?.ADMIN_SERVICE_TOKEN_ID_ALLOWLIST);
 }
 
 function normalizeIssuer(value) {
@@ -216,13 +229,11 @@ function tokenHasExpectedAudience(claimAudience, expectedAudiences) {
     return expectedAudiences.some((expectedAudience) => actualAudiences.includes(expectedAudience));
 }
 
-function validateAccessClaims(claims, env, options = {}) {
+function validateCommonClaims(claims, env, options = {}) {
     const expectedIssuer = resolveAccessIssuer(env);
     const expectedAudiences = resolveAccessAudiences(env);
     const nowSeconds = Math.floor(Number(options.nowMs || Date.now()) / 1000);
     const leewaySeconds = Number(options.leewaySeconds || 60);
-    const email = typeof claims?.email === 'string' ? claims.email.trim().toLowerCase() : '';
-    const subject = typeof claims?.sub === 'string' ? claims.sub.trim() : '';
 
     if (!expectedIssuer || !expectedAudiences.length) {
         throw new Error('Cloudflare Access issuer/audience is not configured.');
@@ -236,16 +247,45 @@ function validateAccessClaims(claims, env, options = {}) {
         throw new Error('Invalid Cloudflare Access token audience.');
     }
 
-    if (!subject) {
-        throw new Error('Invalid Cloudflare Access token subject.');
-    }
-
     if (!Number.isFinite(Number(claims?.exp)) || Number(claims.exp) <= nowSeconds - leewaySeconds) {
         throw new Error('Cloudflare Access token has expired.');
     }
 
     if (!Number.isFinite(Number(claims?.iat)) || Number(claims.iat) > nowSeconds + leewaySeconds) {
         throw new Error('Cloudflare Access token issued-at timestamp is invalid.');
+    }
+}
+
+function resolveServiceTokenAdmin(claims) {
+    const commonName = typeof claims?.common_name === 'string' ? claims.common_name.trim() : '';
+    const serviceTokenStatus = claims?.service_token_status === true;
+    const hasIdentityEmail = typeof claims?.email === 'string' && claims.email.trim();
+
+    if (!commonName || hasIdentityEmail) {
+        return null;
+    }
+
+    if (!serviceTokenStatus && !commonName.endsWith('.access')) {
+        return null;
+    }
+
+    return {
+        uid: `service-token:${commonName}`,
+        email: `service-token:${commonName}`,
+        provider: 'cloudflare-access-service-token',
+        name: 'Cloudflare Access Service Token',
+        identityNonce: '',
+        serviceTokenId: commonName,
+        commonName
+    };
+}
+
+function resolveIdentityAdmin(claims) {
+    const email = typeof claims?.email === 'string' ? claims.email.trim().toLowerCase() : '';
+    const subject = typeof claims?.sub === 'string' ? claims.sub.trim() : '';
+
+    if (!subject) {
+        throw new Error('Invalid Cloudflare Access token subject.');
     }
 
     if (!email) {
@@ -261,12 +301,18 @@ function validateAccessClaims(claims, env, options = {}) {
     };
 }
 
+function validateAccessClaims(claims, env, options = {}) {
+    validateCommonClaims(claims, env, options);
+    return resolveServiceTokenAdmin(claims) || resolveIdentityAdmin(claims);
+}
+
 export async function authenticateAdminRequest(request, env, options = {}) {
-    const allowlist = parseAllowlist(env);
+    const emailAllowlist = parseEmailAllowlist(env);
+    const serviceTokenAllowlist = parseServiceTokenAllowlist(env);
     const issuer = resolveAccessIssuer(env);
     const audiences = resolveAccessAudiences(env);
 
-    if (!allowlist.length || !issuer || !audiences.length) {
+    if ((!emailAllowlist.length && !serviceTokenAllowlist.length) || !issuer || !audiences.length) {
         return createAuthFailure('AUTH_CONFIG_MISSING', 500);
     }
 
@@ -287,7 +333,11 @@ export async function authenticateAdminRequest(request, env, options = {}) {
         await verifyJwtSignature(token, header, env, options);
         const admin = validateAccessClaims(claims, env, options);
 
-        if (!allowlist.includes(admin.email)) {
+        if (admin.provider === 'cloudflare-access-service-token') {
+            if (!serviceTokenAllowlist.includes(admin.serviceTokenId)) {
+                return createAuthFailure('ADMIN_FORBIDDEN', 403);
+            }
+        } else if (!emailAllowlist.includes(admin.email)) {
             return createAuthFailure('ADMIN_FORBIDDEN', 403);
         }
 
