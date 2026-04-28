@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow,noarchive"/>
+<meta name="referrer" content="same-origin"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; script-src 'self'; style-src 'self'; font-src 'self' data:; connect-src 'self'; form-action 'none'; worker-src 'none'; manifest-src 'none';"/>
+<meta name="theme-color" content="#125B50"/>
+<title>Admin Content UI | دليل المسلم</title>
+<link rel="stylesheet" href="admin/admin.css"/>
+</head>
+<body>
+<main class="admin-shell" id="adminApp" data-state="booting">
+  <header class="admin-hero" aria-labelledby="adminTitle">
+    <div>
+      <p class="admin-kicker">دليل المسلم</p>
+      <h1 id="adminTitle">Admin Content UI</h1>
+      <p class="admin-muted">Preview آمن ثم Confirm Publish لمحتوى D1 live content.</p>
+    </div>
+    <div class="admin-auth-card" aria-live="polite">
+      <span class="admin-auth-card__label">Admin</span>
+      <strong id="adminIdentity">جاري التحقق...</strong>
+    </div>
+  </header>
+
+  <section class="admin-panel" id="authPanel" aria-live="polite">
+    <div class="admin-status admin-status--info" id="bootStatus">يتم التحقق من Cloudflare Access...</div>
+  </section>
+
+  <section class="admin-grid" id="workspace" hidden>
+    <form class="admin-panel admin-form" id="contentForm" autocomplete="off" novalidate>
+      <div class="admin-panel__header">
+        <div>
+          <h2>إعداد المحتوى</h2>
+          <p class="admin-muted">اختر القسم، ضع version جديد، ثم payload JSON.</p>
+        </div>
+        <button class="admin-btn admin-btn--ghost" id="loadCurrentBtn" type="button">تحميل المنشور الحالي</button>
+      </div>
+
+      <label class="admin-field">
+        <span>القسم</span>
+        <select id="sectionInput" name="section" required></select>
+      </label>
+
+      <label class="admin-field">
+        <span>Version جديد</span>
+        <input id="versionInput" name="version" inputmode="latin" placeholder="duas-2026-04-28-v1" maxlength="128" required/>
+      </label>
+
+      <label class="admin-field">
+        <span>Schema Version</span>
+        <input id="schemaVersionInput" name="schemaVersion" value="public-content-v1" maxlength="64" required/>
+      </label>
+
+      <label class="admin-field">
+        <span>Notes</span>
+        <textarea id="notesInput" name="notes" rows="3" maxlength="1000" placeholder="ملخص التغيير للنشر والتدقيق"></textarea>
+      </label>
+
+      <label class="admin-field admin-field--payload">
+        <span>Payload JSON</span>
+        <textarea id="payloadInput" name="payload" rows="18" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder='{"categories": []}' required></textarea>
+      </label>
+
+      <div class="admin-form__footer">
+        <div class="admin-meter" id="payloadMeter" aria-live="polite">0 bytes</div>
+        <button class="admin-btn admin-btn--primary" id="previewBtn" type="submit">Preview</button>
+      </div>
+    </form>
+
+    <aside class="admin-panel admin-preview" aria-live="polite">
+      <div class="admin-panel__header">
+        <div>
+          <h2>Preview & Publish</h2>
+          <p class="admin-muted">النشر يتاح فقط بعد Preview صالح وبدون blocking reasons.</p>
+        </div>
+      </div>
+
+      <div class="admin-status" id="operationStatus" hidden></div>
+
+      <dl class="admin-summary" id="versionSummary"></dl>
+
+      <div class="admin-preview-box" id="previewBox">
+        <p class="admin-muted">لا يوجد Preview بعد.</p>
+      </div>
+
+      <label class="admin-confirm" for="confirmPublishInput">
+        <input id="confirmPublishInput" type="checkbox" disabled/>
+        <span>أؤكد نشر هذا الـ payload والـ version المعروضين في Preview.</span>
+      </label>
+
+      <button class="admin-btn admin-btn--danger" id="publishBtn" type="button" disabled>Confirm Publish</button>
+    </aside>
+  </section>
+</main>
+
+<script type="module" src="admin/admin.js"></script>
+</body>
+</html>

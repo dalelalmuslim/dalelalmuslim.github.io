@@ -19,6 +19,12 @@ function swIsDataRequest(url, dataPrefix) {
     return url.pathname.includes(dataPrefix);
 }
 
+function swIsAdminRequest(url) {
+    return url.pathname === '/admin.html'
+        || url.pathname.startsWith('/admin/')
+        || url.pathname.startsWith('/api/admin/');
+}
+
 function swIsPublicContentApiRequest(url, publicApiPrefix) {
     return url.pathname.startsWith(publicApiPrefix);
 }
@@ -144,6 +150,10 @@ async function swHandleRequest(event, config) {
 
     if (request.method !== 'GET') {
         return fetch(request);
+    }
+
+    if (swIsAdminRequest(url)) {
+        return fetch(request, { cache: 'no-store' });
     }
 
     if (!swIsSameOriginGetRequest(request) && !isFirebaseRequest) {

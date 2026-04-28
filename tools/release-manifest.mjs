@@ -2,7 +2,9 @@ export const DIST_DIR_NAME = 'dist';
 export const RELEASE_ZIP_NAME = 'dalil-almuslim-dist.zip';
 
 export const DIST_FILE_ENTRIES = Object.freeze([
+  '_headers',
   'index.html',
+  'admin.html',
   'about.html',
   'contact.html',
   'privacy.html',
@@ -17,6 +19,7 @@ export const DIST_FILE_ENTRIES = Object.freeze([
 ]);
 
 export const DIST_DIR_ENTRIES = Object.freeze([
+  'admin',
   'assets',
   'css',
   'data',
