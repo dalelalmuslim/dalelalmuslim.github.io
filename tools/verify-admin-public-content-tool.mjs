@@ -77,6 +77,28 @@ async function main() {
   assert.equal(wrapperRequest.notes, 'from wrapper', 'wrapper notes should be used');
   assert.deepEqual(wrapperRequest.payload, { groups: [] }, 'wrapper payload should be used');
 
+  const arrayWrapperRequest = await buildPublicContentRequest({
+    filePath: 'payload.json',
+    section: '',
+    version: '',
+    notes: '',
+    schemaVersion: ''
+  }, {
+    async readFile() {
+      return JSON.stringify({
+        section: 'stories',
+        version: 'stories-2026-04-27-v3',
+        notes: 'array wrapper',
+        payload: [{ slug: 'moral-stories', stories: [] }]
+      });
+    }
+  });
+
+  assert.equal(arrayWrapperRequest.section, 'stories', 'array wrapper section should be used');
+  assert.equal(arrayWrapperRequest.version, 'stories-2026-04-27-v3', 'array wrapper version should be used');
+  assert.equal(arrayWrapperRequest.notes, 'array wrapper', 'array wrapper notes should be used');
+  assert.deepEqual(arrayWrapperRequest.payload, [{ slug: 'moral-stories', stories: [] }], 'array wrapper payload should be used');
+
   const directRequest = await buildPublicContentRequest({
     filePath: 'payload.json',
     section: 'azkar',
@@ -247,6 +269,7 @@ async function main() {
       'Cloudflare Access header selection',
       'Cloudflare Access service token headers',
       'wrapper payload files',
+      'array wrapper payload files',
       'direct payload files',
       'preview gate enforcement',
       'double confirmation gate',

@@ -181,7 +181,9 @@ export async function buildPublicContentRequest(options, deps = {}) {
 
   const rawContent = await readFile(filePath, 'utf8');
   const document = parsePayloadDocument(rawContent, filePath);
-  const wrapper = isPlainRecord(document) && isPlainRecord(document.payload) ? document : null;
+  const wrapper = isPlainRecord(document) && Object.prototype.hasOwnProperty.call(document, 'payload')
+    ? document
+    : null;
 
   const section = pickString(options.section || wrapper?.section);
   const version = pickString(options.version || wrapper?.version);
