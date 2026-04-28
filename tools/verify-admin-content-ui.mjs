@@ -79,6 +79,8 @@ async function main() {
   assert.doesNotMatch(adminJs, /\.style\s*[.=]/, 'admin UI must not mutate inline styles under strict CSP');
   assert.doesNotMatch(adminJs, /localStorage|sessionStorage/, 'admin UI must not persist admin payloads in browser storage');
 
+  assert.match(headers, /\/admin\n[\s\S]*Cache-Control:\s*no-store/i, '_headers should no-store /admin clean route');
+  assert.match(headers, /\/admin\n[\s\S]*Content-Security-Policy:/i, '_headers should set CSP for /admin clean route');
   assert.match(headers, /\/admin\.html[\s\S]*Cache-Control:\s*no-store/i, '_headers should no-store admin.html');
   assert.match(headers, /\/admin\/\*[\s\S]*Content-Security-Policy:/i, '_headers should set CSP for admin assets');
   assert.match(headers, /\/api\/admin\/\*[\s\S]*Cache-Control:\s*no-store/i, '_headers should no-store admin API responses');
@@ -90,6 +92,7 @@ async function main() {
   assert.equal(DIST_FILE_ENTRIES.includes('admin.html'), true, 'dist manifest should include admin.html');
   assert.equal(DIST_DIR_ENTRIES.includes('admin'), true, 'dist manifest should include admin directory');
 
+  assert.match(robots, /Disallow:\s*\/admin\n/, 'robots.txt should disallow admin clean route');
   assert.match(robots, /Disallow:\s*\/admin\.html/, 'robots.txt should disallow admin.html');
   assert.match(robots, /Disallow:\s*\/admin\//, 'robots.txt should disallow admin directory');
 

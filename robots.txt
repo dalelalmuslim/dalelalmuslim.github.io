@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://azkarapp.github.io/sitemap.xml
+Disallow: /admin
 Disallow: /admin.html
 Disallow: /admin/

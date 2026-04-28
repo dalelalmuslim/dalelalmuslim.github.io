@@ -528,5 +528,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-ed3bdff34032"
+  "cacheVersion": "azkar-v26-phase22-8baf15815c0a"
 });
