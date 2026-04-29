@@ -19,11 +19,11 @@ export const duasFeature = defineFeatureApi({
   init({ app }) {
     app.safeInit('feature:duas:init', initDuasSection);
   },
-  enter() {
-    renderDuasSurface();
+  enter({ app }) {
+    app.safeInit('feature:duas:render', renderDuasSurface);
   },
-  refresh() {
-    renderDuasSurface();
+  refresh({ app }) {
+    app.safeInit('feature:duas:refresh', renderDuasSurface);
   },
   leave() {
     resetDuasView();

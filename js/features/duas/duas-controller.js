@@ -45,10 +45,10 @@ function renderShell(options = {}) {
   return true;
 }
 
-function renderCatalogView() {
+async function renderCatalogView() {
   const dom = ensureDom();
   if (!dom.grid) return;
-  const vm = getDuasCatalogViewModel({ filter: state.filter, query: state.query });
+  const vm = await getDuasCatalogViewModel({ filter: state.filter, query: state.query });
   appendTrustedHTML(dom.grid, renderDuasCatalog(vm.cards));
 }
 
@@ -59,11 +59,11 @@ function updateSessionClasses(sessionVm) {
   dom.root.classList.toggle('duas-root--large-text', Boolean(sessionVm?.largeText));
 }
 
-function renderSessionView(slug) {
+async function renderSessionView(slug) {
   const dom = ensureDom();
   if (!dom.content) return false;
 
-  const sessionVm = getDuasSessionViewModel(slug);
+  const sessionVm = await getDuasSessionViewModel(slug);
   if (!sessionVm) return false;
 
   appendTrustedHTML(dom.content, renderDuasSession(sessionVm));
@@ -72,10 +72,10 @@ function renderSessionView(slug) {
   return true;
 }
 
-function getActiveSessionVm() {
+async function getActiveSessionVm() {
   const sessionState = duasSessionStore.getState();
   return sessionState?.activeCategorySlug
-    ? getDuasSessionViewModel(sessionState.activeCategorySlug)
+    ? await getDuasSessionViewModel(sessionState.activeCategorySlug)
     : null;
 }
 
@@ -102,10 +102,10 @@ function resolveInitialDuaId(category) {
   return items[0]?.id || null;
 }
 
-function handleRootInput(event) {
+async function handleRootInput(event) {
   if (!event.target.matches('#duasSearchInput')) return;
   state.query = String(event.target.value || '').trim();
-  renderCatalogView();
+  await renderCatalogView();
 
   const dom = ensureDom();
   const clearButton = dom.root?.querySelector('.duas-search__clear');
@@ -121,8 +121,8 @@ function bindRootEvents() {
   state.inputBound = true;
 }
 
-function rerenderWithPreservedSession() {
-  renderSection({ preserveSession: Boolean(duasSessionStore.getState().activeCategorySlug) });
+async function rerenderWithPreservedSession() {
+  await renderSection({ preserveSession: Boolean(duasSessionStore.getState().activeCategorySlug) });
 }
 
 function clearSessionContent() {
@@ -133,47 +133,47 @@ function clearSessionContent() {
   dom.root?.classList.remove('duas-root--focus-mode', 'duas-root--large-text');
 }
 
-export function dispatchDuasAction(action, payload = {}) {
+export async function dispatchDuasAction(action, payload = {}) {
   const value = payload.value || '';
 
   switch (action) {
     case 'open-category':
-      openDuaCategory(value);
+      await openDuaCategory(value);
       return true;
     case 'close-category':
       closeDuaCategory();
       return true;
     case 'set-filter':
       state.filter = value || 'all';
-      renderSection();
+      await renderSection();
       return true;
     case 'clear-search':
       state.query = '';
-      renderSection();
+      await renderSection();
       return true;
     case 'toggle-favorite':
       duasPreferencesStore.toggleFavorite(value || duasSessionStore.getState().activeCategorySlug);
-      rerenderWithPreservedSession();
+      await rerenderWithPreservedSession();
       return true;
     case 'toggle-large-text': {
       const current = duasPreferencesStore.getState();
       duasPreferencesStore.update({ largeText: !current.largeText });
-      renderSection({ preserveSession: true });
+      await renderSection({ preserveSession: true });
       return true;
     }
     case 'set-active-dua':
       duasSessionStore.setActiveDua(value);
       duasHistoryStore.markVisited(duasSessionStore.getState().activeCategorySlug, value);
-      renderSection({ preserveSession: true });
+      await renderSection({ preserveSession: true });
       return true;
     case 'copy-dua': {
-      const sessionVm = getActiveSessionVm();
+      const sessionVm = await getActiveSessionVm();
       const item = findDuaById(sessionVm, payload.duaId);
       if (item?.text) copyToClipboard(item.text);
       return true;
     }
     case 'share-dua': {
-      const sessionVm = getActiveSessionVm();
+      const sessionVm = await getActiveSessionVm();
       const item = findDuaById(sessionVm, payload.duaId);
       if (item?.text) shareText(item.text);
       return true;
@@ -203,26 +203,26 @@ export function initDuasSection() {
   state.initialized = true;
 }
 
-export function renderSection(options = {}) {
+export async function renderSection(options = {}) {
   const sessionSlug = options.preserveSession ? duasSessionStore.getState().activeCategorySlug : '';
   renderShell({ showCatalogHome: !sessionSlug });
   bindRootEvents();
 
   if (sessionSlug) {
-    renderSessionView(sessionSlug);
+    await renderSessionView(sessionSlug);
     return;
   }
 
   clearSessionContent();
-  renderCatalogView();
+  await renderCatalogView();
 }
 
 export function renderDuasSection() {
-  renderSection();
+  return renderSection();
 }
 
-export function openDuaCategory(categoryKey) {
-  const category = getDuaCategoryBySlug(categoryKey);
+export async function openDuaCategory(categoryKey) {
+  const category = await getDuaCategoryBySlug(categoryKey);
   if (!category) return;
 
   const initialDuaId = resolveInitialDuaId(category);

@@ -6,7 +6,6 @@ import {
     getAzkarManifestEntryBySlug,
     resolveAzkarSlug
 } from '../../../data/azkar/categories/manifest.js';
-import { DUAS_JSON } from '../../../data/duas/duas-data.js';
 import { getDuasManifest, getDuaManifestEntryByKey, resolveDuaSlug } from '../../../data/duas/manifest.js';
 import { STORIES_JSON } from '../../../data/stories/stories-data.js';
 import { getStoriesManifest, getStoryManifestEntryByKey, resolveStoryCategorySlug } from '../../../data/stories/manifest.js';
@@ -16,6 +15,7 @@ import { getPublicContentVersionSnapshot } from '../../shared/contracts/public-c
 const splitModuleCache = new Map();
 let legacyPayloadCache = null;
 let azkarCatalogCache = null;
+let duasPayloadCache = null;
 let duasCatalogCache = null;
 let storiesCatalogCache = null;
 let dailyAyahsCache = null;
@@ -175,6 +175,22 @@ function normalizeReference(reference) {
     return '';
 }
 
+async function loadDuasPayload() {
+    if (duasPayloadCache) {
+        return duasPayloadCache;
+    }
+
+    try {
+        const module = await import('../../../data/duas/duas-data.js');
+        duasPayloadCache = module?.DUAS_JSON ?? null;
+    } catch (error) {
+        appLogger.error('[ContentLocalProvider] Failed to load duas payload', error);
+        duasPayloadCache = { categories: {} };
+    }
+
+    return duasPayloadCache;
+}
+
 function normalizeDuaItem(item, category) {
     return {
         id: Number(item?.id) || Math.floor(Math.random() * 1e9),
@@ -325,12 +341,14 @@ export async function getAzkarCategoryBySlug(slug) {
     return catalog.categories.find((category) => category.slug === slug) ?? null;
 }
 
-export function getDuasCatalog() {
+export async function getDuasCatalog() {
     if (duasCatalogCache) {
         return duasCatalogCache;
     }
 
-    const categories = DUAS_JSON?.categories || {};
+    const payload = await loadDuasPayload();
+    const categories = payload?.categories || {};
+
     duasCatalogCache = getDuasManifest().map((entry) => {
         const items = Array.isArray(categories[entry.title])
             ? categories[entry.title].map((item) => normalizeDuaItem(item, entry)).filter((item) => item.text)
@@ -348,20 +366,21 @@ export function getDuasCatalog() {
     return duasCatalogCache;
 }
 
-export function getDuaCategoryByKey(key) {
+export async function getDuaCategoryByKey(key) {
     const manifestEntry = getDuaManifestEntryByKey(key);
     if (!manifestEntry) return null;
-    return getDuasCatalog().find((category) => category.slug === manifestEntry.slug) || null;
+    return (await getDuasCatalog()).find((category) => category.slug === manifestEntry.slug) || null;
 }
 
-export function getDuaCategoryBySlug(slug) {
+export async function getDuaCategoryBySlug(slug) {
     const safeSlug = resolveDuaSlug(slug);
     if (!safeSlug) return null;
-    return getDuasCatalog().find((category) => category.slug === safeSlug) || null;
+    return (await getDuasCatalog()).find((category) => category.slug === safeSlug) || null;
 }
 
-export function getAllDuaItems() {
-    return getDuasCatalog().flatMap((category) => category.items.map((item) => ({ ...item, category: category.title })));
+export async function getAllDuaItems() {
+    const catalog = await getDuasCatalog();
+    return catalog.flatMap((category) => category.items.map((item) => ({ ...item, category: category.title })));
 }
 
 export function getStoriesCatalog() {

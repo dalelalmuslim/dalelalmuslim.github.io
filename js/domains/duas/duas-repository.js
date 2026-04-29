@@ -5,18 +5,18 @@ import {
   getAllDuaItems as getAllDuaItemsFromClient
 } from '../../services/content/content-client.js';
 
-export function getDuasCatalog() {
+export async function getDuasCatalog() {
   return getDuasCatalogFromClient();
 }
 
-export function getDuaCategoryByKey(key) {
+export async function getDuaCategoryByKey(key) {
   return getDuaCategoryByKeyFromClient(key);
 }
 
-export function getDuaCategoryBySlug(slug) {
+export async function getDuaCategoryBySlug(slug) {
   return getDuaCategoryBySlugFromClient(slug);
 }
 
-export function getAllDuaItems() {
+export async function getAllDuaItems() {
   return getAllDuaItemsFromClient();
 }

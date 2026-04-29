@@ -263,7 +263,7 @@ self.__SW_MANIFEST__ = Object.freeze({
   ],
   "precacheStats": {
     "documentsKb": 90.3,
-    "shellKb": 1798.8,
+    "shellKb": 1800.2,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -528,5 +528,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-12966feb7e31"
+  "cacheVersion": "azkar-v26-phase22-31f44b78a5a3"
 });

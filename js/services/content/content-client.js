@@ -695,7 +695,7 @@ async function prepareFastFoundationSection(sectionId, validator, loader) {
         };
     }
 
-    if (sectionId === CONTENT_SECTION_IDS.APP_CONFIG || sectionId === CONTENT_SECTION_IDS.DUAS || sectionId === CONTENT_SECTION_IDS.STORIES) {
+    if (sectionId === CONTENT_SECTION_IDS.APP_CONFIG) {
         const payload = await loader();
         if (validator(payload)) {
             persistPayloadSnapshot(sectionId, version, payload);
@@ -915,27 +915,44 @@ export async function getAzkarCategoryBySlug(slug) {
 }
 
 export function getDuasCatalog() {
-    return loadSyncSection(
+    const version = getSectionVersion(CONTENT_SECTION_IDS.DUAS);
+    const cachedPayload = readFreshCachedPayload(CONTENT_SECTION_IDS.DUAS, version, isValidDuasCatalog);
+
+    if (cachedPayload) {
+        rememberSectionVersion(CONTENT_SECTION_IDS.DUAS, version);
+        recordSectionObservability(CONTENT_SECTION_IDS.DUAS, 'cache-reused', {
+            version,
+            origin: 'cache',
+            remoteVersionSource: remoteVersionsState.status,
+            remoteVersionError: remoteVersionsState.error || ''
+        });
+        return cachedPayload;
+    }
+
+    return loadAsyncSection(
         CONTENT_SECTION_IDS.DUAS,
         () => localContentProvider.getDuasCatalog(),
         isValidDuasCatalog
     );
 }
 
-export function getDuaCategoryByKey(key) {
+export async function getDuaCategoryByKey(key) {
     const manifestEntry = getDuaManifestEntryByKey(key);
     if (!manifestEntry) return null;
-    return getDuasCatalog().find((category) => category.slug === manifestEntry.slug) || null;
+    const catalog = await getDuasCatalog();
+    return catalog.find((category) => category.slug === manifestEntry.slug) || null;
 }
 
-export function getDuaCategoryBySlug(slug) {
+export async function getDuaCategoryBySlug(slug) {
     const safeSlug = resolveDuaSlug(slug);
     if (!safeSlug) return null;
-    return getDuasCatalog().find((category) => category.slug === safeSlug) || null;
+    const catalog = await getDuasCatalog();
+    return catalog.find((category) => category.slug === safeSlug) || null;
 }
 
-export function getAllDuaItems() {
-    return getDuasCatalog().flatMap((category) => category.items.map((item) => ({ ...item, category: category.title })));
+export async function getAllDuaItems() {
+    const catalog = await getDuasCatalog();
+    return catalog.flatMap((category) => category.items.map((item) => ({ ...item, category: category.title })));
 }
 
 export function makeStoryKey(categorySlug, storyId) {

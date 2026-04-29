@@ -40,8 +40,8 @@ function hashDateKey(value) {
   return Math.abs(hash >>> 0);
 }
 
-function getDailyDuaItem() {
-  const allItems = getAllDuaItems();
+async function getDailyDuaItem() {
+  const allItems = await getAllDuaItems();
   if (!allItems.length) return null;
   const today = getLocalDateKey();
   const index = hashDateKey(today) % allItems.length;
@@ -70,14 +70,16 @@ function buildCategoryQueryText(category) {
   ].join(' '));
 }
 
-export function getDuasCatalogViewModel({ filter = 'all', query = '' } = {}) {
+export async function getDuasCatalogViewModel({ filter = 'all', query = '' } = {}) {
   const preferences = duasPreferencesStore.getState();
   const normalizedQuery = normalizeArabicText(query);
   const sourceFilter = ['all', 'quran', 'hadith', 'favorites', 'featured'].includes(filter)
     ? filter
     : 'all';
 
-  const cards = getDuasCatalog()
+  const catalog = await getDuasCatalog();
+
+  const cards = catalog
     .map((category) => ({
       slug: category.slug,
       title: category.title,
@@ -120,8 +122,8 @@ export function getDuasResumeViewModel() {
   return null;
 }
 
-export function getDailyDuaViewModel() {
-  const item = getDailyDuaItem();
+export async function getDailyDuaViewModel() {
+  const item = await getDailyDuaItem();
   if (!item) return null;
   return {
     title: 'نفحة اليوم',
@@ -141,8 +143,8 @@ export function getDuasInsightsViewModel() {
   };
 }
 
-export function getDuasSessionViewModel(categoryKey) {
-  const category = getDuaCategoryBySlug(categoryKey);
+export async function getDuasSessionViewModel(categoryKey) {
+  const category = await getDuaCategoryBySlug(categoryKey);
   if (!category) return null;
   const sessionState = duasSessionStore.getState();
   const preferences = duasPreferencesStore.getState();
