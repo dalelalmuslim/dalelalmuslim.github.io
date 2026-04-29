@@ -14,21 +14,43 @@
 
     /* نصوص واضحة ومريحة */
     --text-main: #2C3E50; 
-    --text-sub: #7F8C8D; 
+    --text-sub: #657677;
+    --text-inverse: #FFFFFF;
     --border: #E2E8F0; 
 
+    /* 2026 UI system */
+    --surface-raised: color-mix(in srgb, var(--card-bg) 97%, white);
+    --surface-soft: color-mix(in srgb, var(--primary) 7%, var(--card-bg));
+    --surface-accent: color-mix(in srgb, var(--accent) 9%, var(--card-bg));
+    --surface-glass: rgba(255, 255, 255, 0.84);
+    --ring: color-mix(in srgb, var(--primary) 30%, transparent);
+
     /* ظلال خفيفة لإعطاء عمق بدون إزعاج */
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --shadow-sm: 0 2px 8px rgba(18, 91, 80, 0.08);
-    --shadow-md: 0 8px 20px rgba(18, 91, 80, 0.12);
+    --radius-xl: 24px;
+    --radius-lg: 18px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 6px 18px rgba(18, 91, 80, 0.07);
+    --shadow-md: 0 14px 34px rgba(18, 91, 80, 0.11);
+    --shadow-lg: 0 22px 50px rgba(18, 91, 80, 0.14);
     --shadow-modal: 0 10px 40px rgba(0, 0, 0, 0.2);
 
     /* المسافات */
-    --gap-lg: 15px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --gap-lg: 16px;
     --gap-md: 12px;
     --gap-sm: 8px;
+
+    /* Shell */
+    --page-max: 920px;
+    --home-max: 760px;
+    --header-height: 72px;
 }
 /* ==========================================
    2. السمة الليلية (Dark Mode)
@@ -44,11 +66,19 @@
     --card-bg: #1F2937;
     
     --text-main: #F9FAFB;
-    --text-sub: #9CA3AF;
+    --text-sub: #B7C0CC;
+    --text-inverse: #0B1220;
     --border: #374151;
 
-    --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.5);
+    --surface-raised: color-mix(in srgb, var(--card-bg) 94%, white);
+    --surface-soft: color-mix(in srgb, var(--primary) 10%, var(--card-bg));
+    --surface-accent: color-mix(in srgb, var(--accent) 12%, var(--card-bg));
+    --surface-glass: rgba(31, 41, 55, 0.84);
+    --ring: color-mix(in srgb, var(--primary) 38%, transparent);
+
+    --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.28);
+    --shadow-md: 0 16px 38px rgba(0, 0, 0, 0.42);
+    --shadow-lg: 0 24px 58px rgba(0, 0, 0, 0.52);
 }
 
 /* ==========================================
@@ -65,6 +95,13 @@
     --card-bg: rgba(22, 98, 77, 0.3); 
     
     --text-main: #F3D582; 
-    --text-sub: #BB9441; 
+    --text-sub: #D9BD71;
+    --text-inverse: #0A2E24;
     --border: rgba(243, 213, 130, 0.15);
+
+    --surface-raised: rgba(22, 98, 77, 0.38);
+    --surface-soft: rgba(243, 213, 130, 0.09);
+    --surface-accent: rgba(187, 148, 65, 0.14);
+    --surface-glass: rgba(10, 46, 36, 0.78);
+    --ring: rgba(243, 213, 130, 0.32);
 }

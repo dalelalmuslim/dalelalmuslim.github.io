@@ -5,22 +5,47 @@
    All colors use design tokens — no hardcoded values.
    ============================================================ */
 
+/* ── Home Shell Scope ────────────────────────────────────── */
+
+.section--home {
+    width: min(100%, var(--home-max, 760px));
+    margin-inline: auto;
+}
+
 /* ── Daily Ayah Card ──────────────────────────────────────── */
 
 .section--home .home-ayah-card {
     position: relative;
+    overflow: hidden;
     background: linear-gradient(
         145deg,
-        color-mix(in srgb, var(--primary) 8%, var(--card-bg)),
-        var(--card-bg)
+        color-mix(in srgb, var(--primary) 10%, var(--card-bg)),
+        var(--surface-raised, var(--card-bg)) 62%,
+        color-mix(in srgb, var(--accent) 7%, var(--card-bg))
     );
-    padding: 20px 18px 18px;
-    margin-bottom: 12px;
+    border-color: color-mix(in srgb, var(--primary) 14%, var(--border));
+    border-radius: var(--radius-xl, var(--radius-lg));
+    padding: clamp(18px, 4vw, 26px);
+    margin-bottom: var(--space-3, 12px);
+    box-shadow: var(--shadow-md);
+}
+
+.section--home .home-ayah-card::before {
+    content: "";
+    position: absolute;
+    inset-block-start: -72px;
+    inset-inline-end: -64px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    pointer-events: none;
 }
 
 .section--home .home-ayah-card__text {
-    font-size: 1.25rem;
-    line-height: 2.2;
+    position: relative;
+    font-size: clamp(1.22rem, 3.8vw, 1.46rem);
+    line-height: 2.18;
     color: var(--text-main);
     margin: 0;
 }
@@ -50,8 +75,9 @@
 /* ── Smart Resume Card ────────────────────────────────────── */
 
 .section--home .home-resume-card {
-    margin-bottom: 12px;
-    padding: 14px 16px;
+    margin-bottom: var(--space-3, 12px);
+    padding: 14px var(--space-4, 16px);
+    border-radius: var(--radius-lg);
     transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
@@ -65,7 +91,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: var(--space-4, 16px);
 }
 
 .section--home .home-resume-card__info {
@@ -111,7 +137,7 @@
     .section--home .home-resume-card__body {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: var(--space-3, 12px);
     }
     .section--home .home-resume-card__action {
         width: 100%;
@@ -124,12 +150,13 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background: var(--primary-light);
-    border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
-    border-radius: var(--radius-md);
-    padding: 12px 10px;
-    margin-bottom: 12px;
-    gap: 4px;
+    background: linear-gradient(135deg, var(--surface-soft, var(--primary-light)), var(--surface-raised, var(--card-bg)));
+    border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
+    border-radius: var(--radius-lg);
+    padding: var(--space-3, 12px) 10px;
+    margin-bottom: var(--space-3, 12px);
+    gap: var(--space-1, 4px);
+    box-shadow: var(--shadow-sm);
 }
 
 .section--home .home-progress-strip__item {
@@ -164,8 +191,8 @@
 /* ── Daily Message ────────────────────────────────────────── */
 
 .section--home .home-message {
-    margin-bottom: 16px;
-    padding: 0 4px;
+    margin-bottom: var(--space-4, 16px);
+    padding: 0 var(--space-1, 4px);
 }
 
 .section--home .home-message__text {
@@ -187,10 +214,11 @@
 .section--home .home-section-btn {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-3, 12px);
     width: 100%;
+    min-height: 82px;
     padding: 14px;
-    background: var(--card-bg);
+    background: var(--surface-raised, var(--card-bg));
     border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
     border-radius: var(--radius-lg);
     cursor: pointer;
@@ -200,9 +228,7 @@
         transform 0.16s ease,
         box-shadow 0.18s ease,
         border-color 0.18s ease;
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.03),
-        0 1px 3px rgba(0, 0, 0, 0.025);
+    box-shadow: var(--shadow-sm);
 }
 
 .section--home .home-section-btn:active {
@@ -210,11 +236,12 @@
     box-shadow: none;
 }
 
-.section--home .home-section-btn:hover {
-    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.05),
-        0 2px 6px rgba(0, 0, 0, 0.03);
+@media (hover: hover) {
+    .section--home .home-section-btn:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+        box-shadow: var(--shadow-md);
+    }
 }
 
 .section--home .home-section-btn__icon {
@@ -224,8 +251,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
-    background: var(--primary-light);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--primary-light), color-mix(in srgb, var(--accent) 8%, var(--card-bg)));
     color: var(--primary);
     font-size: 1.15rem;
 }
