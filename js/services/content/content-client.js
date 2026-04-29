@@ -757,7 +757,14 @@ export function getPublicContentVersions() {
 export async function primePublicContentFoundation(options = {}) {
     const eager = Boolean(options.eager === true);
     const storedVersionsBeforeSync = getVersionPayload();
-    const remoteVersionsResult = await syncRemoteVersions({ force: Boolean(options.forceRemoteSync) });
+    const remoteVersionsResult = eager
+        ? await syncRemoteVersions({ force: Boolean(options.forceRemoteSync) })
+        : {
+            ok: true,
+            source: 'startup-local-fast-path',
+            versions: storedVersionsBeforeSync,
+            sections: []
+        };
     const targetVersions = remoteVersionsResult?.versions || storedVersionsBeforeSync;
 
     const sections = await Promise.all(listContentSections().map(async (section) => {
