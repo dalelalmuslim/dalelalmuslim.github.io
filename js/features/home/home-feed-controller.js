@@ -84,7 +84,12 @@ export async function setDailyAyah() {
 export function setDailyMessage() {
     const el = getHomeDomElement('dailyMessageText');
     if (!el) return;
-    el.textContent = resolveDailyMessage(getMessagesData(), Date.now());
+
+    const messages = getMessagesData();
+    const hasMessages = Array.isArray(messages) && messages.length > 0;
+    el.textContent = hasMessages
+        ? resolveDailyMessage(messages, Date.now())
+        : 'ابدأ يومك بذكر الله واطمئن.';
 }
 
 // ── Smart Resume Card ─────────────────────────────────────
@@ -167,7 +172,15 @@ export function renderHomeProgressStrip() {
 export async function initHomeContent() {
     cacheHomeDom();
 
-    // Load messages and ayahs in parallel — independent fetches.
+    // Paint the Home surface immediately from sync/local state.
+    setDailyMessage();
+    renderHomeProgressStrip();
+
+    renderHomeSmartResume().catch(err => {
+        appLogger.error('[Home] renderHomeSmartResume failed during initial paint:', err);
+    });
+
+    // Load daily content in the background, then replace fallback text.
     await Promise.allSettled([
         ensureHomeContentLoaded(),
         ensureDailyAyahsLoaded(),
@@ -175,10 +188,9 @@ export async function initHomeContent() {
 
     setDailyMessage();
     await setDailyAyah();
-    renderHomeProgressStrip();
 
-    await renderHomeSmartResume().catch(err => {
-        appLogger.error('[Home] renderHomeSmartResume failed during init:', err);
+    renderHomeSmartResume().catch(err => {
+        appLogger.error('[Home] renderHomeSmartResume failed after daily content load:', err);
     });
 }
 
