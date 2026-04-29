@@ -24,11 +24,11 @@ export const storiesSessionStore = {
   getState() {
     return ensureStoriesSession();
   },
-  openCategory(category, storyKey = '') {
+  async openCategory(category, storyKey = '') {
     const entry = getStoryManifestEntryByKey(category);
     const slug = entry?.slug || resolveStoryCategorySlug(category);
     if (!slug) return null;
-    const story = storyKey ? getStoryByKey(storyKey) : null;
+    const story = storyKey ? await getStoryByKey(storyKey) : null;
     return updateStorageState((state) => {
       const current = ensureStoriesSession();
       state.storiesSession = {
@@ -43,11 +43,11 @@ export const storiesSessionStore = {
       return state.storiesSession;
     });
   },
-  setActiveStory(categoryKey, storyIdOrKey) {
+  async setActiveStory(categoryKey, storyIdOrKey) {
     const category = getStoryManifestEntryByKey(categoryKey);
     const story = typeof storyIdOrKey === 'string' && storyIdOrKey.includes(':')
-      ? getStoryByKey(storyIdOrKey)
-      : getStoryByCategoryAndId(category?.slug || categoryKey, storyIdOrKey);
+      ? await getStoryByKey(storyIdOrKey)
+      : await getStoryByCategoryAndId(category?.slug || categoryKey, storyIdOrKey);
     if (!story) return null;
     return updateStorageState((state) => {
       const current = ensureStoriesSession();

@@ -19,8 +19,8 @@ export const storiesFeature = defineFeatureApi({
   refresh({ app }) {
     app.safeInit('feature:stories:refresh', renderStoriesSection);
   },
-  leave() {
-    resetStoriesView();
+  leave({ app }) {
+    app.safeInit('feature:stories:leave', resetStoriesView);
   },
   capabilities: {
     renderCatalog: renderStoriesSection,

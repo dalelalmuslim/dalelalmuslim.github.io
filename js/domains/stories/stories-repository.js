@@ -17,26 +17,26 @@ export function parseStoryKey(storyKey) {
   return parseStoryKeyFromClient(storyKey);
 }
 
-export function getStoriesCatalog() {
+export async function getStoriesCatalog() {
   return getStoriesCatalogFromClient();
 }
 
-export function getStoryCategoryBySlug(slug) {
+export async function getStoryCategoryBySlug(slug) {
   return getStoryCategoryBySlugFromClient(slug);
 }
 
-export function getStoryCategoryByKey(key) {
+export async function getStoryCategoryByKey(key) {
   return getStoryCategoryByKeyFromClient(key);
 }
 
-export function getStoryByKey(storyKey) {
+export async function getStoryByKey(storyKey) {
   return getStoryByKeyFromClient(storyKey);
 }
 
-export function getStoryByCategoryAndId(categoryKey, storyId) {
+export async function getStoryByCategoryAndId(categoryKey, storyId) {
   return getStoryByCategoryAndIdFromClient(categoryKey, storyId);
 }
 
-export function getAllStories() {
+export async function getAllStories() {
   return getAllStoriesFromClient();
 }

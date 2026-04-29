@@ -964,17 +964,50 @@ export function parseStoryKey(storyKey) {
 }
 
 export function getStoriesCatalog() {
-    return loadSyncSection(
+    const version = getSectionVersion(CONTENT_SECTION_IDS.STORIES);
+    const cachedPayload = readFreshCachedPayload(CONTENT_SECTION_IDS.STORIES, version, isValidStoriesCatalog);
+
+    if (cachedPayload) {
+        rememberSectionVersion(CONTENT_SECTION_IDS.STORIES, version);
+        recordSectionObservability(CONTENT_SECTION_IDS.STORIES, 'cache-reused', {
+            version,
+            origin: 'cache',
+            remoteVersionSource: remoteVersionsState.status,
+            remoteVersionError: remoteVersionsState.error || ''
+        });
+        return cachedPayload;
+    }
+
+    return loadAsyncSection(
         CONTENT_SECTION_IDS.STORIES,
         () => localContentProvider.getStoriesCatalog(),
         isValidStoriesCatalog
     );
 }
 
-export function getStoryCategoryBySlug(slug) {
+function isContentPromiseLike(value) {
+    return Boolean(value) && typeof value.then === 'function';
+}
+
+function findStoryCategoryBySlug(catalog, slug) {
     const safeSlug = resolveStoryCategorySlug(slug);
     if (!safeSlug) return null;
-    return getStoriesCatalog().find((category) => category.slug === safeSlug) || null;
+    return catalog.find((category) => category.slug === safeSlug) || null;
+}
+
+function flattenStories(catalog) {
+    return catalog.flatMap((category) => category.stories);
+}
+
+export function getStoryCategoryBySlug(slug) {
+    const catalog = getStoriesCatalog();
+
+    if (isContentPromiseLike(catalog)) {
+        return /** @type {Promise<Array<unknown>>} */ (catalog)
+            .then((resolvedCatalog) => findStoryCategoryBySlug(resolvedCatalog, slug));
+    }
+
+    return findStoryCategoryBySlug(catalog, slug);
 }
 
 export function getStoryCategoryByKey(key) {
@@ -985,18 +1018,38 @@ export function getStoryCategoryByKey(key) {
 
 export function getStoryByKey(storyKey) {
     if (typeof storyKey !== 'string' || !storyKey) return null;
-    return getAllStories().find((story) => story.storyKey === storyKey) || null;
+
+    const catalog = getStoriesCatalog();
+    const findStory = (resolvedCatalog) => flattenStories(resolvedCatalog).find((story) => story.storyKey === storyKey) || null;
+
+    if (isContentPromiseLike(catalog)) {
+        return /** @type {Promise<Array<unknown>>} */ (catalog).then(findStory);
+    }
+
+    return findStory(catalog);
 }
 
 export function getStoryByCategoryAndId(categoryKey, storyId) {
     const category = getStoryCategoryByKey(categoryKey);
-    if (!category) return null;
-    const key = makeStoryKey(category.slug, storyId);
-    return getStoryByKey(key);
+    const resolveStory = (resolvedCategory) => {
+        if (!resolvedCategory) return null;
+        const key = makeStoryKey(resolvedCategory.slug, storyId);
+        return getStoryByKey(key);
+    };
+
+    return isContentPromiseLike(category)
+        ? category.then(resolveStory)
+        : resolveStory(category);
 }
 
 export function getAllStories() {
-    return getStoriesCatalog().flatMap((category) => category.stories);
+    const catalog = getStoriesCatalog();
+
+    if (isContentPromiseLike(catalog)) {
+        return /** @type {Promise<Array<unknown>>} */ (catalog).then(flattenStories);
+    }
+
+    return flattenStories(catalog);
 }
 
 export function getDailyMessages() {

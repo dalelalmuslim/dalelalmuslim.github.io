@@ -31,14 +31,21 @@ function ensureDom() {
   return state.dom;
 }
 
-function renderShell() {
+async function renderShell() {
   const dom = ensureDom();
   if (!dom.root) return false;
+  const [resume, storyOfDay, insights, retention] = await Promise.all([
+    getStoriesResumeViewModel(),
+    getStoryOfTheDayViewModel(),
+    getStoriesInsightsViewModel(),
+    getStoriesRetentionViewModel()
+  ]);
+
   appendTrustedHTML(dom.root, renderStoriesShell({
-    resume: getStoriesResumeViewModel(),
-    storyOfDay: getStoryOfTheDayViewModel(),
-    insights: getStoriesInsightsViewModel(),
-    retention: getStoriesRetentionViewModel(),
+    resume,
+    storyOfDay,
+    insights,
+    retention,
     activeFilter: state.filter,
     searchQuery: state.query
   }));
@@ -46,11 +53,11 @@ function renderShell() {
   return true;
 }
 
-function renderCatalogView() {
+async function renderCatalogView() {
   const dom = ensureDom();
   const cardsContainer = document.getElementById('storiesCardsGrid');
   if (!cardsContainer || !dom.summary) return;
-  const vm = getStoriesCatalogViewModel({ filter: state.filter, query: state.query });
+  const vm = await getStoriesCatalogViewModel({ filter: state.filter, query: state.query });
   appendTrustedHTML(cardsContainer, renderStoriesCatalog(vm.cards));
   dom.summary.textContent = vm.summaryText;
 }
@@ -62,10 +69,10 @@ function updateReaderClasses(sessionVm) {
   dom.root.classList.toggle('stories-root--large-text', Boolean(sessionVm?.largeText));
 }
 
-function renderReaderView(slug, storyKey = '') {
+async function renderReaderView(slug, storyKey = '') {
   const dom = ensureDom();
   if (!dom.content) return false;
-  const vm = getStoriesReaderViewModel(slug, storyKey || storiesSessionStore.getState().activeStoryKey);
+  const vm = await getStoriesReaderViewModel(slug, storyKey || storiesSessionStore.getState().activeStoryKey);
   if (!vm) return false;
   appendTrustedHTML(dom.content, renderStoriesReader(vm));
   openSubview('storyCategoryContent');
@@ -80,30 +87,30 @@ function bindRootEvents() {
   state.inputBound = true;
 }
 
-function openStoryReader(categorySlug, storyKey = '') {
-  const category = getStoryCategoryBySlug(categorySlug);
+async function openStoryReader(categorySlug, storyKey = '') {
+  const category = await getStoryCategoryBySlug(categorySlug);
   if (!category) return;
   const resolvedStoryKey = storyKey || category.stories[0]?.storyKey || '';
-  storiesSessionStore.openCategory(category, resolvedStoryKey);
+  await storiesSessionStore.openCategory(category, resolvedStoryKey);
   storiesHistoryStore.markVisited(category, resolvedStoryKey);
-  renderSection({ preserveSession: true });
+  await renderSection({ preserveSession: true });
   pushHashState({ section: 'stories', sub: true }, '#stories-reader');
   scrollToTop();
 }
 
-export function closeStoryReader() {
+export async function closeStoryReader() {
   closeSubview('storyCategoryContent');
   storiesSessionStore.reset();
   replaceSectionRoute('stories', 'قصص وعبر');
-  renderSection();
+  await renderSection();
 }
 
-function openSpecificStory(storyKey) {
-  const story = getStoryByKey(storyKey);
+async function openSpecificStory(storyKey) {
+  const story = await getStoryByKey(storyKey);
   if (!story) return;
-  storiesSessionStore.setActiveStory(story.categorySlug, story.storyKey);
+  await storiesSessionStore.setActiveStory(story.categorySlug, story.storyKey);
   storiesHistoryStore.markVisited(story.categorySlug, story.storyKey);
-  renderSection({ preserveSession: true });
+  await renderSection({ preserveSession: true });
   scrollToTop();
 }
 
@@ -112,67 +119,67 @@ function formatStoryShareText(story) {
   return `${story.title}\n\n${story.story}\n\n${story.lesson ? `العبرة: ${story.lesson}\n` : ''}${story.source ? `المصدر: ${story.source}` : ''}`.trim();
 }
 
-function rerenderWithSessionAwareness() {
-  renderSection({ preserveSession: Boolean(storiesSessionStore.getState().activeCategorySlug) });
+async function rerenderWithSessionAwareness() {
+  await renderSection({ preserveSession: Boolean(storiesSessionStore.getState().activeCategorySlug) });
 }
 
-export function dispatchStoriesAction(action, payload = {}) {
+export async function dispatchStoriesAction(action, payload = {}) {
   const value = payload.value || '';
   const categorySlug = payload.categorySlug || '';
 
   switch (action) {
     case 'open-category':
-      openStoryReader(value);
+      await openStoryReader(value);
       return true;
     case 'close-category':
-      closeStoryReader();
+      await closeStoryReader();
       return true;
     case 'open-story':
-      openSpecificStory(value);
+      await openSpecificStory(value);
       return true;
     case 'continue-story':
     case 'open-story-of-day':
-      openStoryReader(categorySlug, value);
+      await openStoryReader(categorySlug, value);
       return true;
     case 'set-filter':
       state.filter = value || 'all';
-      renderSection();
+      await renderSection();
       return true;
     case 'clear-search':
       state.query = '';
-      renderSection();
+      await renderSection();
       return true;
     case 'toggle-favorite-story':
       storiesPreferencesStore.toggleFavoriteStory(value);
-      rerenderWithSessionAwareness();
+      await rerenderWithSessionAwareness();
       return true;
     case 'toggle-bookmark':
       storiesHistoryStore.toggleBookmark(value);
-      rerenderWithSessionAwareness();
+      await rerenderWithSessionAwareness();
       return true;
     case 'toggle-pin-category':
       storiesPreferencesStore.togglePinnedCategory(value);
-      rerenderWithSessionAwareness();
+      await rerenderWithSessionAwareness();
       return true;
     case 'toggle-focus-mode': {
       const current = storiesPreferencesStore.getState();
       storiesPreferencesStore.update({ focusMode: !current.focusMode });
-      renderSection({ preserveSession: true });
+      await renderSection({ preserveSession: true });
       return true;
     }
     case 'toggle-large-text': {
       const current = storiesPreferencesStore.getState();
       storiesPreferencesStore.update({ largeText: !current.largeText });
-      renderSection({ preserveSession: true });
+      await renderSection({ preserveSession: true });
       return true;
     }
     case 'share-story': {
-      const story = getStoryByKey(value);
+      const story = await getStoryByKey(value);
       if (story) shareText(formatStoryShareText(story));
       return true;
     }
     case 'copy-story': {
-      const story = getStoryByKey(value);
+      const story = await getStoryByKey(value);
       if (story) {
         copyToClipboard(formatStoryShareText(story));
         showToast('تم نسخ القصة.', 'success');
@@ -192,17 +199,17 @@ export function handleStoriesActionTarget(actionTarget) {
   });
 }
 
-function handleRootInput(event) {
+async function handleRootInput(event) {
   if (!event.target.matches('#storiesSearchInput')) return;
   state.query = String(event.target.value || '').trim();
-  renderCatalogView();
+  await renderCatalogView();
   const clearButton = state.dom?.root?.querySelector('.stories-search__clear');
   if (clearButton) {
     clearButton.classList.toggle('is-hidden', !state.query);
   }
 }
 
-export function initStoriesSection() {
+export async function initStoriesSection() {
   if (state.initialized) return;
   renderShell();
   bindRootEvents();
@@ -216,10 +223,10 @@ export function initStoriesSection() {
   state.initialized = true;
 }
 
-export function renderSection(options = {}) {
+export async function renderSection(options = {}) {
   renderShell();
   bindRootEvents();
-  renderCatalogView();
+  await renderCatalogView();
   const sessionState = storiesSessionStore.getState();
   const sessionSlug = options.preserveSession ? sessionState.activeCategorySlug : '';
   if (sessionSlug) {
@@ -228,11 +235,11 @@ export function renderSection(options = {}) {
 }
 
 export function renderStoriesSection() {
-  renderSection({ preserveSession: Boolean(storiesSessionStore.getState().activeCategorySlug) });
+  return renderSection({ preserveSession: Boolean(storiesSessionStore.getState().activeCategorySlug) });
 }
 
 export function openStoryCategory(categoryKey, storyKey = '') {
-  openStoryReader(categoryKey, storyKey);
+  return openStoryReader(categoryKey, storyKey);
 }
 
 export function resetStoriesView() {

@@ -6,9 +6,10 @@ function normalize(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();
 }
 
-export function getStoriesSearchIndex() {
+export async function getStoriesSearchIndex() {
   if (cachedIndex) return cachedIndex;
-  cachedIndex = getAllStories().map((story) => ({
+  const stories = await getAllStories();
+  cachedIndex = stories.map((story) => ({
     storyKey: story.storyKey,
     categorySlug: story.categorySlug,
     haystack: normalize([
@@ -23,10 +24,11 @@ export function getStoriesSearchIndex() {
   return cachedIndex;
 }
 
-export function searchStories(query) {
+export async function searchStories(query) {
   const safeQuery = normalize(query);
   if (!safeQuery) return [];
-  return getStoriesSearchIndex()
+  const index = await getStoriesSearchIndex();
+  return index
     .filter((entry) => entry.haystack.includes(safeQuery))
     .map((entry) => entry.storyKey);
 }

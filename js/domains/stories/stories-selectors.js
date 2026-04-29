@@ -5,8 +5,8 @@ import { storiesHistoryStore } from './stories-history-store.js';
 import { storiesPreferencesStore } from './stories-preferences-store.js';
 import { storiesSessionStore } from './stories-session-store.js';
 
-function getStoryOfTheDay() {
-  const stories = getAllStories();
+async function getStoryOfTheDay() {
+  const stories = await getAllStories();
   if (!stories.length) return null;
   const dateSeed = (getStorageDateKey() || new Date().toISOString().slice(0, 10))
     .replace(/-/g, '')
@@ -14,6 +14,7 @@ function getStoryOfTheDay() {
     .reduce((sum, digit) => sum + Number(digit || 0), 0);
   return stories[dateSeed % stories.length] || stories[0];
 }
+
 
 function getCurrentStreak(dailyVisits = {}) {
   const dates = Object.keys(dailyVisits).sort();
@@ -79,10 +80,13 @@ function getGroupLabel(group) {
   }
 }
 
-function getRecentStories(limit = 4) {
+async function getRecentStories(limit = 4) {
   const history = storiesHistoryStore.getState();
-  return history.recentStoryKeys
-    .map((storyKey) => getStoryByKey(storyKey))
+  const stories = await Promise.all(
+    history.recentStoryKeys.map((storyKey) => getStoryByKey(storyKey))
+  );
+
+  return stories
     .filter(Boolean)
     .slice(0, limit)
     .map((story) => ({
@@ -97,9 +101,12 @@ function getRecentStories(limit = 4) {
     }));
 }
 
-function getPinnedCategoriesViewModel(limit = 4) {
+
+async function getPinnedCategoriesViewModel(limit = 4) {
   const preferences = storiesPreferencesStore.getState();
-  return getStoriesCatalog()
+  const catalog = await getStoriesCatalog();
+
+  return catalog
     .filter((category) => preferences.pinnedCategorySlugs.includes(category.slug))
     .slice(0, limit)
     .map((category) => ({
@@ -115,7 +122,8 @@ function getPinnedCategoriesViewModel(limit = 4) {
     }));
 }
 
-function buildRecommendedStories(limit = 4) {
+
+async function buildRecommendedStories(limit = 4) {
   const history = storiesHistoryStore.getState();
   const preferences = storiesPreferencesStore.getState();
   const recommendations = [];
@@ -137,9 +145,12 @@ function buildRecommendedStories(limit = 4) {
     });
   };
 
-  const lastStory = history.lastVisitedStoryKey ? getStoryByKey(history.lastVisitedStoryKey) : null;
+  const lastStory = history.lastVisitedStoryKey
+    ? await getStoryByKey(history.lastVisitedStoryKey)
+    : null;
+
   if (lastStory) {
-    const category = getStoryCategoryBySlug(lastStory.categorySlug);
+    const category = await getStoryCategoryBySlug(lastStory.categorySlug);
     const index = category?.stories.findIndex((story) => story.storyKey === lastStory.storyKey) ?? -1;
     if (category && index >= 0) {
       pushStory(category.stories[index + 1], 'أكمل السلسلة');
@@ -147,47 +158,48 @@ function buildRecommendedStories(limit = 4) {
     }
   }
 
-  preferences.pinnedCategorySlugs.forEach((slug) => {
-    const category = getStoryCategoryBySlug(slug);
-    if (!category) return;
+  for (const slug of preferences.pinnedCategorySlugs) {
+    const category = await getStoryCategoryBySlug(slug);
+    if (!category) continue;
     pushStory(category.stories[0], 'من التصنيفات المثبتة');
-  });
+  }
 
-  preferences.favoriteStoryKeys.forEach((storyKey) => {
-    pushStory(getStoryByKey(storyKey), 'من مفضلتك');
-  });
+  for (const storyKey of preferences.favoriteStoryKeys) {
+    pushStory(await getStoryByKey(storyKey), 'من مفضلتك');
+  }
 
-  history.bookmarkedStoryKeys.forEach((storyKey) => {
-    pushStory(getStoryByKey(storyKey), 'قصة محفوظة');
-  });
+  for (const storyKey of history.bookmarkedStoryKeys) {
+    pushStory(await getStoryByKey(storyKey), 'قصة محفوظة');
+  }
 
-  const storyOfDay = getStoryOfTheDay();
-  pushStory(storyOfDay, 'قصة اليوم');
+  pushStory(await getStoryOfTheDay(), 'قصة اليوم');
 
-  getStoriesCatalog()
+  const catalog = await getStoriesCatalog();
+  catalog
     .filter((category) => category.isFeatured)
     .forEach((category) => pushStory(category.stories[0], 'مقترحة لك'));
 
   return recommendations.slice(0, limit);
 }
 
-function getWeeklyReflectionViewModel() {
+
+async function getWeeklyReflectionViewModel() {
   const history = storiesHistoryStore.getState();
   const entries = Object.entries(history.dailyVisits || {}).sort((a, b) => a[0].localeCompare(b[0])).slice(-7);
   const categoryCounts = new Map();
   let totalVisits = 0;
 
-  entries.forEach(([, storyKeys]) => {
-    (storyKeys || []).forEach((storyKey) => {
-      const story = getStoryByKey(storyKey);
-      if (!story) return;
+  for (const [, storyKeys] of entries) {
+    for (const storyKey of storyKeys || []) {
+      const story = await getStoryByKey(storyKey);
+      if (!story) continue;
       totalVisits += 1;
       categoryCounts.set(story.categorySlug, (categoryCounts.get(story.categorySlug) || 0) + 1);
-    });
-  });
+    }
+  }
 
   const [topSlug, topCount] = Array.from(categoryCounts.entries()).sort((a, b) => b[1] - a[1])[0] || ['', 0];
-  const topCategory = topSlug ? getStoryCategoryBySlug(topSlug) : null;
+  const topCategory = topSlug ? await getStoryCategoryBySlug(topSlug) : null;
   const label = topCategory
     ? `الأكثر حضورًا هذا الأسبوع: ${topCategory.title}`
     : 'ابدأ هذا الأسبوع بقصة قصيرة واحدة كل يوم.';
@@ -205,14 +217,16 @@ function getWeeklyReflectionViewModel() {
   };
 }
 
-export function getStoriesCatalogViewModel({ filter = 'all', query = '' } = {}) {
+
+export async function getStoriesCatalogViewModel({ filter = 'all', query = '' } = {}) {
   const history = storiesHistoryStore.getState();
   const preferences = storiesPreferencesStore.getState();
   const normalizedQuery = String(query || '').trim();
-  const matchedStoryKeys = normalizedQuery ? new Set(searchStories(normalizedQuery)) : null;
+  const matchedStoryKeys = normalizedQuery ? new Set(await searchStories(normalizedQuery)) : null;
   const currentFilter = ['all', 'featured', 'favorites', 'recent', 'pinned'].includes(filter) ? filter : 'all';
+  const catalog = await getStoriesCatalog();
 
-  const cards = getStoriesCatalog()
+  const cards = catalog
     .map((category) => {
       const favoriteCount = category.stories.filter((story) => preferences.favoriteStoryKeys.includes(story.storyKey)).length;
       const recentCount = category.stories.filter((story) => history.recentStoryKeys.includes(story.storyKey)).length;
@@ -277,11 +291,11 @@ export function getStoriesCatalogViewModel({ filter = 'all', query = '' } = {}) 
   };
 }
 
-export function getStoriesResumeViewModel() {
+export async function getStoriesResumeViewModel() {
   const history = storiesHistoryStore.getState();
   const session = storiesSessionStore.getState();
   const storyKey = session.activeStoryKey || history.lastVisitedStoryKey;
-  const story = storyKey ? getStoryByKey(storyKey) : null;
+  const story = storyKey ? await getStoryByKey(storyKey) : null;
   if (!story) return null;
   return {
     storyKey: story.storyKey,
@@ -294,8 +308,8 @@ export function getStoriesResumeViewModel() {
   };
 }
 
-export function getStoryOfTheDayViewModel() {
-  const story = getStoryOfTheDay();
+export async function getStoryOfTheDayViewModel() {
+  const story = await getStoryOfTheDay();
   if (!story) return null;
   return {
     storyKey: story.storyKey,
@@ -308,35 +322,36 @@ export function getStoryOfTheDayViewModel() {
   };
 }
 
-export function getStoriesInsightsViewModel() {
+export async function getStoriesInsightsViewModel() {
   const history = storiesHistoryStore.getState();
   const preferences = storiesPreferencesStore.getState();
   const activeDays = Object.keys(history.dailyVisits || {}).slice(-7).filter((dateKey) => Array.isArray(history.dailyVisits[dateKey]) && history.dailyVisits[dateKey].length > 0).length;
   const streak = getCurrentStreak(history.dailyVisits || {});
+  const catalog = await getStoriesCatalog();
   return {
     activeDays,
     streak,
     favoriteCount: preferences.favoriteStoryKeys.length,
     bookmarkCount: history.bookmarkedStoryKeys.length,
     pinnedCount: preferences.pinnedCategorySlugs.length,
-    featuredCount: getStoriesCatalog().filter((category) => category.isFeatured).length,
+    featuredCount: catalog.filter((category) => category.isFeatured).length,
     hint: activeDays >= 4
       ? 'القراءة المنتظمة هذا الأسبوع ممتازة، استمر على نفس الهدوء.'
       : 'اختر قصة قصيرة واحدة يوميًا، الاستمرار أهم من الكثرة.'
   };
 }
 
-export function getStoriesRetentionViewModel() {
+export async function getStoriesRetentionViewModel() {
   return {
-    recentStories: getRecentStories(),
-    pinnedCategories: getPinnedCategoriesViewModel(),
-    recommendations: buildRecommendedStories(),
-    weeklyReflection: getWeeklyReflectionViewModel()
+    recentStories: await getRecentStories(),
+    pinnedCategories: await getPinnedCategoriesViewModel(),
+    recommendations: await buildRecommendedStories(),
+    weeklyReflection: await getWeeklyReflectionViewModel()
   };
 }
 
-export function getStoriesReaderViewModel(categoryKey, storyKey = '') {
-  const category = getStoryCategoryBySlug(categoryKey);
+export async function getStoriesReaderViewModel(categoryKey, storyKey = '') {
+  const category = await getStoryCategoryBySlug(categoryKey);
   if (!category) return null;
 
   const history = storiesHistoryStore.getState();
@@ -354,7 +369,7 @@ export function getStoriesReaderViewModel(categoryKey, storyKey = '') {
     isBookmarked: history.bookmarkedStoryKeys.includes(story.storyKey)
   }));
 
-  const recommendedNext = buildRecommendedStories(3)
+  const recommendedNext = (await buildRecommendedStories(3))
     .filter((story) => story.storyKey !== activeStory?.storyKey)
     .slice(0, 3);
 

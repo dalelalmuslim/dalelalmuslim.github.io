@@ -7,7 +7,6 @@ import {
     resolveAzkarSlug
 } from '../../../data/azkar/categories/manifest.js';
 import { getDuasManifest, getDuaManifestEntryByKey, resolveDuaSlug } from '../../../data/duas/manifest.js';
-import { STORIES_JSON } from '../../../data/stories/stories-data.js';
 import { getStoriesManifest, getStoryManifestEntryByKey, resolveStoryCategorySlug } from '../../../data/stories/manifest.js';
 import { DAILY_MESSAGES } from '../../../data/home/home-messages-data.js';
 import { getPublicContentVersionSnapshot } from '../../shared/contracts/public-content-manifest.js';
@@ -17,6 +16,7 @@ let legacyPayloadCache = null;
 let azkarCatalogCache = null;
 let duasPayloadCache = null;
 let duasCatalogCache = null;
+let storiesPayloadCache = null;
 let storiesCatalogCache = null;
 let dailyAyahsCache = null;
 
@@ -219,6 +219,22 @@ function makeExcerpt(text, limit = 140) {
     return `${safe.slice(0, limit).trim()}…`;
 }
 
+async function loadStoriesPayload() {
+    if (storiesPayloadCache) {
+        return storiesPayloadCache;
+    }
+
+    try {
+        const module = await import('../../../data/stories/stories-data.js');
+        storiesPayloadCache = module?.STORIES_JSON ?? null;
+    } catch (error) {
+        appLogger.error('[ContentLocalProvider] Failed to load stories payload', error);
+        storiesPayloadCache = { categories: [] };
+    }
+
+    return storiesPayloadCache;
+}
+
 export function makeStoryKey(categorySlug, storyId) {
     const safeSlug = resolveStoryCategorySlug(categorySlug);
     const numericId = Number(storyId);
@@ -383,12 +399,14 @@ export async function getAllDuaItems() {
     return catalog.flatMap((category) => category.items.map((item) => ({ ...item, category: category.title })));
 }
 
-export function getStoriesCatalog() {
+export async function getStoriesCatalog() {
     if (storiesCatalogCache) {
         return storiesCatalogCache;
     }
 
-    const sourceCategories = Array.isArray(STORIES_JSON?.categories) ? STORIES_JSON.categories : [];
+    const payload = await loadStoriesPayload();
+    const sourceCategories = Array.isArray(payload?.categories) ? payload.categories : [];
+
     storiesCatalogCache = getStoriesManifest().map((entry) => {
         const sourceCategory = sourceCategories.find((category) => category?.name === entry.title);
         const stories = Array.isArray(sourceCategory?.stories)
@@ -408,32 +426,32 @@ export function getStoriesCatalog() {
     return storiesCatalogCache;
 }
 
-export function getStoryCategoryBySlug(slug) {
+export async function getStoryCategoryBySlug(slug) {
     const safeSlug = resolveStoryCategorySlug(slug);
     if (!safeSlug) return null;
-    return getStoriesCatalog().find((category) => category.slug === safeSlug) || null;
+    return (await getStoriesCatalog()).find((category) => category.slug === safeSlug) || null;
 }
 
-export function getStoryCategoryByKey(key) {
+export async function getStoryCategoryByKey(key) {
     const entry = getStoryManifestEntryByKey(key);
     if (!entry) return null;
     return getStoryCategoryBySlug(entry.slug);
 }
 
-export function getStoryByKey(storyKey) {
+export async function getStoryByKey(storyKey) {
     if (typeof storyKey !== 'string' || !storyKey) return null;
-    return getAllStories().find((story) => story.storyKey === storyKey) || null;
+    return (await getAllStories()).find((story) => story.storyKey === storyKey) || null;
 }
 
-export function getStoryByCategoryAndId(categoryKey, storyId) {
-    const category = getStoryCategoryByKey(categoryKey);
+export async function getStoryByCategoryAndId(categoryKey, storyId) {
+    const category = await getStoryCategoryByKey(categoryKey);
     if (!category) return null;
     const key = makeStoryKey(category.slug, storyId);
     return getStoryByKey(key);
 }
 
-export function getAllStories() {
-    return getStoriesCatalog().flatMap((category) => category.stories);
+export async function getAllStories() {
+    return (await getStoriesCatalog()).flatMap((category) => category.stories);
 }
 
 export function getDailyMessages() {
