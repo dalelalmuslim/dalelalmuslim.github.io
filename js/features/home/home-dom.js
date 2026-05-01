@@ -11,6 +11,7 @@ export function cacheHomeDom() {
     cachedHomeDom = {
         // Daily ayah
         dailyAyahText:        document.getElementById('dailyAyahText'),
+        dailyAyahRef:         document.getElementById('dailyAyahRef'),
         // Daily message
         dailyMessageText:     document.getElementById('dailyMessageText'),
         // Progress strip
@@ -21,6 +22,7 @@ export function cacheHomeDom() {
         homeProgressStrip:    document.getElementById('homeProgressStrip'),
         // Smart resume card (single unified card)
         homeSmartResumeCard:  document.getElementById('homeSmartResumeCard'),
+        homeResumeIcon:       document.getElementById('homeResumeIcon'),
         homeResumeEyebrow:    document.getElementById('homeResumeEyebrow'),
         homeResumeTitle:      document.getElementById('homeResumeTitle'),
         homeResumeMeta:       document.getElementById('homeResumeMeta'),

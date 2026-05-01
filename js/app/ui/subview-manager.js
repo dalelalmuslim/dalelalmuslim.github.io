@@ -1,7 +1,15 @@
 import { clearActiveSubview, getActiveSubview, setActiveSubview } from './ui-state.js';
+import { appEventBus } from '../events/app-event-bus.js';
 import { hideUIElement, resolveElement, showUIElement, swapUIVisibility } from './visibility.js';
 
 const subviewCloseHandlers = new Map();
+
+function emitSubviewVisibilityChange(id, isVisible) {
+    appEventBus.emit('ui:subview-changed', {
+        subviewId: id,
+        isVisible: Boolean(isVisible)
+    });
+}
 
 const SUBVIEW_DEFINITIONS = Object.freeze({
     surahReader: {
@@ -55,6 +63,7 @@ export function openSubview(id, options = {}) {
         hideDisplay: options.containerDisplay ?? 'none'
     });
     setActiveSubview(definition.id);
+    emitSubviewVisibilityChange(definition.id, true);
     return true;
 }
 
@@ -74,6 +83,7 @@ export function closeSubview(id) {
     }
 
     subviewCloseHandlers.get(definition.id)?.();
+    emitSubviewVisibilityChange(definition.id, false);
     return true;
 }
 

@@ -9,6 +9,10 @@ import { appEventBus } from '../events/app-event-bus.js';
 // Sections that have a dedicated tab in the bottom nav.
 const NAV_SECTIONS = new Set(['home', 'azkar', 'masbaha', 'quran']);
 
+// Reader-like subviews need immersive space and use the top Back action instead.
+const NAV_HIDDEN_SUBVIEWS = new Set(['surahReader', 'storyCategoryContent']);
+const NAV_HIDDEN_HASHES = new Set(['#surah-reader', '#stories-reader']);
+
 const dom = {
     nav: null,
     moreBtn: null,
@@ -17,14 +21,70 @@ const dom = {
 };
 
 let drawerOpen = false;
+let subviewObserver = null;
 
 // ── DOM Setup ──────────────────────────────────────────────
 
 function cacheDom() {
-    dom.nav     = document.getElementById('bottomNav');
-    dom.moreBtn = dom.nav?.querySelector('[data-bottom-nav-more]') ?? null;
-    dom.drawer  = document.getElementById('moreDrawer');
+    dom.nav      = document.getElementById('bottomNav');
+    dom.moreBtn  = dom.nav?.querySelector('[data-bottom-nav-more]') ?? null;
+    dom.drawer   = document.getElementById('moreDrawer');
     dom.backdrop = document.getElementById('moreDrawerBackdrop');
+}
+
+// ── Immersive Subview Detection ────────────────────────────
+
+function isElementVisible(element) {
+    return Boolean(element && !element.hidden && !element.classList.contains('is-hidden'));
+}
+
+function isImmersiveSubviewActive() {
+    if (NAV_HIDDEN_HASHES.has(window.location.hash)) {
+        return true;
+    }
+
+    return [...NAV_HIDDEN_SUBVIEWS].some(id => isElementVisible(document.getElementById(id)));
+}
+
+function syncNavImmersiveState() {
+    setNavHiddenForSubview(isImmersiveSubviewActive());
+}
+
+function observeImmersiveSubviews() {
+    subviewObserver?.disconnect();
+
+    const targets = [...NAV_HIDDEN_SUBVIEWS]
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+    if (!targets.length) return;
+    if (typeof MutationObserver === 'undefined') {
+        syncNavImmersiveState();
+        return;
+    }
+
+    subviewObserver = new MutationObserver(() => syncNavImmersiveState());
+    targets.forEach(target => {
+        subviewObserver.observe(target, {
+            attributes: true,
+            attributeFilter: ['class', 'hidden', 'aria-hidden']
+        });
+    });
+
+    syncNavImmersiveState();
+}
+
+// ── Visibility ─────────────────────────────────────────────
+
+function setNavHiddenForSubview(isHidden) {
+    if (!dom.nav) return;
+
+    dom.nav.classList.toggle('is-hidden-for-subview', Boolean(isHidden));
+    document.body.classList.toggle('has-hidden-bottom-nav', Boolean(isHidden));
+
+    if (isHidden) {
+        closeDrawer();
+    }
 }
 
 // ── Active Tab ─────────────────────────────────────────────
@@ -90,13 +150,29 @@ export function initBottomNav() {
     if (!dom.nav) return;
 
     bindDrawerEvents();
+    observeImmersiveSubviews();
 
     // Close drawer and update active tab whenever a section changes.
     appEventBus.on('nav:section-changed', ({ sectionId } = {}) => {
         closeDrawer();
         if (sectionId) setActiveTab(sectionId);
+
+        // Some subviews are rendered after the section transition. Re-sync on the next frame.
+        requestAnimationFrame(() => {
+            observeImmersiveSubviews();
+            syncNavImmersiveState();
+        });
     });
+
+    appEventBus.on('ui:subview-changed', ({ subviewId } = {}) => {
+        if (!NAV_HIDDEN_SUBVIEWS.has(subviewId)) return;
+        syncNavImmersiveState();
+    });
+
+    window.addEventListener('popstate', () => requestAnimationFrame(syncNavImmersiveState));
+    window.addEventListener('hashchange', () => requestAnimationFrame(syncNavImmersiveState));
 
     // Reflect the initial route (app always starts on home).
     setActiveTab('home');
+    syncNavImmersiveState();
 }

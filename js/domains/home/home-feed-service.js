@@ -69,9 +69,12 @@ export function resolveDailyMessage(messages, now = Date.now()) {
     }
 
     // Use local time hours (not UTC) so the 6-hour cycle aligns with the user's timezone.
-    // E.g. a user at UTC+3: without this fix, "صباح" message could show at 3AM local time.
-    const localHour = new Date(now).getHours();
+    // Combine day-of-year + 6-hour period to rotate through the full message dataset,
+    // instead of pinning the Home surface to the first four entries forever.
+    const date = new Date(now);
+    const localHour = date.getHours();
     const period = Math.floor(localHour / 6); // 4 periods: 0–5, 6–11, 12–17, 18–23
-    const item = safeMessages[period % safeMessages.length];
+    const index = ((getDayOfYear(date) * 4) + period) % safeMessages.length;
+    const item = safeMessages[index];
     return item?.message || String(item || '—');
 }
