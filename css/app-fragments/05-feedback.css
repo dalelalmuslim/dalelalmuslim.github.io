@@ -1,31 +1,32 @@
 /* ==========================================
-   Toast
+   Feedback Layer
+   Toast, loading, empty, and error states.
    ========================================== */
+
+/* ── Toast ───────────────────────────────────────────────── */
 .app-toast {
     position: fixed;
     left: 50%;
-    bottom: 18px;
+    bottom: calc(var(--bottom-nav-height, 64px) + 18px + env(safe-area-inset-bottom, 0px));
     transform: translateX(-50%) translateY(120%);
     width: min(92vw, 420px);
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border-radius: 18px;
-    border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
-    background: color-mix(in srgb, var(--card-bg) 96%, white);
+    gap: var(--space-3, 12px);
+    padding: 13px 15px;
+    border-radius: var(--radius-lg);
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    background: var(--surface-glass, color-mix(in srgb, var(--card-bg) 92%, transparent));
     color: var(--text-main);
-    box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.12),
-        0 6px 18px rgba(0, 0, 0, 0.07);
+    box-shadow: var(--shadow-lg);
     z-index: 9999;
     opacity: 0;
     pointer-events: none;
     transition:
-        transform 0.26s ease,
-        opacity 0.26s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+        transform 0.24s ease,
+        opacity 0.24s ease;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .app-toast--visible {
@@ -34,14 +35,14 @@
 }
 
 .app-toast__icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 1.05rem;
+    font-size: 1rem;
 }
 
 .app-toast__body {
@@ -50,47 +51,45 @@
 }
 
 .app-toast__label {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 800;
     margin-bottom: 2px;
-    opacity: 0.85;
+    opacity: 0.86;
 }
 
 .app-toast__message {
-    font-size: 0.95rem;
+    font-size: 0.94rem;
     font-weight: 700;
     line-height: 1.45;
     word-break: break-word;
 }
 
 .app-toast--success .app-toast__icon {
-    background: color-mix(in srgb, var(--primary) 14%, white);
+    background: color-mix(in srgb, var(--primary) 14%, var(--card-bg));
     color: var(--primary);
 }
 
 .app-toast--error .app-toast__icon {
-    background: color-mix(in srgb, #ef4444 14%, white);
+    background: color-mix(in srgb, #ef4444 14%, var(--card-bg));
     color: #ef4444;
 }
 
 .app-toast--warning .app-toast__icon {
-    background: color-mix(in srgb, #f59e0b 16%, white);
+    background: color-mix(in srgb, #f59e0b 16%, var(--card-bg));
     color: #d97706;
 }
 
 .app-toast--info .app-toast__icon {
-    background: color-mix(in srgb, var(--accent) 16%, white);
+    background: color-mix(in srgb, var(--accent) 16%, var(--card-bg));
     color: var(--accent);
 }
 
-/* ==========================================
-   Skeleton Loading
-   ========================================== */
+/* ── Skeleton Loading ─────────────────────────────────────── */
 .skeleton {
     position: relative;
     overflow: hidden;
-    background: color-mix(in srgb, var(--bg-color) 88%, white);
-    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface-soft, var(--bg-color)) 82%, var(--card-bg));
+    border-radius: var(--radius-sm);
 }
 
 .skeleton::after {
@@ -100,7 +99,7 @@
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.45),
+        color-mix(in srgb, white 42%, transparent),
         transparent
     );
     animation: skeleton-loading 1.4s infinite;
@@ -118,7 +117,7 @@
 
 .skeleton-card {
     min-height: 80px;
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
 }
 
 .skeleton-text {
@@ -128,11 +127,69 @@
 
 .skeleton-text-lg {
     height: 22px;
-    border-radius: 6px;
+    border-radius: 7px;
 }
 
 .skeleton-circle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+}
+
+/* ── Generic feedback blocks ─────────────────────────────── */
+.app-empty,
+.app-error,
+.app-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2, 8px);
+    min-height: 112px;
+    padding: var(--space-5, 20px);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised, var(--card-bg));
+    border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    color: var(--text-sub);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.app-empty__icon,
+.app-error__icon,
+.app-loading__icon {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    background: var(--surface-soft, var(--primary-light));
+    color: var(--primary);
+}
+
+.app-empty__title,
+.app-error__title,
+.app-loading__title {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.app-empty__text,
+.app-error__text,
+.app-loading__text {
+    max-width: 34ch;
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+.app-error {
+    border-color: color-mix(in srgb, #ef4444 16%, transparent);
+}
+
+.app-error__icon {
+    background: color-mix(in srgb, #ef4444 12%, var(--card-bg));
+    color: #dc2626;
 }

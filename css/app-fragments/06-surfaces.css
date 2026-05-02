@@ -1,15 +1,135 @@
 /* ==========================================
    Surfaces & Generic UI Helpers
    ========================================== */
+
+/* ── Surface primitives ──────────────────────────────────── */
+.app-surface,
+.app-card {
+    background: var(--surface-raised, var(--card-bg));
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    color: var(--text-main);
+}
+
+.app-card {
+    padding: var(--space-4, 16px);
+}
+
+.app-surface--soft {
+    background: var(--surface-soft, var(--primary-light));
+    border-color: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.app-surface--accent {
+    background: var(--surface-accent, var(--accent-light));
+    border-color: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.app-surface--glass {
+    background: var(--surface-glass, color-mix(in srgb, var(--card-bg) 84%, transparent));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.app-card--compact {
+    padding: var(--space-3, 12px);
+    border-radius: var(--radius-md);
+}
+
+.app-card--flat {
+    box-shadow: none;
+}
+
+.app-card--interactive {
+    cursor: pointer;
+    transition:
+        transform 0.16s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+}
+
+@media (hover: hover) {
+    .app-card--interactive:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--primary) 20%, var(--border));
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.app-card--interactive:active {
+    transform: scale(0.985);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── Section headers ─────────────────────────────────────── */
+.app-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3, 12px);
+    margin-bottom: var(--space-3, 12px);
+}
+
+.app-section-head__content {
+    min-width: 0;
+}
+
+.app-section-head__eyebrow {
+    margin: 0 0 2px;
+    color: var(--primary);
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.app-section-head__title {
+    margin: 0;
+    color: var(--text-main);
+    font-size: clamp(1.1rem, 4.2vw, 1.32rem);
+    font-weight: 900;
+    line-height: 1.35;
+}
+
+.app-section-head__subtitle {
+    margin: 4px 0 0;
+    color: var(--text-sub);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.55;
+}
+
+/* ── Rows / reading surfaces ─────────────────────────────── */
+.app-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3, 12px);
+}
+
+.app-row--start {
+    justify-content: flex-start;
+}
+
+.app-reading-surface {
+    background: var(--surface-raised, var(--card-bg));
+    border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+    border-radius: var(--radius-xl, var(--radius-lg));
+    padding: clamp(16px, 4vw, 24px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── Legacy compatible helpers ───────────────────────────── */
 .surface-soft {
-    background: var(--bg-color);
-    border: 1px solid var(--border);
+    background: var(--surface-soft, var(--bg-color));
+    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
     border-radius: var(--radius-md);
 }
 
 .divider {
     border: 0;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
     margin: 20px 0;
 }
 
