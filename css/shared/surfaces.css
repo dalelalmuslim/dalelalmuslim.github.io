@@ -2,15 +2,12 @@
    Shared Surfaces & Component Primitives
    ========================================== */
 .cardx {
-    background: var(--card-bg);
-    background: color-mix(in srgb, var(--card-bg) 97%, white);
+    background: var(--surface-raised, var(--card-bg));
     border: 1px solid var(--border);
     border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
     border-radius: var(--radius-lg);
     padding: 16px;
-    box-shadow:
-        0 10px 24px rgba(0, 0, 0, 0.035),
-        0 2px 8px rgba(0, 0, 0, 0.03);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 16px;
     transition:
         background-color 0.25s ease,
@@ -42,7 +39,7 @@
 .cardx--hero {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 9%, var(--card-bg)), var(--card-bg));
+    background: linear-gradient(135deg, var(--surface-soft, var(--primary-light)), var(--surface-raised, var(--card-bg)));
 }
 
 .cardx--hero .fa-quote-left {
@@ -55,7 +52,7 @@
 }
 
 .cardx--message {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 7%, var(--card-bg)), var(--card-bg));
+    background: linear-gradient(135deg, var(--surface-accent, var(--accent-light)), var(--surface-raised, var(--card-bg)));
 }
 
 .flex-gap {

@@ -1,45 +1,183 @@
 /* ============================================================
-   Home Section Styles
-   Covers: ayah card, smart resume card, progress strip,
-           daily message, sections grid.
-   All colors use design tokens — no hardcoded values.
+   Home 2026 Section Styles
+   Responsibility: premium mobile-first Home dashboard.
+   All colors use design tokens — no hardcoded theme coupling.
    ============================================================ */
 
-/* ── Daily Ayah Card ──────────────────────────────────────── */
+.section--home {
+    width: min(100%, var(--home-max, 760px));
+    margin-inline: auto;
+}
+
+.section--home .home-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* ── Hero ─────────────────────────────────────────────────── */
+
+.section--home .home-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid color-mix(in srgb, var(--primary) 13%, var(--border));
+    border-radius: 24px;
+    padding: clamp(13px, 3.2vw, 18px);
+    background:
+        linear-gradient(
+            140deg,
+            color-mix(in srgb, var(--primary) 9%, var(--card-bg)) 0%,
+            var(--surface-raised, var(--card-bg)) 54%,
+            color-mix(in srgb, var(--accent) 9%, var(--card-bg)) 100%
+        );
+    box-shadow: 0 4px 12px rgba(18, 91, 80, 0.035);
+}
+
+.section--home .home-hero__decor {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.section--home .home-hero__decor--primary {
+    inset-block-start: -72px;
+    inset-inline-end: -68px;
+    width: 146px;
+    height: 146px;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.section--home .home-hero__decor--accent {
+    inset-block-end: -52px;
+    inset-inline-start: -48px;
+    width: 104px;
+    height: 104px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.section--home .home-hero__pattern {
+    position: absolute;
+    inset-block-start: 28px;
+    inset-inline-start: 20px;
+    width: 82px;
+    height: 82px;
+    opacity: 0.045;
+    background:
+        radial-gradient(circle at 50% 0%, transparent 34%, var(--primary) 35% 38%, transparent 39%),
+        radial-gradient(circle at 0% 50%, transparent 34%, var(--primary) 35% 38%, transparent 39%),
+        radial-gradient(circle at 100% 50%, transparent 34%, var(--primary) 35% 38%, transparent 39%),
+        radial-gradient(circle at 50% 100%, transparent 34%, var(--primary) 35% 38%, transparent 39%);
+    pointer-events: none;
+}
+
+.section--home .home-hero__intro {
+    position: relative;
+    max-width: 520px;
+    margin-bottom: var(--space-2, 8px);
+}
+
+.section--home .home-hero__eyebrow,
+.section--home .home-section-heading__subtitle,
+.section--home .home-ayah-card__ref,
+.section--home .home-section-btn__desc {
+    color: var(--text-sub);
+}
+
+.section--home .home-hero__eyebrow {
+    margin: 0 0 4px;
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.section--home .home-hero__title {
+    margin: 0;
+    color: var(--text-main);
+    font-size: clamp(1.45rem, 5.8vw, 2rem);
+    font-weight: 600;
+    line-height: 1.28;
+    letter-spacing: -0.25px;
+}
+
+.section--home .home-hero__subtitle {
+    max-width: 32rem;
+    margin: var(--space-1, 4px) 0 0;
+    color: color-mix(in srgb, var(--text-sub) 88%, transparent);
+    font-size: 0.86rem;
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+/* ── Daily Ayah ───────────────────────────────────────────── */
 
 .section--home .home-ayah-card {
     position: relative;
-    background: linear-gradient(
-        145deg,
-        color-mix(in srgb, var(--primary) 8%, var(--card-bg)),
-        var(--card-bg)
-    );
-    padding: 20px 18px 18px;
-    margin-bottom: 12px;
+    padding: 10px 12px 12px;
+    border: 1px solid color-mix(in srgb, var(--primary) 8%, var(--border));
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--surface-glass, var(--card-bg)) 88%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.section--home .home-ayah-card__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--accent) 13%, var(--card-bg));
+    color: color-mix(in srgb, var(--accent) 74%, var(--text-main));
+    font-size: 0.72rem;
+    font-weight: 800;
 }
 
 .section--home .home-ayah-card__text {
-    font-size: 1.25rem;
-    line-height: 2.2;
-    color: var(--text-main);
+    position: relative;
     margin: 0;
+    color: var(--text-main);
+    font-size: clamp(1.02rem, 3.25vw, 1.22rem);
+    line-height: 1.68;
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Skeleton pulse while loading */
 .section--home .home-ayah-card__text:empty {
-    min-height: 2.8em;
-    border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--primary) 9%, var(--card-bg));
+    min-height: 2.6em;
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--primary) 8%, var(--card-bg));
     animation: home-skeleton-pulse 1.6s ease-in-out infinite;
 }
 
-/* Error state */
 .section--home .home-ayah-card__text[data-load-error="true"] {
     font-family: "Tajawal", sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     color: var(--text-sub);
     font-style: italic;
-    line-height: 1.6;
+    line-height: 1.55;
+}
+
+.section--home .home-ayah-card__ref {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    margin: 7px 0 0;
+    padding: 2px 9px;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--primary) 6%, var(--card-bg));
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.section--home .home-ayah-card__ref:empty {
+    display: none;
 }
 
 @keyframes home-skeleton-pulse {
@@ -47,229 +185,302 @@
     50%       { opacity: 0.45; }
 }
 
-/* ── Smart Resume Card ────────────────────────────────────── */
+/* ── Overview ─────────────────────────────────────────────── */
 
-.section--home .home-resume-card {
-    margin-bottom: 12px;
-    padding: 14px 16px;
-    transition: opacity 0.22s ease, transform 0.22s ease;
+.section--home .home-section-heading {
+    margin-bottom: var(--space-2, 8px);
 }
 
-.section--home .home-resume-card.is-hidden {
-    opacity: 0;
-    transform: translateY(-6px);
-    pointer-events: none;
-}
-
-.section--home .home-resume-card__body {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-}
-
-.section--home .home-resume-card__info {
-    min-width: 0;
-    flex: 1;
-}
-
-.section--home .home-resume-card__eyebrow {
-    font-size: 0.78rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.section--home .home-resume-card__title {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin: 0 0 4px;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.section--home .home-resume-card__meta {
-    font-size: 0.82rem;
+.section--home .home-section-heading__title {
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: var(--text-main);
+    font-size: clamp(1.02rem, 3.4vw, 1.18rem);
+    font-weight: 800;
+    line-height: 1.35;
 }
 
-.section--home .home-resume-card__action {
-    flex-shrink: 0;
-    padding: 9px 16px;
-    font-size: 0.9rem;
+.section--home .home-section-heading__subtitle {
+    margin: 4px 0 0;
+    font-size: 0.84rem;
+    font-weight: 600;
+    line-height: 1.45;
 }
-
-@media (max-width: 380px) {
-    .section--home .home-resume-card__body {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-    .section--home .home-resume-card__action {
-        width: 100%;
-    }
-}
-
-/* ── Progress Strip ───────────────────────────────────────── */
 
 .section--home .home-progress-strip {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    background: var(--primary-light);
-    border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
-    border-radius: var(--radius-md);
-    padding: 12px 10px;
-    margin-bottom: 12px;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
 }
 
 .section--home .home-progress-strip__item {
+    min-width: 0;
+    min-height: 72px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 3px;
-    flex: 1;
+    padding: 7px 5px;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    background: var(--surface-raised, var(--card-bg));
+    box-shadow: 0 4px 12px rgba(18, 91, 80, 0.035);
+}
+
+.section--home .home-progress-strip__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--surface-soft, var(--primary-light));
+    color: var(--primary);
+    font-size: 0.86rem;
 }
 
 .section--home .home-progress-strip__value {
-    font-size: clamp(1rem, 4vw, 1.25rem);
+    color: var(--text-main);
+    font-size: clamp(0.94rem, 3.4vw, 1.08rem);
     font-weight: 800;
-    color: var(--primary);
     line-height: 1;
+    letter-spacing: -0.2px;
 }
 
 .section--home .home-progress-strip__label {
-    font-size: 0.72rem;
-    font-weight: 600;
     color: var(--text-sub);
-    line-height: 1;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
-.section--home .home-progress-strip__sep {
-    width: 1px;
-    height: 28px;
-    background: color-mix(in srgb, var(--primary) 20%, transparent);
-    flex-shrink: 0;
+.section--home .home-progress-strip__item--progress .home-progress-strip__value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid color-mix(in srgb, var(--primary) 22%, var(--border));
+    color: var(--primary);
+    font-size: 0.82rem;
 }
 
 /* ── Daily Message ────────────────────────────────────────── */
 
 .section--home .home-message {
-    margin-bottom: 16px;
-    padding: 0 4px;
+    margin: 0;
+    padding: 12px 13px 14px;
+    border: 1px solid color-mix(in srgb, var(--accent) 15%, var(--border));
+    border-radius: 20px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, var(--card-bg)), var(--surface-raised, var(--card-bg)));
+    box-shadow: var(--shadow-sm);
+}
+
+.section--home .home-message__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2, 8px);
+    margin-bottom: 7px;
+    color: color-mix(in srgb, var(--accent) 72%, var(--text-main));
+}
+
+.section--home .home-message__title {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 700;
 }
 
 .section--home .home-message__text {
-    font-size: 1.05rem;
-    line-height: 2;
-    color: var(--text-sub);
-    text-align: center;
     margin: 0;
+    color: var(--text-main);
+    font-size: clamp(0.98rem, 3.5vw, 1.12rem);
+    line-height: 1.7;
+    text-align: start;
 }
 
 /* ── Sections Grid ────────────────────────────────────────── */
 
+.section--home .home-section-heading--explore {
+    margin-top: var(--space-1, 4px);
+}
+
 .section--home .home-sections-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
 }
 
 .section--home .home-section-btn {
+    position: relative;
+    min-width: 0;
+    min-height: 74px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 7px;
     width: 100%;
-    padding: 14px;
-    background: var(--card-bg);
-    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-    border-radius: var(--radius-lg);
+    padding: 9px 9px;
+    border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+    border-radius: 20px;
+    background: var(--surface-raised, var(--card-bg));
+    color: var(--text-main);
     cursor: pointer;
     text-align: right;
+    box-shadow: 0 6px 18px rgba(18, 91, 80, 0.045);
     -webkit-tap-highlight-color: transparent;
     transition:
         transform 0.16s ease,
         box-shadow 0.18s ease,
-        border-color 0.18s ease;
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.03),
-        0 1px 3px rgba(0, 0, 0, 0.025);
+        border-color 0.18s ease,
+        background-color 0.18s ease;
 }
 
 .section--home .home-section-btn:active {
-    transform: scale(0.97);
+    transform: scale(0.975);
     box-shadow: none;
 }
 
-.section--home .home-section-btn:hover {
-    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.05),
-        0 2px 6px rgba(0, 0, 0, 0.03);
+@media (hover: hover) {
+    .section--home .home-section-btn:hover {
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
+        box-shadow: var(--shadow-md);
+    }
 }
 
 .section--home .home-section-btn__icon {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
-    background: var(--primary-light);
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--surface-soft, var(--primary-light)), color-mix(in srgb, var(--accent) 7%, var(--card-bg)));
     color: var(--primary);
-    font-size: 1.15rem;
+    font-size: 0.96rem;
+}
+
+.section--home .home-section-btn__copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.section--home .home-section-btn__label,
+.section--home .home-section-btn__desc {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .section--home .home-section-btn__label {
-    font-size: 0.92rem;
-    font-weight: 700;
     color: var(--text-main);
-    line-height: 1.4;
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1.25;
 }
 
-@media (max-width: 480px) {
+.section--home .home-section-btn__desc {
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+    .section--home .home-stack {
+        gap: 11px;
+    }
+
+    .section--home .home-hero {
+        border-radius: 23px;
+    }
+
+    .section--home .home-progress-strip {
+        gap: 6px;
+    }
+
     .section--home .home-sections-grid {
         gap: 8px;
     }
 
     .section--home .home-section-btn {
+        min-height: 72px;
+        padding: 9px 8px;
+    }
+}
+
+@media (max-width: 420px) {
+    .section--home .home-progress-strip__item {
+        min-height: 70px;
+        border-radius: 16px;
+    }
+
+    .section--home .home-progress-strip__icon {
+        width: 26px;
+        height: 26px;
+        font-size: 0.78rem;
+    }
+
+    .section--home .home-progress-strip__value {
+        font-size: 0.96rem;
+    }
+
+    .section--home .home-progress-strip__item--progress .home-progress-strip__value {
+        width: 38px;
+        height: 38px;
+        border-width: 3px;
+        font-size: 0.76rem;
+    }
+
+    .section--home .home-section-btn {
         flex-direction: column;
-        align-items: center;
         justify-content: center;
         text-align: center;
-        gap: 8px;
-        padding: 14px 10px;
-        min-height: 96px;
+        gap: 6px;
+        min-height: 80px;
+        padding: 9px 7px;
     }
 
     .section--home .home-section-btn__icon {
-        width: 46px;
-        height: 46px;
-        font-size: 1.2rem;
+        width: 34px;
+        height: 34px;
     }
 
     .section--home .home-section-btn__label {
-        font-size: 0.85rem;
+        font-size: 0.86rem;
+    }
+
+    .section--home .home-section-btn__desc {
+        font-size: 0.68rem;
     }
 }
 
 @media (max-width: 360px) {
-    .section--home .home-section-btn {
-        min-height: 88px;
-        padding: 12px 8px;
+    .section--home .home-hero {
+        padding: 13px;
     }
 
-    .section--home .home-section-btn__label {
-        font-size: 0.8rem;
+    .section--home .home-progress-strip {
+        gap: 6px;
+    }
+
+    .section--home .home-progress-strip__label {
+        font-size: 0.66rem;
+    }
+
+    .section--home .home-section-btn {
+        min-height: 78px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section--home .home-ayah-card__text:empty {
+        animation: none;
     }
 }

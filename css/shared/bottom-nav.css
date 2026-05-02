@@ -5,7 +5,7 @@
    ============================================================ */
 
 :root {
-    --bottom-nav-height: 60px;
+    --bottom-nav-height: 72px;
 }
 
 /* Override base body padding — bottom nav owns this space */
@@ -13,88 +13,122 @@ body {
     padding-bottom: 0;
 }
 
-/* ── Bar ──────────────────────────────────────────────────── */
+/* Bottom-nav clearance is global because the floating bar overlays every section. */
+.page {
+    padding-bottom: calc(var(--bottom-nav-height, 72px) + 18px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Floating Bar ─────────────────────────────────────────── */
 
 .bottom-nav {
     position: fixed;
-    bottom: 0;
-    inset-inline: 0;
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
+    inset-inline: max(10px, env(safe-area-inset-left, 0px)) max(10px, env(safe-area-inset-right, 0px));
     z-index: 900;
-    display: flex;
-    align-items: stretch;
-    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: color-mix(in srgb, var(--card-bg) 90%, transparent);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
-    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.055);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: center;
+    height: 58px;
+    padding: 4px;
+    border: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
+    border-radius: 24px;
+    background: var(--surface-glass, color-mix(in srgb, var(--card-bg) 88%, transparent));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 10px 28px rgba(18, 91, 80, 0.12);
+    transition: opacity 0.12s ease, visibility 0.12s ease, transform 0.14s ease;
+}
+
+
+.bottom-nav.is-hidden-for-subview {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(calc(100% + 10px));
+}
+
+body.has-hidden-bottom-nav .page {
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
 }
 
 /* ── Tab ──────────────────────────────────────────────────── */
 
 .bottom-nav__tab {
-    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    height: 48px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 6px 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
+    gap: 3px;
+    padding: 3px 2px;
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
     color: var(--text-sub);
+    cursor: pointer;
     font-family: "Tajawal", sans-serif;
-    -webkit-tap-highlight-color: transparent;
     position: relative;
-    transition: color 0.18s ease;
-    /* min tap target */
-    min-height: 48px;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease,
+        transform 0.18s ease;
 }
 
 .bottom-nav__tab i {
-    font-size: 1.18rem;
+    font-size: 1.02rem;
     line-height: 1;
     transition: transform 0.18s ease;
     pointer-events: none;
 }
 
 .bottom-nav__label {
-    font-size: 10px;
-    font-weight: 600;
+    max-width: 100%;
+    font-size: 9px;
+    font-weight: 700;
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     pointer-events: none;
 }
 
-/* Active indicator: thin line at top */
 .bottom-nav__tab::before {
     content: '';
     position: absolute;
-    top: 0;
-    inset-inline: 28%;
-    height: 2.5px;
-    border-radius: 0 0 3px 3px;
+    inset-block-start: 6px;
+    inset-inline: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
     background: var(--primary);
-    transform: scaleX(0);
-    transition: transform 0.22s ease;
+    opacity: 0;
+    transform: translateX(50%) scale(0.4);
+    transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .bottom-nav__tab.is-active {
     color: var(--primary);
+    background: var(--surface-soft, var(--primary-light));
 }
 
 .bottom-nav__tab.is-active i {
-    transform: scale(1.1);
+    transform: translateY(-1px) scale(1.08);
 }
 
 .bottom-nav__tab.is-active::before {
-    transform: scaleX(1);
+    opacity: 1;
+    transform: translateX(50%) scale(1);
 }
 
-/* Center tab (المسبحة) — subtle emphasis, no floating button */
+.bottom-nav__tab:active {
+    transform: scale(0.96);
+}
+
 .bottom-nav__tab--center i {
-    font-size: 1.28rem;
+    font-size: 1.1rem;
 }
 
 /* ── More Drawer Overlay ──────────────────────────────────── */
@@ -131,10 +165,9 @@ body {
     bottom: 0;
     inset-inline: 0;
     background: var(--card-bg);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-radius: 26px 26px 0 0;
     padding: 10px 18px;
-    /* Leave space above the bottom nav */
-    padding-bottom: calc(var(--bottom-nav-height) + max(12px, env(safe-area-inset-bottom, 12px)));
+    padding-bottom: calc(var(--bottom-nav-height) + max(22px, env(safe-area-inset-bottom, 12px)));
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
@@ -154,7 +187,7 @@ body {
 
 .more-drawer__title {
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--text-sub);
     text-align: center;
     margin-bottom: 14px;
@@ -181,7 +214,7 @@ body {
     border-radius: var(--radius-md);
     cursor: pointer;
     font-size: 0.82rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-main);
     font-family: "Tajawal", sans-serif;
     -webkit-tap-highlight-color: transparent;
@@ -200,8 +233,33 @@ body {
     align-items: center;
     justify-content: center;
     background: var(--primary-light);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     color: var(--primary);
     font-size: 1.15rem;
     flex-shrink: 0;
+}
+
+@media (min-width: 720px) {
+    .bottom-nav {
+        width: min(540px, calc(100% - 32px));
+        margin-inline: auto;
+    }
+}
+
+@media (max-width: 360px) {
+    .bottom-nav {
+        inset-inline: 8px;
+        height: 62px;
+        border-radius: 24px;
+    }
+
+    .bottom-nav__tab {
+        min-height: 50px;
+        height: 50px;
+        border-radius: 19px;
+    }
+
+    .bottom-nav__label {
+        font-size: 9px;
+    }
 }

@@ -65,89 +65,134 @@
 <section aria-hidden="false" class="tab-content active section section--home" id="home" role="tabpanel">
 <h2 class="sr-only">دليل المسلم - الصفحة الرئيسية</h2>
 
-<!-- آية اليوم -->
-<article class="home-ayah-card cardx">
+<div class="home-stack">
+
+<!-- 2026 Home Hero -->
+<article class="home-hero" aria-label="لوحة الترحيب وآية اليوم">
+<div class="home-hero__decor home-hero__decor--primary" aria-hidden="true"></div>
+<div class="home-hero__decor home-hero__decor--accent" aria-hidden="true"></div>
+<div class="home-hero__pattern" aria-hidden="true"></div>
+
+<div class="home-hero__intro">
+<p class="home-hero__eyebrow">السلام عليك</p>
+<p class="home-hero__subtitle">ابدأ بخطوة صغيرة، وارجع لما ينفع قلبك كل يوم.</p>
+</div>
+
+<div class="home-ayah-card" aria-label="آية اليوم">
+<div class="home-ayah-card__label">
+<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+<span>آية اليوم</span>
+</div>
 <p class="home-ayah-card__text amiri-text" id="dailyAyahText" aria-live="polite">جاري التحميل...</p>
+<p class="home-ayah-card__ref" id="dailyAyahRef" aria-live="polite"></p>
+</div>
 </article>
 
-<!-- Smart Resume Card: Azkar priority > Quran. Populated and shown/hidden by JS. -->
-<div class="home-resume-card cardx is-hidden" id="homeSmartResumeCard" aria-live="polite" aria-hidden="true">
-<div class="home-resume-card__body">
-<div class="home-resume-card__info">
-<p class="home-resume-card__eyebrow muted" id="homeResumeEyebrow"></p>
-<h3 class="home-resume-card__title" id="homeResumeTitle"></h3>
-<p class="home-resume-card__meta muted" id="homeResumeMeta"></p>
-</div>
-<button class="btn btn--primary home-resume-card__action" id="homeResumeButton" type="button" aria-label="استئناف">
-<span id="homeResumeActionText">استئناف</span>
-</button>
-</div>
-</div>
 
 <!-- Progress Strip -->
+<section class="home-overview" aria-labelledby="homeOverviewTitle">
+<div class="home-section-heading">
+<h3 class="home-section-heading__title" id="homeOverviewTitle">نظرة سريعة على اليوم</h3>
+</div>
 <div class="home-progress-strip" id="homeProgressStrip" aria-label="ملخص التقدم اليومي">
 <div class="home-progress-strip__item">
+<span class="home-progress-strip__icon" aria-hidden="true"><i class="fa-solid fa-fire"></i></span>
 <span class="home-progress-strip__value" id="miniStreak" aria-live="polite">0</span>
 <span class="home-progress-strip__label">الالتزام</span>
 </div>
-<span class="home-progress-strip__sep" aria-hidden="true"></span>
 <div class="home-progress-strip__item">
+<span class="home-progress-strip__icon" aria-hidden="true"><i class="fa-solid fa-fingerprint"></i></span>
 <span class="home-progress-strip__value" id="miniTasbeeh" aria-live="polite">0</span>
 <span class="home-progress-strip__label">تسبيح</span>
 </div>
-<span class="home-progress-strip__sep" aria-hidden="true"></span>
 <div class="home-progress-strip__item">
+<span class="home-progress-strip__icon" aria-hidden="true"><i class="fa-regular fa-circle-check"></i></span>
 <span class="home-progress-strip__value" id="miniTasks" aria-live="polite">0/0</span>
 <span class="home-progress-strip__label">مهام</span>
 </div>
-<span class="home-progress-strip__sep" aria-hidden="true"></span>
-<div class="home-progress-strip__item">
+<div class="home-progress-strip__item home-progress-strip__item--progress">
 <span class="home-progress-strip__value" id="miniProgress" aria-live="polite">0%</span>
 <span class="home-progress-strip__label">إنجاز</span>
 </div>
 </div>
+</section>
 
 <!-- رسالة اليوم -->
-<div class="home-message">
-<p class="home-message__text amiri-text" id="dailyMessageText" aria-live="polite"></p>
+<article class="home-message" aria-labelledby="homeMessageTitle">
+<div class="home-message__head">
+<h3 class="home-message__title" id="homeMessageTitle">رسالة اليوم</h3>
+<i class="fa-regular fa-heart" aria-hidden="true"></i>
 </div>
+<p class="home-message__text amiri-text" id="dailyMessageText" aria-live="polite"></p>
+</article>
 
 <!-- أقسام التطبيق -->
+<section class="home-explore" aria-labelledby="homeExploreTitle">
+<div class="home-section-heading home-section-heading--explore">
+<h3 class="home-section-heading__title" id="homeExploreTitle">استكشف الأقسام</h3>
+<p class="home-section-heading__subtitle">كل أدواتك اليومية في مكان واحد.</p>
+</div>
 <nav class="home-sections-grid no-select" id="homeSectionsGrid" aria-label="أقسام التطبيق الرئيسية">
 <button class="home-section-btn" data-nav-section="masbaha" data-nav-title="المسبحة الذكية" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-fingerprint"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-fingerprint"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">المسبحة الذكية</span>
+<span class="home-section-btn__desc">عداد وتسبيح يومي</span>
+</span>
 </button>
 <button class="home-section-btn" data-nav-section="azkar" data-nav-title="الأذكار اليومية" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-moon"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-moon"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">الأذكار اليومية</span>
-</button>
-<button class="home-section-btn" data-nav-section="duas" data-nav-title="الأدعية" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-hands-praying"></i></div>
-<span class="home-section-btn__label">الأدعية</span>
+<span class="home-section-btn__desc">ورد الصباح والمساء</span>
+</span>
 </button>
 <button class="home-section-btn" data-nav-section="quran" data-nav-title="القرآن الكريم" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-book-quran"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-book-quran"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">القرآن الكريم</span>
+<span class="home-section-btn__desc">قراءة واستئناف</span>
+</span>
+</button>
+<button class="home-section-btn" data-nav-section="duas" data-nav-title="الأدعية" type="button">
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-hands-praying"></i></span>
+<span class="home-section-btn__copy">
+<span class="home-section-btn__label">الأدعية</span>
+<span class="home-section-btn__desc">أدعية مختارة</span>
+</span>
 </button>
 <button class="home-section-btn" data-nav-section="tasks" data-nav-title="المهام اليومية" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-list-check"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-list-check"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">المهام اليومية</span>
+<span class="home-section-btn__desc">تنظيم ومتابعة</span>
+</span>
 </button>
 <button class="home-section-btn" data-nav-section="stats" data-nav-title="الإحصائيات والمتابعة" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-chart-line"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-chart-line"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">الإحصائيات</span>
+<span class="home-section-btn__desc">تقدمك اليومي</span>
+</span>
 </button>
 <button class="home-section-btn" data-nav-section="names" data-nav-title="أسماء الله الحسنى" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-star-and-crescent"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-star-and-crescent"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">أسماء الله</span>
+<span class="home-section-btn__desc">معانٍ وتدبر</span>
+</span>
 </button>
 <button class="home-section-btn" data-nav-section="stories" data-nav-title="قصص وعبر" type="button">
-<div class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-book-journal-whills"></i></div>
+<span class="home-section-btn__icon"><i aria-hidden="true" class="fa-solid fa-book-journal-whills"></i></span>
+<span class="home-section-btn__copy">
 <span class="home-section-btn__label">قصص وعبر</span>
+<span class="home-section-btn__desc">حكمة وموعظة</span>
+</span>
 </button>
 </nav>
+</section>
 
+</div>
 </section>
 
 <section aria-hidden="true" class="tab-content section section--masbaha" id="masbaha" role="tabpanel">

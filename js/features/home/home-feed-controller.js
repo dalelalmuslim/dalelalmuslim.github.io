@@ -46,6 +46,7 @@ async function ensureDailyAyahsLoaded() {
 
 export async function setDailyAyah() {
     const el = getHomeDomElement('dailyAyahText');
+    const refEl = getHomeDomElement('dailyAyahRef');
     if (!el) return;
 
     try {
@@ -54,6 +55,7 @@ export async function setDailyAyah() {
 
         if (!safeAyahs.length) {
             el.textContent = 'لا تتوفر آية اليوم حاليًا.';
+            if (refEl) refEl.textContent = '';
             return;
         }
 
@@ -72,10 +74,19 @@ export async function setDailyAyah() {
 
         delete el.dataset.loadError;
         el.textContent = selectedAyah?.text?.trim() || 'لا تتوفر آية اليوم حاليًا.';
+
+        if (refEl) {
+            const surah = typeof selectedAyah?.surah === 'string' ? selectedAyah.surah.trim() : '';
+            const verseNumber = Number(selectedAyah?.verseNumber);
+            refEl.textContent = surah && Number.isFinite(verseNumber)
+                ? `${surah} • آية ${verseNumber}`
+                : '';
+        }
     } catch (err) {
         appLogger.error('[Home] setDailyAyah error:', err);
         el.dataset.loadError = 'true';
         el.textContent = 'تعذّر تحميل الآية.';
+        if (refEl) refEl.textContent = '';
     }
 }
 
@@ -84,12 +95,7 @@ export async function setDailyAyah() {
 export function setDailyMessage() {
     const el = getHomeDomElement('dailyMessageText');
     if (!el) return;
-
-    const messages = getMessagesData();
-    const hasMessages = Array.isArray(messages) && messages.length > 0;
-    el.textContent = hasMessages
-        ? resolveDailyMessage(messages, Date.now())
-        : 'ابدأ يومك بذكر الله واطمئن.';
+    el.textContent = resolveDailyMessage(getMessagesData(), Date.now());
 }
 
 // ── Smart Resume Card ─────────────────────────────────────
@@ -99,6 +105,7 @@ export function setDailyMessage() {
 
 export async function renderHomeSmartResume() {
     const card          = getHomeDomElement('homeSmartResumeCard');
+    const iconEl        = getHomeDomElement('homeResumeIcon');
     const eyebrowEl     = getHomeDomElement('homeResumeEyebrow');
     const titleEl       = getHomeDomElement('homeResumeTitle');
     const metaEl        = getHomeDomElement('homeResumeMeta');
@@ -114,6 +121,8 @@ export async function renderHomeSmartResume() {
     });
 
     if (azkarSummary?.slug) {
+        card.dataset.resumeKind       = 'azkar';
+        if (iconEl) iconEl.className   = 'fa-solid fa-moon';
         eyebrowEl.textContent         = `الأذكار اليومية • ${azkarSummary.periodLabel || ''}`;
         titleEl.textContent           = azkarSummary.actionTitle || azkarSummary.title || 'تابع الورد';
         metaEl.textContent            = azkarSummary.helperText || '';
@@ -131,6 +140,8 @@ export async function renderHomeSmartResume() {
     // 2) Fallback: Quran resume point
     const resumePoint = getResumePoint();
     if (resumePoint?.surahNum && resumePoint?.surahName) {
+        card.dataset.resumeKind       = 'quran';
+        if (iconEl) iconEl.className   = 'fa-solid fa-book-quran';
         eyebrowEl.textContent         = getResumeSourceLabel();
         titleEl.textContent           = resumePoint.surahName;
         metaEl.textContent            = '';
@@ -147,6 +158,8 @@ export async function renderHomeSmartResume() {
 
     // 3) Nothing to show
     setElementHiddenState(card, true);
+    delete card.dataset.resumeKind;
+    if (iconEl) iconEl.className = 'fa-solid fa-moon';
     eyebrowEl.textContent    = '';
     titleEl.textContent      = '';
     metaEl.textContent       = '';
@@ -172,15 +185,7 @@ export function renderHomeProgressStrip() {
 export async function initHomeContent() {
     cacheHomeDom();
 
-    // Paint the Home surface immediately from sync/local state.
-    setDailyMessage();
-    renderHomeProgressStrip();
-
-    renderHomeSmartResume().catch(err => {
-        appLogger.error('[Home] renderHomeSmartResume failed during initial paint:', err);
-    });
-
-    // Load daily content in the background, then replace fallback text.
+    // Load messages and ayahs in parallel — independent fetches.
     await Promise.allSettled([
         ensureHomeContentLoaded(),
         ensureDailyAyahsLoaded(),
@@ -188,9 +193,10 @@ export async function initHomeContent() {
 
     setDailyMessage();
     await setDailyAyah();
+    renderHomeProgressStrip();
 
-    renderHomeSmartResume().catch(err => {
-        appLogger.error('[Home] renderHomeSmartResume failed after daily content load:', err);
+    await renderHomeSmartResume().catch(err => {
+        appLogger.error('[Home] renderHomeSmartResume failed during init:', err);
     });
 }
 
