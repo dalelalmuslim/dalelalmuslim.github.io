@@ -1,100 +1,121 @@
 /* ==========================================
-   Buttons (Base)
+   App Controls Layer
+   Shared buttons, icon buttons, and fields.
    ========================================== */
+
+/* ── Button base ─────────────────────────────────────────── */
 .btn {
+    --btn-bg: var(--surface-raised, var(--card-bg));
+    --btn-fg: var(--text-main);
+    --btn-border: color-mix(in srgb, var(--border) 82%, transparent);
+    --btn-shadow: none;
+    --btn-hover-shadow: var(--shadow-sm);
+    --btn-radius: var(--radius-md);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: var(--space-2, 8px);
     min-height: 44px;
-    background: var(--card-bg);
-    color: var(--text-main);
-    border: 1px solid var(--border);
-    padding: 10px 20px;
-    border-radius: var(--radius-md);
+    padding: 10px 18px;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-border);
+    border-radius: var(--btn-radius);
+    box-shadow: var(--btn-shadow);
     font-family: inherit;
-    font-size: 1rem;
-    font-weight: bold;
+    font-size: 0.98rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
     cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease,
-        opacity 0.2s ease,
-        filter 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
+    transition:
+        transform 0.16s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease,
+        opacity 0.18s ease,
+        filter 0.18s ease;
 }
 
-.btn:hover {
-    box-shadow: var(--shadow-sm);
+@media (hover: hover) {
+    .btn:hover {
+        box-shadow: var(--btn-hover-shadow);
+        filter: brightness(1.015);
+    }
 }
 
 .btn:active {
-    transform: scale(0.96);
+    transform: translateY(1px) scale(0.98);
+    box-shadow: none;
 }
 
 .btn:disabled,
 .btn[disabled],
 .btn[aria-disabled="true"] {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.58;
     transform: none;
     box-shadow: none;
-    filter: saturate(0.8);
+    filter: saturate(0.75);
 }
 
+/* ── Button variants ─────────────────────────────────────── */
 .btn--primary {
-    background: var(--primary); /* سطر البديل الآمن للمتصفحات القديمة */
-    background: linear-gradient(
+    --btn-bg: linear-gradient(
         180deg,
         color-mix(in srgb, var(--primary) 92%, white),
         var(--primary)
     );
-    color: #ffffff;
-    border-color: var(--primary);
-}
-
-
-.btn--primary:hover {
-    filter: brightness(1.03);
+    --btn-fg: var(--text-inverse, #ffffff);
+    --btn-border: color-mix(in srgb, var(--primary) 82%, transparent);
+    --btn-hover-shadow: 0 10px 22px color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
 .btn--accent {
-    background: var(--accent); /* سطر البديل الآمن */
-    background: linear-gradient(
+    --btn-bg: linear-gradient(
         180deg,
         color-mix(in srgb, var(--accent) 92%, white),
         var(--accent)
     );
-    color: #ffffff;
-    border-color: var(--accent);
+    --btn-fg: var(--text-inverse, #ffffff);
+    --btn-border: color-mix(in srgb, var(--accent) 82%, transparent);
+    --btn-hover-shadow: 0 10px 22px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
-
-.btn--accent:hover {
-    filter: brightness(1.03);
-}
-
-[data-theme="royal"] .btn--primary,
-[data-theme="royal"] .btn--accent {
-    color: #0A2E24;
+.btn--secondary,
+.btn--soft {
+    --btn-bg: var(--surface-soft, var(--primary-light));
+    --btn-fg: var(--primary);
+    --btn-border: color-mix(in srgb, var(--primary) 14%, transparent);
 }
 
 .btn--ghost {
-    background: transparent;
-    border-color: transparent;
-    color: var(--primary);
+    --btn-bg: transparent;
+    --btn-fg: var(--primary);
+    --btn-border: transparent;
+    --btn-hover-shadow: none;
 }
 
-.btn--ghost:hover {
-    background: var(--primary-light);
+@media (hover: hover) {
+    .btn--ghost:hover {
+        background: var(--primary-light);
+    }
 }
 
 .btn--ghost:active {
     background: var(--primary-light);
+}
+
+.btn--danger {
+    --btn-bg: color-mix(in srgb, #ef4444 10%, var(--card-bg));
+    --btn-fg: #dc2626;
+    --btn-border: color-mix(in srgb, #ef4444 22%, transparent);
 }
 
 .btn--full {
@@ -103,93 +124,141 @@
 
 .btn--start {
     justify-content: flex-start;
+    text-align: start;
 }
 
-.btn--compact {
-    min-height: auto;
-    padding: 6px 12px;
-    font-size: 0.9rem;
+.btn--compact,
+.btn--small {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
 }
 
+.btn--pill {
+    border-radius: var(--radius-pill);
+}
+
+[data-theme="royal"] .btn--primary,
+[data-theme="royal"] .btn--accent {
+    color: #0A2E24;
+}
+
+/* ── Icon buttons ────────────────────────────────────────── */
 .icon-btn {
+    --icon-btn-size: 42px;
+    --icon-btn-bg: var(--surface-raised, var(--card-bg));
+    --icon-btn-fg: var(--primary);
+    --icon-btn-border: color-mix(in srgb, var(--border) 76%, transparent);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: var(--icon-btn-size);
+    height: var(--icon-btn-size);
+    min-width: var(--icon-btn-size);
+    min-height: var(--icon-btn-size);
+    border-radius: var(--radius-pill);
     cursor: pointer;
     transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease,
-        opacity 0.2s ease;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    color: var(--primary);
+        transform 0.16s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease,
+        opacity 0.18s ease;
+    background: var(--icon-btn-bg);
+    border: 1px solid var(--icon-btn-border);
+    color: var(--icon-btn-fg);
+    box-shadow: none;
     flex-shrink: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.icon-btn:hover {
-    box-shadow: var(--shadow-sm);
+.icon-btn i {
+    pointer-events: none;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+@media (hover: hover) {
+    .icon-btn:hover {
+        box-shadow: var(--shadow-sm);
+    }
 }
 
 .icon-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
+    box-shadow: none;
 }
 
 .icon-btn:disabled,
 .icon-btn[disabled],
 .icon-btn[aria-disabled="true"] {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.58;
     transform: none;
     box-shadow: none;
 }
 
 .icon-btn--transparent {
-    background: transparent;
-    border: none;
+    --icon-btn-bg: transparent;
+    --icon-btn-border: transparent;
     box-shadow: none;
-    color: var(--primary);
+}
+
+.icon-btn--soft {
+    --icon-btn-bg: var(--surface-soft, var(--primary-light));
+    --icon-btn-border: color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .icon-btn--danger {
-    color: #ef4444;
+    --icon-btn-fg: #ef4444;
 }
 
-/* ==========================================
-   Inputs
-   ========================================== */
+.icon-btn--sm {
+    --icon-btn-size: 36px;
+}
+
+.icon-btn--lg {
+    --icon-btn-size: 48px;
+}
+
+/* ── Inputs ──────────────────────────────────────────────── */
 .input {
     width: 100%;
     min-height: 44px;
-    padding: 12px 15px;
-    border: 1px solid var(--border);
+    padding: 11px 14px;
+    border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
     border-radius: var(--radius-md);
-    background: var(--card-bg); 
-    background: color-mix(in srgb, var(--card-bg) 96%, white);
+    background: var(--surface-raised, var(--card-bg));
     color: var(--text-main);
+    box-shadow: none;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.35;
     transition:
-        border-color 0.3s ease,
-        box-shadow 0.3s ease,
-        background-color 0.3s ease,
-        color 0.3s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .input::placeholder {
     color: var(--text-sub);
-    opacity: 0.9;
+    opacity: 0.82;
+}
+
+.input:hover {
+    border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
 }
 
 .input:focus,
 .input:focus-visible {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 12%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 56%, var(--border));
+    box-shadow: 0 0 0 4px var(--ring, color-mix(in srgb, var(--primary) 18%, transparent));
     background: var(--card-bg);
 }
 
@@ -197,11 +266,28 @@
 .input[disabled],
 .input[aria-disabled="true"] {
     cursor: not-allowed;
-    opacity: 0.65;
+    opacity: 0.62;
+}
+
+.input--search {
+    padding-inline-start: 16px;
+    padding-inline-end: 16px;
+    border-radius: var(--radius-pill);
+}
+
+.input--compact {
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 0.92rem;
 }
 
 .input-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2, 8px);
+}
+
+.input-group > .input {
+    min-width: 0;
+    flex: 1;
 }
