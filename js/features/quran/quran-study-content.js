@@ -19,16 +19,6 @@ export async function getAyahStudyContent(context) {
         return {
             status: 'invalid',
             summary: 'لا توجد بيانات صالحة لعرض محتوى الدراسة.',
-            translation: {
-                status: 'invalid',
-                title: 'الترجمة',
-                body: ''
-            },
-            tafsir: {
-                status: 'invalid',
-                title: 'التفسير المختصر',
-                body: ''
-            },
             reflection: {
                 status: 'invalid',
                 title: 'مفتاح التدبر',
@@ -38,18 +28,8 @@ export async function getAyahStudyContent(context) {
     }
 
     return {
-        status: 'partial',
-        summary: 'النص متاح الآن. الترجمة والتفسير سيُربطان لاحقًا من مصدر موثوق داخل التطبيق.',
-        translation: {
-            status: 'unavailable',
-            title: 'الترجمة',
-            body: 'الترجمة غير متاحة في هذه المرحلة. سيتم ربط ترجمة موثوقة لاحقًا بدل إدخال محتوى ناقص أو غير منضبط.'
-        },
-        tafsir: {
-            status: 'unavailable',
-            title: 'التفسير المختصر',
-            body: 'التفسير المختصر غير متاح بعد. سيتم ربطه لاحقًا بمصدر موثوق مع توضيح المرجع داخل اللوحة.'
-        },
+        status: 'ready',
+        summary: 'اختر معنى واحدًا من الآية وتوقف معه قبل الانتقال لما بعدها.',
         reflection: {
             status: 'ready',
             title: 'مفتاح التدبر',
