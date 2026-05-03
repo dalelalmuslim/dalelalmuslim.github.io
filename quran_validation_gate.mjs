@@ -40,11 +40,19 @@ results.push({
   pass: migrated?.quranReading?.bookmark?.surahNum === 2 && migrated?.quranReading?.bookmark?.scroll === 345
 });
 results.push({
+  name: 'legacy quranBookmark remains scroll fallback without fake verseNum',
+  pass: migrated?.quranReading?.lastRead?.verseNum === null && migrated?.quranReading?.bookmark?.verseNum === null
+});
+results.push({
   name: 'bumps schemaVersion to current',
   pass: migrated?.schemaVersion === APP_CONFIG.SCHEMA_VERSION
 });
 
-quranReadingStore.saveLastRead({ surahNum: 36, surahName: 'يس', scroll: 120, updatedAt: '2026-04-06T10:00:00.000Z' });
+quranReadingStore.saveLastRead({ surahNum: 36, surahName: 'يس', verseNum: 2, scroll: 120, updatedAt: '2026-04-06T10:00:00.000Z' });
+results.push({
+  name: 'semantic lastRead persists verseNum',
+  pass: quranReadingStore.getLastRead()?.surahNum === 36 && quranReadingStore.getLastRead()?.verseNum === 2
+});
 results.push({
   name: 'resume prefers bookmark over lastRead',
   pass: getResumePoint()?.surahNum === 2 && getResumeSource() === 'bookmark' && /العلامة/.test(getResumeSourceLabel())
@@ -52,8 +60,15 @@ results.push({
 quranReadingStore.clearBookmark();
 results.push({
   name: 'resume falls back to lastRead after clearing bookmark',
-  pass: getResumePoint()?.surahNum === 36 && getResumeSource() === 'lastRead' && /آخر قراءة/.test(getResumeSourceLabel())
+  pass: getResumePoint()?.surahNum === 36 && getResumePoint()?.verseNum === 2 && getResumeSource() === 'lastRead' && /آخر قراءة/.test(getResumeSourceLabel())
 });
+
+quranReadingStore.saveBookmark({ surahNum: 36, surahName: 'يس', verseNum: 3, scroll: 180, updatedAt: '2026-04-06T10:05:00.000Z' });
+results.push({
+  name: 'semantic bookmark persists verseNum',
+  pass: quranReadingStore.getBookmark()?.surahNum === 36 && quranReadingStore.getBookmark()?.verseNum === 3
+});
+quranReadingStore.clearBookmark();
 
 quranHifzStore.addToReview({ key: '36:1', surahNum: 36, surahName: 'يس', verseNum: 1, text: 'يس' });
 quranHifzStore.addToReview({ key: '36:2', surahNum: 36, surahName: 'يس', verseNum: 2, text: 'وَالْقُرْآنِ الْحَكِيمِ' });
@@ -67,7 +82,7 @@ results.push({
 const saved = parseSaved();
 results.push({
   name: 'saved quranReading state remains normalized',
-  pass: saved?.quranReading?.lastRead?.surahNum === 36 && saved?.quranReading?.bookmark === null
+  pass: saved?.quranReading?.lastRead?.surahNum === 36 && saved?.quranReading?.lastRead?.verseNum === 2 && saved?.quranReading?.bookmark === null
 });
 results.push({
   name: 'saved quranHifz state is persisted',
