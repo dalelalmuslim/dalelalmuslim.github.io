@@ -21,13 +21,7 @@ function createDomMap() {
         quranStudyPanel: document.getElementById('quranStudyPanel'),
         quranStudyPanelTitle: document.getElementById('quranStudyPanelTitle'),
         quranStudyPanelMeta: document.getElementById('quranStudyPanelMeta'),
-        quranStudyPanelStatus: document.getElementById('quranStudyPanelStatus'),
-        quranStudyAudioStatus: document.getElementById('quranStudyAudioStatus'),
-        quranStudyPanelText: document.getElementById('quranStudyPanelText'),
-        quranStudyTranslation: document.getElementById('quranStudyTranslation'),
-        quranStudyTafsir: document.getElementById('quranStudyTafsir'),
-        quranStudyReflection: document.getElementById('quranStudyReflection'),
-        quranRepeatAyahBtn: document.getElementById('quranRepeatAyahBtn')
+        quranStudyPanelText: document.getElementById('quranStudyPanelText')
     };
 }
 
