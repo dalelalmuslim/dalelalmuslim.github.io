@@ -148,7 +148,6 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/features/names/names-quiz-content.js",
     "./js/features/names/names-surface.js",
     "./js/features/quran/index.js",
-    "./js/features/quran/quran-audio-player.js",
     "./js/features/quran/quran-controller.js",
     "./js/features/quran/quran-data-source.js",
     "./js/features/quran/quran-dom.js",
@@ -262,7 +261,7 @@ self.__SW_MANIFEST__ = Object.freeze({
   ],
   "precacheStats": {
     "documentsKb": 90.5,
-    "shellKb": 1821.7,
+    "shellKb": 1813.7,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -417,7 +416,6 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/features/names/names-quiz-content.js",
       "./js/features/names/names-surface.js",
       "./js/features/quran/index.js",
-      "./js/features/quran/quran-audio-player.js",
       "./js/features/quran/quran-controller.js",
       "./js/features/quran/quran-data-source.js",
       "./js/features/quran/quran-dom.js",
@@ -526,5 +524,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-afea14843dfb"
+  "cacheVersion": "azkar-v26-phase22-4863c2b3b40a"
 });
