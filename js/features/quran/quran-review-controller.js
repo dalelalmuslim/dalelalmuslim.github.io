@@ -8,6 +8,14 @@ import {
 import { showToast } from '../../app/shell/app-shell.js';
 import { getSurahName } from './quran-metadata.js';
 
+function buildAyahKey(context) {
+    if (!context?.surahNum || !context?.verseNum) {
+        return '';
+    }
+
+    return `${Number(context.surahNum)}:${Number(context.verseNum)}`;
+}
+
 export function createQuranReviewController() {
     return {
         syncBookmarkButtonState() {
@@ -28,8 +36,13 @@ export function createQuranReviewController() {
                 return null;
             }
 
+            const key = buildAyahKey(context);
+            if (!key) {
+                return null;
+            }
+
             return {
-                key: this.getAyahAudioKey(context),
+                key,
                 surahNum: Number(context.surahNum),
                 surahName: context.surahName || getSurahName(Number(context.surahNum)),
                 verseNum: Number(context.verseNum),
