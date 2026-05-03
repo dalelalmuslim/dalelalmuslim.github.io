@@ -1,10 +1,16 @@
 import { isPlainObject, toSafeNumber } from './storage-normalizers-core.js';
 
+function normalizeOptionalVerseNum(value) {
+    const verseNum = Number(value);
+    return Number.isInteger(verseNum) && verseNum > 0 ? verseNum : null;
+}
+
 export function normalizeBookmark(bookmark) {
     if (!isPlainObject(bookmark)) return null;
 
     const surahNum = toSafeNumber(bookmark.surahNum, NaN);
     const surahName = typeof bookmark.surahName === 'string' ? bookmark.surahName.trim() : '';
+    const verseNum = normalizeOptionalVerseNum(bookmark.verseNum);
     const scroll = toSafeNumber(bookmark.scroll, 0, { min: 0 });
 
     if (!Number.isFinite(surahNum) || surahNum <= 0) return null;
@@ -13,6 +19,7 @@ export function normalizeBookmark(bookmark) {
     return {
         surahNum,
         surahName,
+        verseNum,
         scroll
     };
 }
@@ -22,6 +29,7 @@ export function normalizeQuranReadingPoint(value) {
 
     const surahNum = toSafeNumber(value.surahNum, NaN);
     const surahName = typeof value.surahName === 'string' ? value.surahName.trim() : '';
+    const verseNum = normalizeOptionalVerseNum(value.verseNum);
     const scroll = toSafeNumber(value.scroll, 0, { min: 0 });
     const updatedAt = typeof value.updatedAt === 'string' ? value.updatedAt : '';
 
@@ -31,6 +39,7 @@ export function normalizeQuranReadingPoint(value) {
     return {
         surahNum,
         surahName,
+        verseNum,
         scroll,
         updatedAt
     };
