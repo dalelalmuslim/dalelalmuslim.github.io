@@ -156,7 +156,6 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/features/quran/quran-reader-controller.js",
     "./js/features/quran/quran-renderers.js",
     "./js/features/quran/quran-review-controller.js",
-    "./js/features/quran/quran-study-content.js",
     "./js/features/quran/quran-study-controller.js",
     "./js/features/settings/index.js",
     "./js/features/stats/index.js",
@@ -262,8 +261,8 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./data/quran/surahs/001.json"
   ],
   "precacheStats": {
-    "documentsKb": 92.3,
-    "shellKb": 1834.4,
+    "documentsKb": 90.5,
+    "shellKb": 1821.7,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -426,7 +425,6 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/features/quran/quran-reader-controller.js",
       "./js/features/quran/quran-renderers.js",
       "./js/features/quran/quran-review-controller.js",
-      "./js/features/quran/quran-study-content.js",
       "./js/features/quran/quran-study-controller.js",
       "./js/features/settings/index.js",
       "./js/features/stats/index.js",
@@ -528,5 +526,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-c395e2455b73"
+  "cacheVersion": "azkar-v26-phase22-afea14843dfb"
 });
