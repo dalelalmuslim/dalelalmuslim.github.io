@@ -137,11 +137,9 @@ export function createQuranStudyController() {
             const statusEl = this.getDom('quranStudyPanelStatus');
             const audioStatusEl = this.getDom('quranStudyAudioStatus');
             const textEl = this.getDom('quranStudyPanelText');
-            const translationEl = this.getDom('quranStudyTranslation');
-            const tafsirEl = this.getDom('quranStudyTafsir');
             const reflectionEl = this.getDom('quranStudyReflection');
 
-            if (!panel || !titleEl || !metaEl || !statusEl || !audioStatusEl || !textEl || !translationEl || !tafsirEl || !reflectionEl) {
+            if (!panel || !titleEl || !metaEl || !statusEl || !audioStatusEl || !textEl || !reflectionEl) {
                 return false;
             }
 
@@ -151,11 +149,9 @@ export function createQuranStudyController() {
 
             titleEl.textContent = `تأمل الآية ${context.verseNum}`;
             metaEl.textContent = `${context.surahName} • الآية ${context.verseNum}`;
-            statusEl.textContent = 'جاري تجهيز محتوى الدراسة...';
+            statusEl.textContent = 'جاري تجهيز مفتاح التدبر...';
             audioStatusEl.textContent = '';
             textEl.textContent = context.text;
-            translationEl.textContent = 'جاري التحميل...';
-            tafsirEl.textContent = 'جاري التحميل...';
             reflectionEl.textContent = 'جاري التحميل...';
             panel.classList.remove('is-hidden');
             panel.setAttribute('aria-hidden', 'false');
@@ -171,11 +167,9 @@ export function createQuranStudyController() {
             const statusEl = this.getDom('quranStudyPanelStatus');
             const audioStatusEl = this.getDom('quranStudyAudioStatus');
             const textEl = this.getDom('quranStudyPanelText');
-            const translationEl = this.getDom('quranStudyTranslation');
-            const tafsirEl = this.getDom('quranStudyTafsir');
             const reflectionEl = this.getDom('quranStudyReflection');
 
-            if (!panel || !titleEl || !metaEl || !statusEl || !audioStatusEl || !textEl || !translationEl || !tafsirEl || !reflectionEl) {
+            if (!panel || !titleEl || !metaEl || !statusEl || !audioStatusEl || !textEl || !reflectionEl) {
                 return false;
             }
 
@@ -187,8 +181,6 @@ export function createQuranStudyController() {
             metaEl.textContent = `${context.surahName} • الآية ${context.verseNum}`;
             statusEl.textContent = String(content?.summary || '');
             textEl.textContent = context.text;
-            translationEl.textContent = String(content?.translation?.body || 'غير متاح حاليًا.');
-            tafsirEl.textContent = String(content?.tafsir?.body || 'غير متاح حاليًا.');
             reflectionEl.textContent = String(content?.reflection?.body || '');
             panel.classList.remove('is-hidden');
             panel.setAttribute('aria-hidden', 'false');
@@ -240,15 +232,7 @@ export function createQuranStudyController() {
 
                     this.activeStudyContent = {
                         status: 'error',
-                        summary: 'تعذر تجهيز محتوى الدراسة الآن.',
-                        translation: {
-                            status: 'error',
-                            body: 'تعذر تحميل قسم الترجمة.'
-                        },
-                        tafsir: {
-                            status: 'error',
-                            body: 'تعذر تحميل قسم التفسير المختصر.'
-                        },
+                        summary: 'تعذر تجهيز مفتاح التدبر الآن.',
                         reflection: {
                             status: 'error',
                             body: 'حاول إعادة اختيار الآية مرة أخرى.'
@@ -268,11 +252,9 @@ export function createQuranStudyController() {
             const statusEl = this.getDom('quranStudyPanelStatus');
             const audioStatusEl = this.getDom('quranStudyAudioStatus');
             const textEl = this.getDom('quranStudyPanelText');
-            const translationEl = this.getDom('quranStudyTranslation');
-            const tafsirEl = this.getDom('quranStudyTafsir');
             const reflectionEl = this.getDom('quranStudyReflection');
 
-            if (!panel || !titleEl || !metaEl || !statusEl || !audioStatusEl || !textEl || !translationEl || !tafsirEl || !reflectionEl) {
+            if (!panel || !titleEl || !metaEl || !statusEl || !audioStatusEl || !textEl || !reflectionEl) {
                 return;
             }
 
@@ -286,35 +268,20 @@ export function createQuranStudyController() {
             statusEl.textContent = '';
             audioStatusEl.textContent = '';
             textEl.textContent = '';
-            translationEl.textContent = '';
-            tafsirEl.textContent = '';
             reflectionEl.textContent = '';
             this.syncHifzActionState();
         },
 
-        buildAyahStudyText(context = this.activeAyahContext, content = this.activeStudyContent) {
+        buildAyahStudyText(context = this.activeAyahContext) {
             if (!context?.surahNum || !context?.verseNum || !context?.text) {
                 return '';
             }
 
             const surahName = context.surahName || getSurahName(Number(context.surahNum));
-            const parts = [
+            return [
                 context.text,
                 `${surahName} — الآية ${context.verseNum}`
-            ];
-
-            const translationText = String(content?.translation?.body || '').trim();
-            const tafsirText = String(content?.tafsir?.body || '').trim();
-
-            if (translationText && content?.translation?.status === 'ready') {
-                parts.push(`الترجمة: ${translationText}`);
-            }
-
-            if (tafsirText && content?.tafsir?.status === 'ready') {
-                parts.push(`التفسير المختصر: ${tafsirText}`);
-            }
-
-            return parts.join('\n\n');
+            ].join('\n\n');
         },
 
         async copyActiveAyah() {
