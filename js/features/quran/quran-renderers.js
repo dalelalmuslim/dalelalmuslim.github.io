@@ -15,6 +15,21 @@ function resolveAyahText(ayah) {
     return String(ayah?.text || '').trim();
 }
 
+function createAyahAnchorId(surahNum, verseNum) {
+    const normalizedSurahNum = Number(surahNum);
+    const normalizedVerseNum = Number(verseNum);
+
+    if (!Number.isInteger(normalizedSurahNum) || normalizedSurahNum <= 0) {
+        return '';
+    }
+
+    if (!Number.isInteger(normalizedVerseNum) || normalizedVerseNum <= 0) {
+        return '';
+    }
+
+    return `ayah-${normalizedSurahNum}-${normalizedVerseNum}`;
+}
+
 export function createSurahButton({ getDom, onOpenSurah }, surahNum) {
     const template = getDom('surahBtnTemplate');
     if (!template) return null;
@@ -75,6 +90,7 @@ export function buildAyahLine(ayah, fallbackIndex = 1) {
 export function createAyahNode(ayah, { surahNum, fallbackIndex = 1 } = {}) {
     const verseNum = resolveAyahVerseNumber(ayah, fallbackIndex);
     const text = resolveAyahText(ayah);
+    const anchorId = createAyahAnchorId(surahNum, verseNum);
 
     if (!text) {
         return null;
@@ -83,6 +99,9 @@ export function createAyahNode(ayah, { surahNum, fallbackIndex = 1 } = {}) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'quran__ayah';
+    if (anchorId) {
+        button.id = anchorId;
+    }
     button.dataset.quranAyah = 'true';
     button.dataset.surahNum = String(Number(surahNum) || 0);
     button.dataset.verseNum = String(verseNum);
