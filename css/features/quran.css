@@ -73,7 +73,6 @@
     padding: 2px 8px;
 }
 
-
 .section--quran .quran__empty-state {
     grid-column: span 2;
 }
@@ -130,7 +129,6 @@
     transition: color 0.18s ease;
 }
 
-
 .section--quran .quran-study-panel {
     border: 1px solid var(--line);
     border-radius: 18px;
@@ -165,43 +163,6 @@
     flex-wrap: wrap;
 }
 
-.section--quran .quran-study-panel__status {
-    font-size: 0.95rem;
-}
-
-.section--quran .quran-study-panel__audio-status {
-    font-size: 0.92rem;
-    min-height: 1.2em;
-}
-
-.section--quran #quranRepeatAyahBtn.is-active {
-    border-color: var(--accent);
-    color: var(--accent);
-}
-
-.section--quran .quran-study-panel__content {
-    display: grid;
-    gap: 10px;
-}
-
-.section--quran .quran-study-card {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
-}
-
-.section--quran .quran-study-card__title {
-    margin: 0 0 8px;
-    font-size: 1rem;
-}
-
-.section--quran .quran-study-card__body {
-    margin: 0;
-    line-height: 1.8;
-}
-
-
 .section--quran .quran-review-card {
     border: 1px solid var(--line);
     border-radius: 16px;
@@ -230,8 +191,6 @@
     margin-top: 4px;
 }
 
-.section--quran #quranAddReviewBtn.is-active,
-.section--quran #quranMarkMemorizedBtn.is-active,
 .section--quran #quranReviewNextBtn.is-active {
     border-color: var(--accent);
     color: var(--accent);
