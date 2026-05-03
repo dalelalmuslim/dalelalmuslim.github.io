@@ -39,10 +39,16 @@
 }
 
 .section--quran .quran__ayahs {
-    font-size: 1.6rem;
-    line-height: 2.2;
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    line-height: 2.35;
     text-align: justify;
     direction: rtl;
+}
+
+.section--quran .quran__ayahs.app-reading-surface {
+    margin-block: 14px 0;
+    padding-block: clamp(18px, 5vw, 28px);
+    padding-inline: clamp(14px, 4vw, 24px);
 }
 
 .section--quran .surah-item {
@@ -77,6 +83,8 @@
 }
 
 .section--quran .quran__ayah {
+    appearance: none;
+    -webkit-appearance: none;
     display: inline;
     margin: 0;
     padding: 0;
@@ -88,26 +96,38 @@
     text-align: inherit;
     direction: inherit;
     cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.18s ease, box-shadow 0.18s ease;
+    border-radius: 0.35em;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .section--quran .quran__ayah:hover {
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    background: transparent;
+}
+
+.section--quran .quran__ayah:hover .quran__ayah-num {
+    color: var(--accent);
 }
 
 .section--quran .quran__ayah:focus-visible {
     outline: 2px solid var(--accent);
-    outline-offset: 4px;
+    outline-offset: 0.22em;
 }
 
 .section--quran .quran__ayah.is-active {
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: color-mix(in srgb, var(--text-main) 88%, var(--accent));
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+.section--quran .quran__ayah.is-active .quran__ayah-num {
+    color: var(--accent);
 }
 
 .section--quran .quran__ayah-num {
     color: var(--muted);
     white-space: nowrap;
+    transition: color 0.18s ease;
 }
 
 
