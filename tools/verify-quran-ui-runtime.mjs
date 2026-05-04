@@ -72,6 +72,42 @@ const checks = [
       '.section--quran .quran-surah-row__meta',
       '.section--quran .quran-surah-row__chevron'
     ])
+  },
+  {
+    name: 'quran layout constrains index and reader widths',
+    pass: includesAll(quranCss, [
+      '--quran-index-max-width',
+      '--quran-reader-max-width',
+      '.section--quran > .cardx',
+      '.section--quran #surahReader',
+      'max-width: var(--quran-index-max-width)',
+      'max-width: var(--quran-reader-max-width)'
+    ])
+  },
+  {
+    name: 'quran bottom spacing accounts for bottom navigation and safe area',
+    pass: includesAll(quranCss, [
+      '--quran-bottom-safe-space',
+      'env(safe-area-inset-bottom, 0px)',
+      'padding-bottom: var(--quran-bottom-safe-space)'
+    ])
+  },
+  {
+    name: 'quran ayah typography uses responsive bounds',
+    pass: includesAll(quranCss, [
+      'font-size: clamp(1.3rem, 4.2vw, 1.62rem)',
+      '@media (min-width: 768px)',
+      'font-size: clamp(1.52rem, 2.4vw, 1.78rem)'
+    ])
+  },
+  {
+    name: 'quran copy pill is centered without RTL inset ambiguity',
+    pass: includesAll(quranCss, [
+      'left: 50%',
+      'right: auto',
+      'transform: translateX(-50%)',
+      'width: min(calc(100vw - 32px), 360px)'
+    ]) && !quranCss.includes('inset-inline: 50%')
   }
 ];
 
