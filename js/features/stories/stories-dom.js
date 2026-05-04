@@ -6,7 +6,10 @@ export function cacheStoriesDom() {
   return {
     root: byId('storiesGrid'),
     mainView: byId('storyCategoriesGrid'),
-    content: byId('storyCategoryContent'),
-    summary: byId('storiesSummaryText')
+    reader: byId('storyCategoryContent'),
+    searchInput: byId('storiesSearchInput'),
+    filterChips: byId('storiesFilterChips'),
+    summary: byId('storiesStreamSummary'),
+    list: byId('storiesStreamList')
   };
 }

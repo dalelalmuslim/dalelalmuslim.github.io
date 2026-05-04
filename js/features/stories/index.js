@@ -4,7 +4,9 @@ import {
   renderStoriesSection,
   resetStoriesView,
   handleStoriesActionTarget,
-  dispatchStoriesAction
+  dispatchStoriesAction,
+  openStoryCategory,
+  closeStoryReader
 } from './stories-controller.js';
 
 export const storiesFeature = defineFeatureApi({
@@ -25,6 +27,8 @@ export const storiesFeature = defineFeatureApi({
   capabilities: {
     renderCatalog: renderStoriesSection,
     resetView: resetStoriesView,
+    openCategory: openStoryCategory,
+    closeStoryReader,
     handleActionTarget: handleStoriesActionTarget,
     dispatchAction: dispatchStoriesAction
   }
