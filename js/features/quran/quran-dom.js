@@ -12,7 +12,6 @@ function createDomMap() {
         lastReadSurahName: document.getElementById('lastReadSurahName'),
         lastReadResumeMeta: document.getElementById('lastReadResumeMeta'),
         saveQuranBookmarkBtn: document.getElementById('saveQuranBookmarkBtn'),
-        surahBtnTemplate: document.getElementById('tpl-surah-btn'),
         quranStudyPanel: document.getElementById('quranStudyPanel'),
         quranStudyPanelTitle: document.getElementById('quranStudyPanelTitle'),
         quranStudyPanelMeta: document.getElementById('quranStudyPanelMeta'),
