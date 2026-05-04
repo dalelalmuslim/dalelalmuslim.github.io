@@ -333,19 +333,26 @@
 <section aria-hidden="true" class="tab-content section section--quran" id="quran" role="tabpanel">
 <h2 class="sr-only">القرآن الكريم</h2>
 <div class="cardx">
-<div aria-hidden="true" class="cardx--center is-hidden mb-15 quran__resume-card" id="resumeReadingCard">
-<div class="muted mb-8 quran__resume-meta" id="lastReadResumeMeta"></div>
+<div id="surahListContainer">
+<div class="quran-index-head mb-15">
+<h3 class="amiri-text cardx__title quran-index-head__title">القرآن الكريم</h3>
+<p class="muted quran-index-head__subtitle">اختر سورة أو تابع من موضعك المحفوظ.</p>
+</div>
+<div aria-hidden="true" class="is-hidden mb-15 quran__resume-card" id="resumeReadingCard">
+<div class="quran__resume-copy">
+<div class="muted quran__resume-meta" id="lastReadResumeMeta"></div>
+<div class="quran__resume-target" id="lastReadSurahName"></div>
+</div>
 <button class="btn btn--primary quran__resume-action" data-quran-action="resume-reading" type="button">
-<i aria-hidden="true" class="fa-solid fa-bookmark"></i> أكمل: <span id="lastReadSurahName"></span>
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> متابعة
 </button>
 </div>
-<div id="surahListContainer">
-<div class="mb-15">
-<label class="muted mb-8 quran__search-label" for="searchSurah">ابحث عن سورة</label>
-<input aria-label="البحث عن سورة" class="input" id="searchSurah" placeholder="ابحث عن سورة..." type="text">
+<div class="quran-search-surface mb-15">
+<label class="muted quran__search-label" for="searchSurah">ابحث في السور</label>
+<input aria-label="البحث عن سورة" class="input quran__search-input" id="searchSurah" placeholder="اسم السورة أو رقمها..." type="text">
 </input></div>
-<div aria-live="polite" class="home-grid home-grid--catalog home-grid--surahs" id="surahList">
-<p class="muted cardx--center quran__loading-state">جاري التحميل...</p>
+<div aria-live="polite" class="quran-surah-list" id="surahList">
+<p class="muted cardx--center quran__loading-state">جاري تحميل فهرس السور...</p>
 </div>
 </div>
 <div class="is-hidden" id="surahReader">
@@ -1035,12 +1042,13 @@
 </template>
 
 <template id="tpl-surah-btn">
-<button class="home-btn surah-item" type="button">
-<div class="flex-gap align-center">
-<div class="home-icon-box surah-item__icon"><i aria-hidden="true" class="fa-solid fa-book-quran"></i></div>
-<span class="home-btn-text surah-name"></span>
-</div>
-<span class="muted surah-num rounded-sm border-soft bg-soft"></span>
+<button class="quran-surah-row" type="button">
+<span class="quran-surah-row__num"></span>
+<span class="quran-surah-row__body">
+<span class="amiri-text quran-surah-row__name"></span>
+<span class="quran-surah-row__meta"></span>
+</span>
+<span class="quran-surah-row__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-left"></i></span>
 </button>
 </template>
 
