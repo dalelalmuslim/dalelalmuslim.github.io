@@ -148,13 +148,13 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/features/names/names-quiz-content.js",
     "./js/features/names/names-surface.js",
     "./js/features/quran/index.js",
+    "./js/features/quran/quran-bookmark-controller.js",
     "./js/features/quran/quran-controller.js",
     "./js/features/quran/quran-data-source.js",
     "./js/features/quran/quran-dom.js",
     "./js/features/quran/quran-metadata.js",
     "./js/features/quran/quran-reader-controller.js",
     "./js/features/quran/quran-renderers.js",
-    "./js/features/quran/quran-review-controller.js",
     "./js/features/quran/quran-study-controller.js",
     "./js/features/settings/index.js",
     "./js/features/stats/index.js",
@@ -261,7 +261,7 @@ self.__SW_MANIFEST__ = Object.freeze({
   ],
   "precacheStats": {
     "documentsKb": 91,
-    "shellKb": 1818.4,
+    "shellKb": 1810.6,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -416,13 +416,13 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/features/names/names-quiz-content.js",
       "./js/features/names/names-surface.js",
       "./js/features/quran/index.js",
+      "./js/features/quran/quran-bookmark-controller.js",
       "./js/features/quran/quran-controller.js",
       "./js/features/quran/quran-data-source.js",
       "./js/features/quran/quran-dom.js",
       "./js/features/quran/quran-metadata.js",
       "./js/features/quran/quran-reader-controller.js",
       "./js/features/quran/quran-renderers.js",
-      "./js/features/quran/quran-review-controller.js",
       "./js/features/quran/quran-study-controller.js",
       "./js/features/settings/index.js",
       "./js/features/stats/index.js",
@@ -524,5 +524,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-7c6fc831e64a"
+  "cacheVersion": "azkar-v26-phase22-4903cb513fcc"
 });
