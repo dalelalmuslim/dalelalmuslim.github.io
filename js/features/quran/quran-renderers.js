@@ -30,27 +30,39 @@ function createAyahAnchorId(surahNum, verseNum) {
     return `ayah-${normalizedSurahNum}-${normalizedVerseNum}`;
 }
 
-export function createSurahButton({ getDom, onOpenSurah }, surahNum) {
-    const template = getDom('surahBtnTemplate');
-    if (!template) return null;
-
-    const clone = template.content.cloneNode(true);
-    const btn = clone.querySelector('.quran-surah-row');
-    const nameEl = clone.querySelector('.quran-surah-row__name');
-    const numEl = clone.querySelector('.quran-surah-row__num');
-    const metaEl = clone.querySelector('.quran-surah-row__meta');
+export function createSurahButton({ onOpenSurah }, surahNum) {
     const surahName = getSurahName(surahNum);
     const verseCountLabel = getSurahVerseCountLabel(surahNum);
 
-    if (nameEl) nameEl.textContent = surahName;
-    if (numEl) numEl.textContent = surahNum;
-    if (metaEl) metaEl.textContent = verseCountLabel;
-    if (btn) {
-        btn.setAttribute('aria-label', `افتح سورة ${surahName}${verseCountLabel ? `، ${verseCountLabel}` : ''}`);
-        btn.addEventListener('click', () => onOpenSurah(surahNum));
-    }
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'quran-surah-row';
+    button.setAttribute('aria-label', `افتح سورة ${surahName}${verseCountLabel ? `، ${verseCountLabel}` : ''}`);
+    button.addEventListener('click', () => onOpenSurah(surahNum));
 
-    return clone;
+    const numberEl = document.createElement('span');
+    numberEl.className = 'quran-surah-row__num';
+    numberEl.textContent = String(surahNum);
+
+    const bodyEl = document.createElement('span');
+    bodyEl.className = 'quran-surah-row__body';
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'amiri-text quran-surah-row__name';
+    nameEl.textContent = surahName;
+
+    const metaEl = document.createElement('span');
+    metaEl.className = 'quran-surah-row__meta';
+    metaEl.textContent = verseCountLabel;
+
+    const chevronEl = document.createElement('span');
+    chevronEl.className = 'quran-surah-row__chevron';
+    chevronEl.setAttribute('aria-hidden', 'true');
+    chevronEl.textContent = '‹';
+
+    bodyEl.append(nameEl, metaEl);
+    button.append(numberEl, bodyEl, chevronEl);
+    return button;
 }
 
 export function renderSurahList({ getDom, getSurahNumbers, onOpenSurah }, searchTerm = '') {
@@ -74,10 +86,7 @@ export function renderSurahList({ getDom, getSurahNumbers, onOpenSurah }, search
 
         if (normalizedSearch && !matchName && !matchNumber) return;
 
-        const btnNode = createSurahButton({ getDom, onOpenSurah }, surahNum);
-        if (btnNode) {
-            fragment.appendChild(btnNode);
-        }
+        fragment.appendChild(createSurahButton({ onOpenSurah }, surahNum));
     });
 
     if (!fragment.childNodes.length) {
