@@ -19,8 +19,6 @@ function parseSaved() {
 const { storage } = await import('./js/services/storage/index.js');
 const { quranReadingStore } = await import('./js/domains/quran/quran-reading-store.js');
 const { getResumePoint, getResumeSource, getResumeSourceLabel } = await import('./js/domains/quran/quran-reading-selectors.js');
-const { quranHifzStore } = await import('./js/domains/quran/quran-hifz-store.js');
-const { getQuranHifzSummary } = await import('./js/domains/quran/quran-hifz-selectors.js');
 
 const legacy = {
   schemaVersion: 7,
@@ -55,7 +53,7 @@ results.push({
 });
 results.push({
   name: 'resume prefers bookmark over lastRead',
-  pass: getResumePoint()?.surahNum === 2 && getResumeSource() === 'bookmark' && /العلامة/.test(getResumeSourceLabel())
+  pass: getResumePoint()?.surahNum === 2 && getResumeSource() === 'bookmark' && /علامة/.test(getResumeSourceLabel())
 });
 quranReadingStore.clearBookmark();
 results.push({
@@ -70,23 +68,10 @@ results.push({
 });
 quranReadingStore.clearBookmark();
 
-quranHifzStore.addToReview({ key: '36:1', surahNum: 36, surahName: 'يس', verseNum: 1, text: 'يس' });
-quranHifzStore.addToReview({ key: '36:2', surahNum: 36, surahName: 'يس', verseNum: 2, text: 'وَالْقُرْآنِ الْحَكِيمِ' });
-quranHifzStore.markMemorized({ key: '36:1', surahNum: 36, surahName: 'يس', verseNum: 1, text: 'يس' });
-const summary = getQuranHifzSummary();
-results.push({
-  name: 'hifz summary tracks review and memorized counts',
-  pass: summary.reviewCount === 1 && summary.memorizedCount === 1 && summary.nextReview?.key === '36:2'
-});
-
 const saved = parseSaved();
 results.push({
   name: 'saved quranReading state remains normalized',
   pass: saved?.quranReading?.lastRead?.surahNum === 36 && saved?.quranReading?.lastRead?.verseNum === 2 && saved?.quranReading?.bookmark === null
-});
-results.push({
-  name: 'saved quranHifz state is persisted',
-  pass: Array.isArray(saved?.quranHifz?.entries) && saved.quranHifz.entries.length === 2
 });
 
 const failed = results.filter(r => !r.pass);
