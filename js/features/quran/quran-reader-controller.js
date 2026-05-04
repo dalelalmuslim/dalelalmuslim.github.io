@@ -152,7 +152,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             }
             this.closeStudyPanel();
             this.syncBookmarkButtonState();
-            this.syncReviewSummary();
         },
 
         renderSurahError(message = 'تعذر تحميل السورة.') {
@@ -163,7 +162,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             ayahsContainer.classList.remove('quran__ayahs--loading');
             ayahsContainer.setAttribute('aria-busy', 'false');
             ayahsContainer.textContent = message;
-            this.syncReviewSummary();
         },
 
         renderSurahAyahs(surahNum, ayahs) {
@@ -182,8 +180,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                 }
 
                 ayahsContainer.replaceChildren(fragment);
-                this.syncHifzActionState();
-                this.syncReviewSummary();
             });
         },
 
@@ -253,7 +249,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                     this.renderSurahAyahs(surahNum, ayahs);
                     this.prefetchNearbySurahs(surahNum);
                     this.syncBookmarkButtonState();
-                    this.syncReviewSummary();
 
                     const focusVerseNum = Number(options.focusVerseNum || restorePoint?.verseNum || 0);
                     if (focusVerseNum > 0) {
@@ -318,7 +313,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             this.closeStudyPanel();
             this.syncBookmarkButtonState();
             this.checkBookmark();
-            this.syncReviewSummary();
         },
 
         checkBookmark() {
