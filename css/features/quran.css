@@ -1,28 +1,162 @@
+.section--quran .quran-index-head {
+    text-align: right;
+}
+
+.section--quran .quran-index-head__title {
+    margin: 0 0 6px;
+}
+
+.section--quran .quran-index-head__subtitle {
+    margin: 0;
+}
+
 .section--quran .quran__search-label {
     display: block;
+    margin-bottom: 8px;
+}
+
+.section--quran .quran-search-surface {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+}
+
+.section--quran .quran__search-input {
+    width: 100%;
 }
 
 .section--quran .quran__loading-state {
-    grid-column: span 2;
-}
-
-.section--quran .quran__surah-title {
-    font-size: 2.2rem;
+    margin: 0;
+    padding: 16px;
 }
 
 .section--quran .quran__resume-card {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+    border-radius: 18px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
+}
+
+.section--quran .quran__resume-copy {
+    min-width: 0;
 }
 
 .section--quran .quran__resume-meta {
-    margin: 0;
+    margin: 0 0 4px;
+    font-size: 0.88rem;
+}
+
+.section--quran .quran__resume-target {
+    font-weight: 800;
+    color: var(--text-main);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.section--quran .quran__resume-action {
+    flex-shrink: 0;
 }
 
 .section--quran .quran__resume-card[data-resume-source="bookmark"] .quran__resume-action i {
+    color: currentColor;
+}
+
+.section--quran .quran-surah-list {
+    display: grid;
+    gap: 8px;
+}
+
+.section--quran .quran-surah-row {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-height: 64px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    color: inherit;
+    text-align: right;
+    direction: rtl;
+    cursor: pointer;
+    transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.section--quran .quran-surah-row:hover {
+    border-color: color-mix(in srgb, var(--accent) 32%, var(--line));
+}
+
+.section--quran .quran-surah-row:active {
+    transform: scale(0.985);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.section--quran .quran-surah-row:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.section--quran .quran-surah-row__num {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
     color: var(--accent);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.section--quran .quran-surah-row__body {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+}
+
+.section--quran .quran-surah-row__name {
+    font-size: 1.18rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-main);
+}
+
+.section--quran .quran-surah-row__meta {
+    font-size: 0.88rem;
+    color: var(--muted);
+}
+
+.section--quran .quran-surah-row__chevron {
+    color: var(--muted);
+    font-size: 0.78rem;
+    opacity: 0.72;
+}
+
+.section--quran .quran__empty-state {
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+}
+
+.section--quran .quran-reader-head {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
 }
 
 .section--quran .quran__reader-actions {
@@ -33,43 +167,37 @@
     flex-wrap: wrap;
 }
 
+.section--quran .quran-reader-title {
+    margin-top: 14px;
+    text-align: center;
+}
+
+.section--quran .quran__surah-title {
+    margin: 0;
+    font-size: 2.2rem;
+}
+
+.section--quran .quran-reader-head__hint {
+    margin: 6px 0 0;
+    font-size: 0.92rem;
+}
+
 .section--quran #saveQuranBookmarkBtn.is-active {
     border-color: var(--accent);
     color: var(--accent);
 }
 
 .section--quran .quran__ayahs {
-    font-size: 1.6rem;
-    line-height: 2.2;
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    line-height: 2.35;
     text-align: justify;
     direction: rtl;
 }
 
-.section--quran .surah-item {
-    direction: rtl;
-    padding: 10px;
-    justify-content: space-between;
-}
-
-.section--quran .surah-item .home-btn-text {
-    font-weight: 700;
-}
-
-.section--quran .surah-item__icon {
-    width: 35px;
-    height: 35px;
-    font-size: 1rem;
-}
-
-.section--quran .surah-num {
-    flex-shrink: 0;
-    font-size: 0.85rem;
-    padding: 2px 8px;
-}
-
-
-.section--quran .quran__empty-state {
-    grid-column: span 2;
+.section--quran .quran__ayahs.app-reading-surface {
+    margin-block: 14px 0;
+    padding-block: clamp(18px, 5vw, 28px);
+    padding-inline: clamp(14px, 4vw, 24px);
 }
 
 .section--quran .quran__ayahs--loading {
@@ -77,6 +205,8 @@
 }
 
 .section--quran .quran__ayah {
+    appearance: none;
+    -webkit-appearance: none;
     display: inline;
     margin: 0;
     padding: 0;
@@ -88,28 +218,39 @@
     text-align: inherit;
     direction: inherit;
     cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.18s ease, box-shadow 0.18s ease;
+    border-radius: 0.35em;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .section--quran .quran__ayah:hover {
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    background: transparent;
+}
+
+.section--quran .quran__ayah:hover .quran__ayah-num {
+    color: var(--accent);
 }
 
 .section--quran .quran__ayah:focus-visible {
     outline: 2px solid var(--accent);
-    outline-offset: 4px;
+    outline-offset: 0.22em;
 }
 
 .section--quran .quran__ayah.is-active {
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: color-mix(in srgb, var(--text-main) 88%, var(--accent));
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+.section--quran .quran__ayah.is-active .quran__ayah-num {
+    color: var(--accent);
 }
 
 .section--quran .quran__ayah-num {
     color: var(--muted);
     white-space: nowrap;
+    transition: color 0.18s ease;
 }
-
 
 .section--quran .quran-study-panel {
     border: 1px solid var(--line);
@@ -143,76 +284,4 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-}
-
-.section--quran .quran-study-panel__status {
-    font-size: 0.95rem;
-}
-
-.section--quran .quran-study-panel__audio-status {
-    font-size: 0.92rem;
-    min-height: 1.2em;
-}
-
-.section--quran #quranRepeatAyahBtn.is-active {
-    border-color: var(--accent);
-    color: var(--accent);
-}
-
-.section--quran .quran-study-panel__content {
-    display: grid;
-    gap: 10px;
-}
-
-.section--quran .quran-study-card {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
-}
-
-.section--quran .quran-study-card__title {
-    margin: 0 0 8px;
-    font-size: 1rem;
-}
-
-.section--quran .quran-study-card__body {
-    margin: 0;
-    line-height: 1.8;
-}
-
-
-.section--quran .quran-review-card {
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 12px 14px;
-    background: color-mix(in srgb, var(--surface) 92%, var(--accent) 8%);
-}
-
-.section--quran .quran-review-card.is-hidden {
-    display: none;
-}
-
-.section--quran .quran-review-card__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.section--quran .quran-review-card__count {
-    font-weight: 700;
-}
-
-.section--quran .quran-review-card__hint,
-.section--quran .quran-review-card__meta {
-    margin-top: 4px;
-}
-
-.section--quran #quranAddReviewBtn.is-active,
-.section--quran #quranMarkMemorizedBtn.is-active,
-.section--quran #quranReviewNextBtn.is-active {
-    border-color: var(--accent);
-    color: var(--accent);
 }

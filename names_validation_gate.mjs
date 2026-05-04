@@ -51,7 +51,7 @@ globalThis.localStorage.setItem(APP_CONFIG.STORAGE_KEY, JSON.stringify(legacySta
 storage.init();
 
 const migrated = namesStore.getState();
-assert(storage.state.schemaVersion === 12, 'schemaVersion should migrate to 12');
+assert(storage.state.schemaVersion === APP_CONFIG.SCHEMA_VERSION, `schemaVersion should migrate to ${APP_CONFIG.SCHEMA_VERSION}`);
 assert(Array.isArray(migrated.favorites) && migrated.favorites.length === 2, 'favorites should survive migration');
 assert(Array.isArray(migrated.wird.indices) && migrated.wird.indices.length === 2, 'wird should survive migration');
 assert(migrated.quiz.mode === 'name-to-meaning', 'quiz mode should default correctly');

@@ -23,6 +23,15 @@ import {
 } from './quran-renderers.js';
 import { getSurahName } from './quran-metadata.js';
 
+function buildResumeTargetLabel(resumePoint) {
+    if (!resumePoint?.surahName) {
+        return '';
+    }
+
+    const verseNum = Number(resumePoint.verseNum || 0);
+    return verseNum > 0 ? `${resumePoint.surahName} • الآية ${verseNum}` : resumePoint.surahName;
+}
+
 export function createQuranReaderController({ scheduleIdleTask }) {
     return {
         isReaderVisible() {
@@ -30,9 +39,47 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             return Boolean(reader && !reader.hidden && !reader.classList.contains('is-hidden'));
         },
 
-        buildReadingPoint(surahNum = this.currentSurahNum, scroll = getScrollY()) {
+        getCurrentVisibleVerseNum() {
+            const ayahsContainer = this.getDom('ayahsContainer');
+            if (!ayahsContainer) {
+                return null;
+            }
+
+            const ayahNodes = Array.from(ayahsContainer.querySelectorAll('[data-quran-ayah="true"][data-verse-num]'));
+            if (!ayahNodes.length) {
+                return null;
+            }
+
+            const viewportAnchor = Math.max(120, Math.min(window.innerHeight * 0.35, 280));
+            let currentNode = null;
+
+            for (const ayahNode of ayahNodes) {
+                const rect = ayahNode.getBoundingClientRect();
+
+                if (rect.bottom < 0) {
+                    continue;
+                }
+
+                if (rect.top <= viewportAnchor) {
+                    currentNode = ayahNode;
+                    continue;
+                }
+
+                if (!currentNode) {
+                    currentNode = ayahNode;
+                }
+                break;
+            }
+
+            const verseNum = Number(currentNode?.dataset?.verseNum || 0);
+            return Number.isInteger(verseNum) && verseNum > 0 ? verseNum : null;
+        },
+
+        buildReadingPoint(surahNum = this.currentSurahNum, scroll = getScrollY(), verseNum = undefined) {
             const normalizedSurahNum = Number(surahNum || 0);
             const surahName = getSurahName(normalizedSurahNum);
+            const resolvedVerseNum = verseNum === undefined ? this.getCurrentVisibleVerseNum() : Number(verseNum);
+            const normalizedVerseNum = Number.isInteger(resolvedVerseNum) && resolvedVerseNum > 0 ? resolvedVerseNum : null;
             if (!normalizedSurahNum || !surahName) {
                 return null;
             }
@@ -40,13 +87,14 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             return {
                 surahNum: normalizedSurahNum,
                 surahName,
+                verseNum: normalizedVerseNum,
                 scroll: Math.max(0, Number(scroll) || 0),
                 updatedAt: new Date().toISOString()
             };
         },
 
         persistLastRead(point = this.buildReadingPoint()) {
-            const normalized = point ? this.buildReadingPoint(point.surahNum, point.scroll) : null;
+            const normalized = point ? this.buildReadingPoint(point.surahNum, point.scroll, point.verseNum) : null;
             if (!normalized) {
                 return null;
             }
@@ -81,8 +129,8 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             return loadSurahAyahs(surahNum, options);
         },
 
-        saveLastReadPoint(surahNum, scroll = getScrollY()) {
-            const point = this.buildReadingPoint(surahNum, scroll);
+        saveLastReadPoint(surahNum, scroll = getScrollY(), verseNum = undefined) {
+            const point = this.buildReadingPoint(surahNum, scroll, verseNum);
             if (!point) {
                 return null;
             }
@@ -104,7 +152,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             }
             this.closeStudyPanel();
             this.syncBookmarkButtonState();
-            this.syncReviewSummary();
         },
 
         renderSurahError(message = 'تعذر تحميل السورة.') {
@@ -115,7 +162,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             ayahsContainer.classList.remove('quran__ayahs--loading');
             ayahsContainer.setAttribute('aria-busy', 'false');
             ayahsContainer.textContent = message;
-            this.syncReviewSummary();
         },
 
         renderSurahAyahs(surahNum, ayahs) {
@@ -134,8 +180,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                 }
 
                 ayahsContainer.replaceChildren(fragment);
-                this.syncHifzActionState();
-                this.syncReviewSummary();
             });
         },
 
@@ -181,6 +225,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                     return;
                 }
 
+                const restorePoint = options.restoreScroll ? getResumePoint() : null;
                 this.cancelPendingOpenRequest();
 
                 const abortController = new AbortController();
@@ -202,30 +247,36 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                     }
 
                     this.renderSurahAyahs(surahNum, ayahs);
-                    this.saveLastReadPoint(surahNum, 0);
                     this.prefetchNearbySurahs(surahNum);
                     this.syncBookmarkButtonState();
-                    this.syncReviewSummary();
 
-                    const resumePoint = getResumePoint();
-                    const focusVerseNum = Number(options.focusVerseNum || 0);
+                    const focusVerseNum = Number(options.focusVerseNum || restorePoint?.verseNum || 0);
                     if (focusVerseNum > 0) {
                         requestAnimationFrame(() => {
                             const focused = this.focusAyahVerse(focusVerseNum, {
                                 behavior: 'smooth',
-                                openPanel: true
+                                openPanel: options.restoreScroll ? false : true
                             });
-                            if (!focused && options.restoreScroll && resumePoint?.surahNum === surahNum) {
-                                const resumeScroll = Number(resumePoint.scroll || 0);
+                            if (focused) {
+                                this.saveLastReadPoint(surahNum, getScrollY(), focusVerseNum);
+                                return;
+                            }
+
+                            if (options.restoreScroll && restorePoint?.surahNum === surahNum) {
+                                const resumeScroll = Number(restorePoint.scroll || 0);
                                 scrollToPosition(resumeScroll, 'auto');
-                                this.saveLastReadPoint(surahNum, resumeScroll);
+                                this.saveLastReadPoint(surahNum, resumeScroll, null);
                             }
                         });
-                    } else if (options.restoreScroll && resumePoint?.surahNum === surahNum) {
-                        const resumeScroll = Number(resumePoint.scroll || 0);
+                    } else if (options.restoreScroll && restorePoint?.surahNum === surahNum) {
+                        const resumeScroll = Number(restorePoint.scroll || 0);
                         requestAnimationFrame(() => {
                             scrollToPosition(resumeScroll, 'auto');
                             this.saveLastReadPoint(surahNum, resumeScroll);
+                        });
+                    } else {
+                        requestAnimationFrame(() => {
+                            this.saveLastReadPoint(surahNum, 0, 1);
                         });
                     }
                 } catch (error) {
@@ -262,7 +313,6 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             this.closeStudyPanel();
             this.syncBookmarkButtonState();
             this.checkBookmark();
-            this.syncReviewSummary();
         },
 
         checkBookmark() {
@@ -286,7 +336,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                 return;
             }
 
-            nameEl.textContent = getResumeSurahName();
+            nameEl.textContent = buildResumeTargetLabel(resumePoint) || getResumeSurahName();
             if (metaEl) {
                 metaEl.textContent = resumeLabel;
             }
@@ -302,7 +352,10 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                     return;
                 }
 
-                await this.openSurah(resumePoint.surahNum, { restoreScroll: true });
+                await this.openSurah(resumePoint.surahNum, {
+                    restoreScroll: true,
+                    focusVerseNum: resumePoint.verseNum
+                });
             } catch (error) {
                 this.reportUnexpectedError('تعذر استئناف القراءة الآن.', error);
             }

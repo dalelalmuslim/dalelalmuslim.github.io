@@ -99,8 +99,6 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/domains/masbaha/masbaha-store.js",
     "./js/domains/names/names-selectors.js",
     "./js/domains/names/names-store.js",
-    "./js/domains/quran/quran-hifz-selectors.js",
-    "./js/domains/quran/quran-hifz-store.js",
     "./js/domains/quran/quran-reading-selectors.js",
     "./js/domains/quran/quran-reading-store.js",
     "./js/domains/settings/settings-store.js",
@@ -148,15 +146,13 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/features/names/names-quiz-content.js",
     "./js/features/names/names-surface.js",
     "./js/features/quran/index.js",
-    "./js/features/quran/quran-audio-player.js",
+    "./js/features/quran/quran-bookmark-controller.js",
     "./js/features/quran/quran-controller.js",
     "./js/features/quran/quran-data-source.js",
     "./js/features/quran/quran-dom.js",
     "./js/features/quran/quran-metadata.js",
     "./js/features/quran/quran-reader-controller.js",
     "./js/features/quran/quran-renderers.js",
-    "./js/features/quran/quran-review-controller.js",
-    "./js/features/quran/quran-study-content.js",
     "./js/features/quran/quran-study-controller.js",
     "./js/features/settings/index.js",
     "./js/features/stats/index.js",
@@ -262,8 +258,8 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./data/quran/surahs/001.json"
   ],
   "precacheStats": {
-    "documentsKb": 92.3,
-    "shellKb": 1831.6,
+    "documentsKb": 91,
+    "shellKb": 1804.5,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -369,8 +365,6 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/domains/masbaha/masbaha-store.js",
       "./js/domains/names/names-selectors.js",
       "./js/domains/names/names-store.js",
-      "./js/domains/quran/quran-hifz-selectors.js",
-      "./js/domains/quran/quran-hifz-store.js",
       "./js/domains/quran/quran-reading-selectors.js",
       "./js/domains/quran/quran-reading-store.js",
       "./js/domains/settings/settings-store.js",
@@ -418,15 +412,13 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/features/names/names-quiz-content.js",
       "./js/features/names/names-surface.js",
       "./js/features/quran/index.js",
-      "./js/features/quran/quran-audio-player.js",
+      "./js/features/quran/quran-bookmark-controller.js",
       "./js/features/quran/quran-controller.js",
       "./js/features/quran/quran-data-source.js",
       "./js/features/quran/quran-dom.js",
       "./js/features/quran/quran-metadata.js",
       "./js/features/quran/quran-reader-controller.js",
       "./js/features/quran/quran-renderers.js",
-      "./js/features/quran/quran-review-controller.js",
-      "./js/features/quran/quran-study-content.js",
       "./js/features/quran/quran-study-controller.js",
       "./js/features/settings/index.js",
       "./js/features/stats/index.js",
@@ -528,5 +520,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-cd6411dd8783"
+  "cacheVersion": "azkar-v26-phase22-be5567dd6a68"
 });

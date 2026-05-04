@@ -40,10 +40,6 @@ export function createBaseStorageState() {
             lastRead: null,
             bookmark: null
         },
-        quranHifz: {
-            entries: [],
-            lastReviewKey: ''
-        },
         currentSessionTasbeeh: 0,
         dailyAyahId: null,
         dailyAyahDate: '',

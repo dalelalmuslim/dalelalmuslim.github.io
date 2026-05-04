@@ -123,12 +123,7 @@ export function createClickActionMap(appApi, event, target) {
                 'save-bookmark': () => quranCapabilities?.saveBookmark?.(),
                 'close-surah': () => quranCapabilities?.closeSurah?.(),
                 'close-study-panel': () => quranCapabilities?.closeStudyPanel?.(),
-                'copy-ayah': () => quranCapabilities?.copyActiveAyah?.(),
-                'share-ayah': () => quranCapabilities?.shareActiveAyah?.(),
-                'repeat-ayah': () => quranCapabilities?.repeatActiveAyah?.(),
-                'add-to-review': () => quranCapabilities?.addActiveAyahToReview?.(),
-                'mark-memorized': () => quranCapabilities?.markActiveAyahMemorized?.(),
-                'open-next-review': () => quranCapabilities?.openNextReview?.()
+                'copy-ayah': () => quranCapabilities?.copyActiveAyah?.()
             };
             actions[action]?.();
         },

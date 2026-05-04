@@ -1,75 +1,55 @@
 <section aria-hidden="true" class="tab-content section section--quran" id="quran" role="tabpanel">
 <h2 class="sr-only">القرآن الكريم</h2>
 <div class="cardx">
-<div aria-hidden="true" class="cardx--center is-hidden mb-15 quran__resume-card" id="resumeReadingCard">
-<div class="muted mb-8 quran__resume-meta" id="lastReadResumeMeta"></div>
+<div id="surahListContainer">
+<div class="quran-index-head mb-15">
+<h3 class="amiri-text cardx__title quran-index-head__title">القرآن الكريم</h3>
+<p class="muted quran-index-head__subtitle">اختر سورة أو تابع من موضعك المحفوظ.</p>
+</div>
+<div aria-hidden="true" class="is-hidden mb-15 quran__resume-card" id="resumeReadingCard">
+<div class="quran__resume-copy">
+<div class="muted quran__resume-meta" id="lastReadResumeMeta"></div>
+<div class="quran__resume-target" id="lastReadSurahName"></div>
+</div>
 <button class="btn btn--primary quran__resume-action" data-quran-action="resume-reading" type="button">
-<i aria-hidden="true" class="fa-solid fa-bookmark"></i> أكمل: <span id="lastReadSurahName"></span>
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> متابعة
 </button>
 </div>
-<div id="surahListContainer">
-<div class="mb-15">
-<label class="muted mb-8 quran__search-label" for="searchSurah">ابحث عن سورة</label>
-<input aria-label="البحث عن سورة" class="input" id="searchSurah" placeholder="ابحث عن سورة..." type="text">
+<div class="quran-search-surface mb-15">
+<label class="muted quran__search-label" for="searchSurah">ابحث في السور</label>
+<input aria-label="البحث عن سورة" class="input quran__search-input" id="searchSurah" placeholder="اسم السورة أو رقمها..." type="text">
 </input></div>
-<div aria-live="polite" class="home-grid home-grid--catalog home-grid--surahs" id="surahList">
-<p class="muted cardx--center quran__loading-state">جاري التحميل...</p>
+<div aria-live="polite" class="quran-surah-list" id="surahList">
+<p class="muted cardx--center quran__loading-state">جاري تحميل فهرس السور...</p>
 </div>
 </div>
 <div class="is-hidden" id="surahReader">
-<div class="quran__reader-actions mb-15">
+<div class="quran-reader-head mb-15">
+<div class="quran__reader-actions">
 <button class="btn" data-quran-action="close-surah" type="button">
 <i aria-hidden="true" class="fa-solid fa-arrow-right"></i> الفهرس
               </button>
 <button class="btn btn--ghost" data-quran-action="save-bookmark" id="saveQuranBookmarkBtn" type="button">
-<i aria-hidden="true" class="fa-solid fa-bookmark"></i> حفظ علامة
+<i aria-hidden="true" class="fa-solid fa-bookmark"></i> حفظ الموضع
               </button>
 </div>
-<div aria-hidden="true" class="quran-review-card is-hidden mb-15" id="quranReviewSummary">
-<div class="quran-review-card__head">
-<div>
-<div class="quran-review-card__count" id="quranReviewSummaryCount">0 آية للمراجعة</div>
-<div class="muted quran-review-card__hint" id="quranReviewSummaryHint"></div>
+<div class="quran-reader-title">
+<h3 aria-live="polite" class="amiri-text cardx__title cardx--center justify-center quran__surah-title" id="currentSurahTitle"></h3>
+<p class="muted quran-reader-head__hint">اضغط على آية لنسخها أو احفظ موضعك الحالي.</p>
 </div>
-<button class="btn btn--ghost" data-quran-action="open-next-review" id="quranReviewNextBtn" type="button">
-                  مراجعة التالية
-                </button>
 </div>
-<div class="muted quran-review-card__meta" id="quranReviewMemorizedCount"></div>
-</div>
-<h3 aria-live="polite" class="amiri-text cardx__title cardx--center justify-center mt-15 mb-15 quran__surah-title" id="currentSurahTitle"></h3>
-<div class="amiri-text quran__ayahs" id="ayahsContainer"></div>
-<section aria-hidden="true" aria-label="لوحة دراسة الآية" aria-live="polite" class="quran-study-panel is-hidden mt-15" id="quranStudyPanel">
+<div class="amiri-text app-reading-surface quran__ayahs" id="ayahsContainer"></div>
+<section aria-hidden="true" aria-label="خيارات الآية" aria-live="polite" class="quran-study-panel is-hidden mt-15" id="quranStudyPanel">
 <div class="quran-study-panel__head">
-<h4 class="cardx__title quran-study-panel__title" id="quranStudyPanelTitle">تأمل الآية</h4>
+<h4 class="cardx__title quran-study-panel__title" id="quranStudyPanelTitle">الآية المختارة</h4>
 <button class="btn btn--ghost btn--compact" data-quran-action="close-study-panel" type="button">
                   إغلاق
                 </button>
 </div>
 <div class="muted mb-8" id="quranStudyPanelMeta"></div>
-<div class="quran-study-panel__status muted mb-8" id="quranStudyPanelStatus"></div>
-<div class="quran-study-panel__audio-status muted mb-8" id="quranStudyAudioStatus"></div>
 <div class="amiri-text quran-study-panel__text" id="quranStudyPanelText"></div>
-<div class="quran-study-panel__content mt-15">
-<article class="quran-study-card">
-<h5 class="quran-study-card__title">الترجمة</h5>
-<p class="quran-study-card__body muted" id="quranStudyTranslation"></p>
-</article>
-<article class="quran-study-card">
-<h5 class="quran-study-card__title">التفسير المختصر</h5>
-<p class="quran-study-card__body muted" id="quranStudyTafsir"></p>
-</article>
-<article class="quran-study-card">
-<h5 class="quran-study-card__title">مفتاح التدبر</h5>
-<p class="quran-study-card__body" id="quranStudyReflection"></p>
-</article>
-</div>
 <div class="quran-study-panel__actions mt-15">
-<button class="btn btn--ghost" data-quran-action="add-to-review" id="quranAddReviewBtn" type="button">أضف للمراجعة</button>
-<button class="btn btn--ghost" data-quran-action="mark-memorized" id="quranMarkMemorizedBtn" type="button">تم حفظها</button>
 <button class="btn btn--ghost" data-quran-action="copy-ayah" type="button">نسخ</button>
-<button class="btn btn--ghost" data-quran-action="share-ayah" type="button">مشاركة</button>
-<button class="btn btn--ghost" data-quran-action="repeat-ayah" id="quranRepeatAyahBtn" type="button">تكرار صوتي ×3</button>
 </div>
 </section>
 </div>

@@ -5,7 +5,6 @@ import {
     normalizeTasks,
     normalizeBookmark,
     normalizeQuranReadingState,
-    normalizeQuranHifzState,
     normalizeAchievements,
     normalizeCompletedTasks,
     normalizeAzkarProgress,
@@ -69,7 +68,6 @@ export function migrateStorageState(savedState = {}, schemaVersion) {
     merged.storiesHistory = normalizeStoriesHistory(merged.storiesHistory);
     merged.namesState = normalizeNamesState(merged.namesState);
     merged.quranReading = normalizeQuranReadingState(merged.quranReading);
-    merged.quranHifz = normalizeQuranHifzState(merged.quranHifz);
 
     const savedSchemaVersion = toSafeNumber(savedState?.schemaVersion, 0, { min: 0 });
     const shouldBackfillQuranReadingFromLegacyBookmark = savedSchemaVersion > 0 && savedSchemaVersion < 8;
