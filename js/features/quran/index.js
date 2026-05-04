@@ -28,7 +28,6 @@ async function withQuranController(actionName, action) {
 function refreshQuranSurface() {
     return withQuranController('refreshSurface', quran => {
         quran?.checkBookmark?.();
-        quran?.syncReviewSummary?.();
     });
 }
 
@@ -62,12 +61,7 @@ export const quranFeature = defineFeatureApi({
         resumeReading: () => withQuranController('resumeReading', quran => quran?.resumeReading?.()),
         saveBookmark: () => withQuranController('saveBookmark', quran => quran?.saveCurrentBookmark?.()),
         closeStudyPanel: () => withQuranController('closeStudyPanel', quran => quran?.closeStudyPanel?.()),
-        copyActiveAyah: () => withQuranController('copyActiveAyah', quran => quran?.copyActiveAyah?.()),
-        shareActiveAyah: () => withQuranController('shareActiveAyah', quran => quran?.shareActiveAyah?.()),
-        repeatActiveAyah: () => withQuranController('repeatActiveAyah', quran => quran?.repeatActiveAyah?.()),
-        addActiveAyahToReview: () => withQuranController('addActiveAyahToReview', quran => quran?.addActiveAyahToReview?.()),
-        markActiveAyahMemorized: () => withQuranController('markActiveAyahMemorized', quran => quran?.markActiveAyahMemorized?.()),
-        openNextReview: () => withQuranController('openNextReview', quran => quran?.openNextReview?.())
+        copyActiveAyah: () => withQuranController('copyActiveAyah', quran => quran?.copyActiveAyah?.())
     }
 });
 
