@@ -23,6 +23,8 @@ import {
 } from './quran-renderers.js';
 import { getSurahName } from './quran-metadata.js';
 
+const QURAN_INDEX_TITLE = 'القرآن الكريم';
+
 function buildResumeTargetLabel(resumePoint) {
     if (!resumePoint?.surahName) {
         return '';
@@ -34,6 +36,15 @@ function buildResumeTargetLabel(resumePoint) {
 
 export function createQuranReaderController({ scheduleIdleTask }) {
     return {
+        setQuranHeaderTitle(title = QURAN_INDEX_TITLE) {
+            const headerTitle = this.getDom('appHeaderTitle');
+            if (!headerTitle) {
+                return;
+            }
+
+            headerTitle.textContent = title || QURAN_INDEX_TITLE;
+        },
+
         isReaderVisible() {
             const reader = this.getDom('surahReader');
             return Boolean(reader && !reader.hidden && !reader.classList.contains('is-hidden'));
@@ -144,6 +155,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             const titleEl = this.getDom('currentSurahTitle');
             const ayahsContainer = this.getDom('ayahsContainer');
             if (titleEl) titleEl.textContent = surahName || 'جاري التحميل...';
+            this.setQuranHeaderTitle(surahName || QURAN_INDEX_TITLE);
             if (ayahsContainer) {
                 this.clearActiveAyah();
                 ayahsContainer.classList.add('quran__ayahs--loading');
@@ -299,7 +311,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
 
         closeSurah() {
             this.resetReaderView();
-            replaceSectionRoute('quran', 'القرآن الكريم');
+            replaceSectionRoute('quran', QURAN_INDEX_TITLE);
         },
 
         resetReaderView() {
@@ -313,6 +325,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             this.closeStudyPanel();
             this.syncBookmarkButtonState();
             this.checkBookmark();
+            this.setQuranHeaderTitle(QURAN_INDEX_TITLE);
         },
 
         checkBookmark() {
