@@ -1,5 +1,7 @@
 function createDomMap() {
     return {
+        appHeaderTitle: document.getElementById('headerTitle'),
+        appBackButton: document.getElementById('backBtn'),
         searchInput: document.getElementById('searchSurah'),
         surahList: document.getElementById('surahList'),
         surahListContainer: document.getElementById('surahListContainer'),
@@ -14,7 +16,8 @@ function createDomMap() {
         quranStudyPanel: document.getElementById('quranStudyPanel'),
         quranStudyPanelTitle: document.getElementById('quranStudyPanelTitle'),
         quranStudyPanelMeta: document.getElementById('quranStudyPanelMeta'),
-        quranStudyPanelText: document.getElementById('quranStudyPanelText')
+        quranStudyPanelText: document.getElementById('quranStudyPanelText'),
+        quranCopyAyahBtn: document.getElementById('quranCopyAyahBtn')
     };
 }
 
