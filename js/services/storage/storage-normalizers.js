@@ -10,9 +10,7 @@ export { createDefaultNamesState, normalizeNamesState } from './storage-normaliz
 export {
     normalizeBookmark,
     normalizeQuranReadingPoint,
-    normalizeQuranReadingState,
-    normalizeQuranHifzEntry,
-    normalizeQuranHifzState
+    normalizeQuranReadingState
 } from './storage-normalizers-quran.js';
 export {
     normalizeAzkarProgressKey,
