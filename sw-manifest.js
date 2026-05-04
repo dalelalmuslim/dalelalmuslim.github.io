@@ -104,8 +104,6 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/domains/settings/settings-store.js",
     "./js/domains/stats/stats-events.js",
     "./js/domains/stats/stats-selectors.js",
-    "./js/domains/stories/stories-history-store.js",
-    "./js/domains/stories/stories-preferences-store.js",
     "./js/domains/stories/stories-repository.js",
     "./js/domains/stories/stories-search-index.js",
     "./js/domains/stories/stories-selectors.js",
@@ -259,7 +257,7 @@ self.__SW_MANIFEST__ = Object.freeze({
   ],
   "precacheStats": {
     "documentsKb": 90.2,
-    "shellKb": 1772.3,
+    "shellKb": 1771.4,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -370,8 +368,6 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/domains/settings/settings-store.js",
       "./js/domains/stats/stats-events.js",
       "./js/domains/stats/stats-selectors.js",
-      "./js/domains/stories/stories-history-store.js",
-      "./js/domains/stories/stories-preferences-store.js",
       "./js/domains/stories/stories-repository.js",
       "./js/domains/stories/stories-search-index.js",
       "./js/domains/stories/stories-selectors.js",
@@ -520,5 +516,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-f59bccbe00c2"
+  "cacheVersion": "azkar-v26-phase22-530377977918"
 });
