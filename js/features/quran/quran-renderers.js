@@ -1,4 +1,4 @@
-import { getSurahName, normalizeArabic } from './quran-metadata.js';
+import { getSurahName, getSurahVerseCountLabel, normalizeArabic } from './quran-metadata.js';
 
 function createStateMessage(text, className = 'quran__empty-state') {
     const message = document.createElement('p');
@@ -35,13 +35,20 @@ export function createSurahButton({ getDom, onOpenSurah }, surahNum) {
     if (!template) return null;
 
     const clone = template.content.cloneNode(true);
-    const btn = clone.querySelector('.surah-item');
-    const nameEl = clone.querySelector('.surah-name');
-    const numEl = clone.querySelector('.surah-num');
+    const btn = clone.querySelector('.quran-surah-row');
+    const nameEl = clone.querySelector('.quran-surah-row__name');
+    const numEl = clone.querySelector('.quran-surah-row__num');
+    const metaEl = clone.querySelector('.quran-surah-row__meta');
+    const surahName = getSurahName(surahNum);
+    const verseCountLabel = getSurahVerseCountLabel(surahNum);
 
-    if (nameEl) nameEl.textContent = getSurahName(surahNum);
+    if (nameEl) nameEl.textContent = surahName;
     if (numEl) numEl.textContent = surahNum;
-    if (btn) btn.addEventListener('click', () => onOpenSurah(surahNum));
+    if (metaEl) metaEl.textContent = verseCountLabel;
+    if (btn) {
+        btn.setAttribute('aria-label', `افتح سورة ${surahName}${verseCountLabel ? `، ${verseCountLabel}` : ''}`);
+        btn.addEventListener('click', () => onOpenSurah(surahNum));
+    }
 
     return clone;
 }
@@ -74,7 +81,7 @@ export function renderSurahList({ getDom, getSurahNumbers, onOpenSurah }, search
     });
 
     if (!fragment.childNodes.length) {
-        list.replaceChildren(createStateMessage('لا توجد نتائج مطابقة.'));
+        list.replaceChildren(createStateMessage('لا توجد سورة بهذا البحث.'));
         return;
     }
 
