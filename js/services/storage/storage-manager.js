@@ -9,7 +9,6 @@ import {
     createTaskId,
     normalizeTasks,
     normalizeQuranReadingState,
-    normalizeQuranHifzState,
     normalizeAchievements,
     normalizeCompletedTasks,
     normalizeAzkarProgress,
@@ -185,10 +184,6 @@ export const storage = {
             this.state.quranReading = createBaseStorageState().quranReading;
         }
 
-        if (!this.isPlainObject(this.state.quranHifz)) {
-            this.state.quranHifz = createBaseStorageState().quranHifz;
-        }
-
         if (
             this.state.dailyAyahId !== null &&
             (!Number.isFinite(Number(this.state.dailyAyahId)) || Number(this.state.dailyAyahId) <= 0)
@@ -220,7 +215,6 @@ export const storage = {
         this.state.completedTasks = normalizeCompletedTasks(this.state.completedTasks, this.state.tasks);
         this.state.namesState = normalizeNamesState(this.state.namesState);
         this.state.quranReading = normalizeQuranReadingState(this.state.quranReading);
-        this.state.quranHifz = normalizeQuranHifzState(this.state.quranHifz);
         this.state.settings = this.normalizeSettings(this.state.settings);
     },
 
@@ -315,6 +309,7 @@ export const storage = {
             this.syncDerivedState();
 
             delete this.state.quranBookmark;
+            delete this.state.quranHifz;
 
             const serialized = JSON.stringify(this.state);
             this.writeSerializedState(serialized);
