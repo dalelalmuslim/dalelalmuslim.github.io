@@ -25,24 +25,36 @@ function createAyahContext(ayahNode) {
     };
 }
 
-function resetCopyButton(button) {
+function setCopyButtonState(button, state) {
     if (!button) {
         return;
     }
 
-    button.disabled = false;
-    button.dataset.copyState = 'idle';
-    button.innerHTML = '<i aria-hidden="true" class="fa-solid fa-copy"></i><span>نسخ</span>';
+    const icon = button.querySelector('i');
+    const label = button.querySelector('span');
+    const isDone = state === 'done';
+
+    button.disabled = isDone;
+    button.dataset.copyState = isDone ? 'done' : 'idle';
+
+    if (icon) {
+        icon.classList.toggle('fa-copy', !isDone);
+        icon.classList.toggle('fa-check', isDone);
+    }
+
+    if (label) {
+        label.textContent = isDone ? COPY_BUTTON_DONE_LABEL : COPY_BUTTON_IDLE_LABEL;
+    } else {
+        button.textContent = isDone ? COPY_BUTTON_DONE_LABEL : COPY_BUTTON_IDLE_LABEL;
+    }
+}
+
+function resetCopyButton(button) {
+    setCopyButtonState(button, 'idle');
 }
 
 function markCopyButtonDone(button) {
-    if (!button) {
-        return;
-    }
-
-    button.disabled = true;
-    button.dataset.copyState = 'done';
-    button.innerHTML = '<i aria-hidden="true" class="fa-solid fa-check"></i><span>تم النسخ</span>';
+    setCopyButtonState(button, 'done');
 }
 
 export function createQuranStudyController() {
