@@ -23,6 +23,15 @@ import {
 } from './quran-renderers.js';
 import { getSurahName } from './quran-metadata.js';
 
+function buildResumeTargetLabel(resumePoint) {
+    if (!resumePoint?.surahName) {
+        return '';
+    }
+
+    const verseNum = Number(resumePoint.verseNum || 0);
+    return verseNum > 0 ? `${resumePoint.surahName} • الآية ${verseNum}` : resumePoint.surahName;
+}
+
 export function createQuranReaderController({ scheduleIdleTask }) {
     return {
         isReaderVisible() {
@@ -333,7 +342,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
                 return;
             }
 
-            nameEl.textContent = getResumeSurahName();
+            nameEl.textContent = buildResumeTargetLabel(resumePoint) || getResumeSurahName();
             if (metaEl) {
                 metaEl.textContent = resumeLabel;
             }
