@@ -26,9 +26,18 @@ export function getSurahVerseCount(surahNum) {
     return Number.isInteger(count) && count > 0 ? count : null;
 }
 
+export function formatAyahCount(count) {
+    const normalizedCount = Number(count);
+    if (!Number.isInteger(normalizedCount) || normalizedCount <= 0) {
+        return '';
+    }
+
+    const unit = normalizedCount >= 3 && normalizedCount <= 10 ? 'آيات' : 'آية';
+    return `${normalizedCount} ${unit}`;
+}
+
 export function getSurahVerseCountLabel(surahNum) {
-    const count = getSurahVerseCount(surahNum);
-    return count ? `${count} آية` : '';
+    return formatAyahCount(getSurahVerseCount(surahNum));
 }
 
 export function normalizeArabic(text) {
