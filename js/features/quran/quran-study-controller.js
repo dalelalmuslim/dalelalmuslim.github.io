@@ -45,7 +45,6 @@ export function createQuranStudyController() {
             ayahNode.setAttribute('aria-pressed', 'true');
             this.activeAyahNode = ayahNode;
             this.activeAyahContext = nextContext;
-            this.syncHifzActionState();
 
             document.dispatchEvent(new CustomEvent('quran:ayah-selected', {
                 detail: this.activeAyahContext
@@ -60,7 +59,6 @@ export function createQuranStudyController() {
 
             this.activeAyahNode = null;
             this.activeAyahContext = null;
-            this.syncHifzActionState();
             this.closeStudyPanel();
         },
 
@@ -88,7 +86,6 @@ export function createQuranStudyController() {
             textEl.textContent = context.text;
             panel.classList.remove('is-hidden');
             panel.setAttribute('aria-hidden', 'false');
-            this.syncHifzActionState();
             return true;
         },
 
@@ -134,7 +131,6 @@ export function createQuranStudyController() {
             titleEl.textContent = 'الآية المختارة';
             metaEl.textContent = '';
             textEl.textContent = '';
-            this.syncHifzActionState();
         },
 
         buildAyahStudyText(context = this.activeAyahContext) {
