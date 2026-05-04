@@ -258,8 +258,8 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./data/quran/surahs/001.json"
   ],
   "precacheStats": {
-    "documentsKb": 91,
-    "shellKb": 1804.5,
+    "documentsKb": 90.2,
+    "shellKb": 1811.3,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -520,5 +520,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-be5567dd6a68"
+  "cacheVersion": "azkar-v26-phase22-159ef4ba801b"
 });

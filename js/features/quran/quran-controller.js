@@ -5,7 +5,6 @@ import { registerSubviewCloseHandler } from '../../app/ui/subview-manager.js';
 import { scheduleRender } from '../../shared/render/render-scheduler.js';
 import { warmQuranDataSource } from './quran-data-source.js';
 import { createQuranDomCache } from './quran-dom.js';
-import { buildAyahLine } from './quran-renderers.js';
 import { SURAH_NAMES } from './quran-metadata.js';
 import { createQuranStudyController } from './quran-study-controller.js';
 import { createQuranBookmarkController } from './quran-bookmark-controller.js';
@@ -170,10 +169,9 @@ export const quran = {
         }, { passive: true });
     },
 
-    buildAyahLine,
     ...studyController,
     ...bookmarkController,
     ...readerController
 };
 
-registerSubviewCloseHandler('surahReader', () => quran.checkBookmark());
+registerSubviewCloseHandler('surahReader', () => quran.handleReaderSubviewClosed());

@@ -8,6 +8,7 @@ import {
 } from '../../domains/quran/quran-reading-selectors.js';
 import { replaceSectionRoute } from '../../router/route-state.js';
 import { hideUIElement, showUIElement } from '../../app/ui/visibility.js';
+import { getCurrentSection } from '../../app/ui/ui-state.js';
 import { showToast } from '../../app/shell/app-shell.js';
 import { closeSubview, openSubview } from '../../app/ui/subview-manager.js';
 import { pushHashState, scrollToTop, scrollToPosition, getScrollY } from '../../services/platform/browser-navigation.js';
@@ -23,6 +24,8 @@ import {
 } from './quran-renderers.js';
 import { getSurahName } from './quran-metadata.js';
 
+const QURAN_INDEX_TITLE = 'القرآن الكريم';
+
 function buildResumeTargetLabel(resumePoint) {
     if (!resumePoint?.surahName) {
         return '';
@@ -34,6 +37,46 @@ function buildResumeTargetLabel(resumePoint) {
 
 export function createQuranReaderController({ scheduleIdleTask }) {
     return {
+        setQuranHeaderState({ title = QURAN_INDEX_TITLE, showBackButton = false } = {}) {
+            const headerTitle = this.getDom('appHeaderTitle');
+            if (headerTitle) {
+                headerTitle.textContent = title || QURAN_INDEX_TITLE;
+            }
+
+            const backButton = this.getDom('appBackButton');
+            if (!backButton) {
+                return;
+            }
+
+            if (showBackButton) {
+                showUIElement(backButton, { display: 'flex' });
+                return;
+            }
+
+            hideUIElement(backButton, { display: 'none' });
+        },
+
+        setQuranIndexHeader() {
+            this.setQuranHeaderState({
+                title: QURAN_INDEX_TITLE,
+                showBackButton: false
+            });
+        },
+
+        setQuranReaderHeader(surahName) {
+            this.setQuranHeaderState({
+                title: surahName || QURAN_INDEX_TITLE,
+                showBackButton: true
+            });
+        },
+
+        setQuranHeaderTitle(title = QURAN_INDEX_TITLE) {
+            this.setQuranHeaderState({
+                title,
+                showBackButton: this.isReaderVisible()
+            });
+        },
+
         isReaderVisible() {
             const reader = this.getDom('surahReader');
             return Boolean(reader && !reader.hidden && !reader.classList.contains('is-hidden'));
@@ -144,6 +187,7 @@ export function createQuranReaderController({ scheduleIdleTask }) {
             const titleEl = this.getDom('currentSurahTitle');
             const ayahsContainer = this.getDom('ayahsContainer');
             if (titleEl) titleEl.textContent = surahName || 'جاري التحميل...';
+            this.setQuranReaderHeader(surahName || QURAN_INDEX_TITLE);
             if (ayahsContainer) {
                 this.clearActiveAyah();
                 ayahsContainer.classList.add('quran__ayahs--loading');
@@ -299,20 +343,35 @@ export function createQuranReaderController({ scheduleIdleTask }) {
 
         closeSurah() {
             this.resetReaderView();
-            replaceSectionRoute('quran', 'القرآن الكريم');
         },
 
-        resetReaderView() {
+        handleReaderSubviewClosed() {
+            const previousSurahNum = this.currentSurahNum;
+            if (previousSurahNum) {
+                this.saveLastReadPoint(previousSurahNum, getScrollY());
+            }
+
             this.cancelPendingOpenRequest();
-            this.saveLastReadPoint(this.currentSurahNum, getScrollY());
             clearTimeout(this.readingProgressTimer);
-            closeSubview('surahReader');
             this.currentSurahNum = null;
             this.openRequestId += 1;
             this.clearActiveAyah();
             this.closeStudyPanel();
             this.syncBookmarkButtonState();
             this.checkBookmark();
+            this.renderSurahList(this.getDom('searchInput')?.value || '');
+
+            if (getCurrentSection() === 'quran') {
+                this.setQuranIndexHeader();
+                replaceSectionRoute('quran', QURAN_INDEX_TITLE);
+            }
+        },
+
+        resetReaderView() {
+            const wasClosed = closeSubview('surahReader');
+            if (!wasClosed) {
+                this.handleReaderSubviewClosed();
+            }
         },
 
         checkBookmark() {

@@ -1,6 +1,9 @@
 import { copyToClipboard, showToast } from '../../app/shell/app-shell.js';
 import { getSurahName } from './quran-metadata.js';
 
+const COPY_BUTTON_IDLE_LABEL = 'نسخ';
+const COPY_BUTTON_DONE_LABEL = 'تم النسخ';
+
 function createAyahContext(ayahNode) {
     if (!ayahNode) {
         return null;
@@ -20,6 +23,38 @@ function createAyahContext(ayahNode) {
         text,
         surahName: getSurahName(surahNum)
     };
+}
+
+function setCopyButtonState(button, state) {
+    if (!button) {
+        return;
+    }
+
+    const icon = button.querySelector('i');
+    const label = button.querySelector('span');
+    const isDone = state === 'done';
+
+    button.disabled = isDone;
+    button.dataset.copyState = isDone ? 'done' : 'idle';
+
+    if (icon) {
+        icon.classList.toggle('fa-copy', !isDone);
+        icon.classList.toggle('fa-check', isDone);
+    }
+
+    if (label) {
+        label.textContent = isDone ? COPY_BUTTON_DONE_LABEL : COPY_BUTTON_IDLE_LABEL;
+    } else {
+        button.textContent = isDone ? COPY_BUTTON_DONE_LABEL : COPY_BUTTON_IDLE_LABEL;
+    }
+}
+
+function resetCopyButton(button) {
+    setCopyButtonState(button, 'idle');
+}
+
+function markCopyButtonDone(button) {
+    setCopyButtonState(button, 'done');
 }
 
 export function createQuranStudyController() {
@@ -71,6 +106,7 @@ export function createQuranStudyController() {
             const titleEl = this.getDom('quranStudyPanelTitle');
             const metaEl = this.getDom('quranStudyPanelMeta');
             const textEl = this.getDom('quranStudyPanelText');
+            const copyButton = this.getDom('quranCopyAyahBtn');
 
             if (!panel || !titleEl || !metaEl || !textEl) {
                 return false;
@@ -84,6 +120,7 @@ export function createQuranStudyController() {
             titleEl.textContent = 'الآية المختارة';
             metaEl.textContent = `${surahName} • الآية ${context.verseNum}`;
             textEl.textContent = context.text;
+            resetCopyButton(copyButton);
             panel.classList.remove('is-hidden');
             panel.setAttribute('aria-hidden', 'false');
             return true;
@@ -119,6 +156,7 @@ export function createQuranStudyController() {
             const titleEl = this.getDom('quranStudyPanelTitle');
             const metaEl = this.getDom('quranStudyPanelMeta');
             const textEl = this.getDom('quranStudyPanelText');
+            const copyButton = this.getDom('quranCopyAyahBtn');
 
             if (!panel || !titleEl || !metaEl || !textEl) {
                 return;
@@ -131,6 +169,7 @@ export function createQuranStudyController() {
             titleEl.textContent = 'الآية المختارة';
             metaEl.textContent = '';
             textEl.textContent = '';
+            resetCopyButton(copyButton);
         },
 
         buildAyahStudyText(context = this.activeAyahContext) {
@@ -147,13 +186,27 @@ export function createQuranStudyController() {
 
         async copyActiveAyah() {
             try {
+                const requestId = this.studyPanelRequestId;
                 const text = this.buildAyahStudyText();
+                const copyButton = this.getDom('quranCopyAyahBtn');
                 if (!text) {
                     showToast('اختر آية أولًا.', 'info');
                     return;
                 }
 
-                await copyToClipboard(text);
+                const copied = await copyToClipboard(text);
+                if (!copied || requestId !== this.studyPanelRequestId) {
+                    return;
+                }
+
+                markCopyButtonDone(copyButton);
+                window.setTimeout(() => {
+                    if (requestId !== this.studyPanelRequestId) {
+                        return;
+                    }
+
+                    this.clearActiveAyah();
+                }, 700);
             } catch (error) {
                 this.reportUnexpectedError('تعذر نسخ الآية الآن.', error);
             }

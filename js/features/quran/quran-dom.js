@@ -1,5 +1,7 @@
 function createDomMap() {
     return {
+        appHeaderTitle: document.getElementById('headerTitle'),
+        appBackButton: document.getElementById('backBtn'),
         searchInput: document.getElementById('searchSurah'),
         surahList: document.getElementById('surahList'),
         surahListContainer: document.getElementById('surahListContainer'),
@@ -10,11 +12,11 @@ function createDomMap() {
         lastReadSurahName: document.getElementById('lastReadSurahName'),
         lastReadResumeMeta: document.getElementById('lastReadResumeMeta'),
         saveQuranBookmarkBtn: document.getElementById('saveQuranBookmarkBtn'),
-        surahBtnTemplate: document.getElementById('tpl-surah-btn'),
         quranStudyPanel: document.getElementById('quranStudyPanel'),
         quranStudyPanelTitle: document.getElementById('quranStudyPanelTitle'),
         quranStudyPanelMeta: document.getElementById('quranStudyPanelMeta'),
-        quranStudyPanelText: document.getElementById('quranStudyPanelText')
+        quranStudyPanelText: document.getElementById('quranStudyPanelText'),
+        quranCopyAyahBtn: document.getElementById('quranCopyAyahBtn')
     };
 }
 
