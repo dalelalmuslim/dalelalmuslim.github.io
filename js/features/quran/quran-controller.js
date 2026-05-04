@@ -8,7 +8,7 @@ import { createQuranDomCache } from './quran-dom.js';
 import { buildAyahLine } from './quran-renderers.js';
 import { SURAH_NAMES } from './quran-metadata.js';
 import { createQuranStudyController } from './quran-study-controller.js';
-import { createQuranReviewController } from './quran-review-controller.js';
+import { createQuranBookmarkController } from './quran-bookmark-controller.js';
 import { createQuranReaderController } from './quran-reader-controller.js';
 
 const domCache = createQuranDomCache();
@@ -28,7 +28,7 @@ function scheduleIdleTask(task, timeout = 1500) {
 }
 
 const studyController = createQuranStudyController();
-const reviewController = createQuranReviewController();
+const bookmarkController = createQuranBookmarkController();
 const readerController = createQuranReaderController({ scheduleIdleTask });
 
 export const quran = {
@@ -47,7 +47,6 @@ export const quran = {
     openAbortController: null,
     searchInputTimer: null,
     readingProgressTimer: null,
-    audioPlayer: null,
     surahNames: SURAH_NAMES,
 
     cacheDom: domCache.cacheDom,
@@ -104,7 +103,6 @@ export const quran = {
         await this.ensureDataLoaded();
         this.renderSurahList();
         this.checkBookmark();
-        this.syncReviewSummary();
         this.prefetchBookmark();
     },
 
@@ -174,7 +172,7 @@ export const quran = {
 
     buildAyahLine,
     ...studyController,
-    ...reviewController,
+    ...bookmarkController,
     ...readerController
 };
 
