@@ -16,6 +16,15 @@ function buildAyahKey(context) {
     return `${Number(context.surahNum)}:${Number(context.verseNum)}`;
 }
 
+function buildBookmarkToastLabel(point) {
+    const verseNum = Number(point?.verseNum || 0);
+    if (point?.surahName && verseNum > 0) {
+        return `${point.surahName}، الآية ${verseNum}`;
+    }
+
+    return point?.surahName || 'الموضع الحالي';
+}
+
 export function createQuranReviewController() {
     return {
         syncBookmarkButtonState() {
@@ -116,7 +125,7 @@ export function createQuranReviewController() {
             const savedBookmark = quranReadingStore.saveBookmark(point);
             this.syncBookmarkButtonState();
             this.checkBookmark();
-            showToast(`تم حفظ العلامة في ${point.surahName}.`, 'success');
+            showToast(`تم حفظ الموضع في ${buildBookmarkToastLabel(point)}.`, 'success');
             return savedBookmark;
         },
 
