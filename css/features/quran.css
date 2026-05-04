@@ -1,5 +1,19 @@
 .section--quran {
-    padding-bottom: calc(var(--bottom-nav-height, 72px) + 52px + env(safe-area-inset-bottom, 0px));
+    --quran-index-max-width: 720px;
+    --quran-reader-max-width: 680px;
+    --quran-bottom-safe-space: calc(var(--bottom-nav-height, 72px) + 72px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: var(--quran-bottom-safe-space);
+}
+
+.section--quran > .cardx {
+    max-width: var(--quran-index-max-width);
+    margin-inline: auto;
+}
+
+.section--quran #surahReader {
+    max-width: var(--quran-reader-max-width);
+    margin-inline: auto;
+    padding-bottom: var(--quran-bottom-safe-space);
 }
 
 .section--quran .quran-index-head {
@@ -12,7 +26,7 @@
 
 .section--quran .quran-index-head__subtitle {
     margin: 0;
-    font-size: 1.05rem;
+    font-size: clamp(0.98rem, 2.4vw, 1.05rem);
     line-height: 1.8;
 }
 
@@ -95,7 +109,7 @@
 .section--quran .quran-surah-list {
     display: grid;
     gap: 8px;
-    padding-bottom: calc(var(--bottom-nav-height, 72px) + 64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: var(--quran-bottom-safe-space);
 }
 
 .section--quran .quran-surah-row {
@@ -154,7 +168,7 @@
 }
 
 .section--quran .quran-surah-row__name {
-    font-size: 1.18rem;
+    font-size: clamp(1.08rem, 3.2vw, 1.18rem);
     font-weight: 800;
     line-height: 1.25;
     color: var(--text-main);
@@ -172,7 +186,7 @@
     align-items: center;
     justify-content: center;
     color: var(--muted);
-    font-size: 0.82rem;
+    font-size: 0.92rem;
     line-height: 1;
     opacity: 0.72;
 }
@@ -196,12 +210,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-content: space-between;
+    justify-content: flex-end;
     flex-wrap: wrap;
 }
 
 .section--quran .quran-reader-title {
-    margin-top: 14px;
+    margin-top: 10px;
     text-align: center;
 }
 
@@ -221,8 +235,10 @@
 }
 
 .section--quran .quran__ayahs {
-    font-size: clamp(1.45rem, 5vw, 1.85rem);
-    line-height: 2.35;
+    max-width: var(--quran-reader-max-width);
+    margin-inline: auto;
+    font-size: clamp(1.3rem, 4.2vw, 1.62rem);
+    line-height: 2.15;
     text-align: justify;
     text-align-last: right;
     direction: rtl;
@@ -230,8 +246,8 @@
 
 .section--quran .quran__ayahs.app-reading-surface {
     margin-block: 14px 0;
-    padding-block: clamp(18px, 5vw, 28px);
-    padding-inline: clamp(14px, 4vw, 24px);
+    padding-block: clamp(16px, 4vw, 24px);
+    padding-inline: clamp(14px, 4vw, 22px);
 }
 
 .section--quran .quran__ayahs--loading {
@@ -288,12 +304,14 @@
 
 .section--quran .quran-study-panel {
     position: fixed;
-    inset-inline: 50%;
+    left: 50%;
+    right: auto;
     bottom: calc(var(--bottom-nav-height, 72px) + 18px + env(safe-area-inset-bottom, 0px));
     z-index: 920;
-    transform: translateX(50%);
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
+    width: min(calc(100vw - 32px), 360px);
     pointer-events: none;
 }
 
@@ -332,4 +350,30 @@
 
 .section--quran .quran-copy-pill[data-copy-state="done"] {
     background: var(--accent);
+}
+
+@media (min-width: 768px) {
+    .section--quran {
+        --quran-bottom-safe-space: calc(var(--bottom-nav-height, 72px) + 84px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .section--quran .quran-surah-list {
+        gap: 10px;
+    }
+
+    .section--quran .quran-surah-row {
+        padding-inline: 14px;
+    }
+
+    .section--quran .quran__ayahs {
+        font-size: clamp(1.52rem, 2.4vw, 1.78rem);
+        line-height: 2.2;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section--quran {
+        --quran-index-max-width: 760px;
+        --quran-reader-max-width: 720px;
+    }
 }
