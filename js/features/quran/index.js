@@ -26,8 +26,20 @@ async function withQuranController(actionName, action) {
 }
 
 function refreshQuranSurface() {
-    return withQuranController('refreshSurface', quran => {
-        quran?.checkBookmark?.();
+    return withQuranController('refreshSurface', async quran => {
+        if (!quran) {
+            return null;
+        }
+
+        await quran.ensureDataLoaded?.();
+        quran.renderSurahList?.(quran.getDom?.('searchInput')?.value || '');
+        quran.checkBookmark?.();
+
+        if (!quran.isReaderVisible?.()) {
+            quran.setQuranHeaderTitle?.('القرآن الكريم');
+        }
+
+        return true;
     });
 }
 
