@@ -27,11 +27,11 @@ export function getResumeSource() {
 export function getResumeSourceLabel() {
     const source = getResumeSource();
     if (source === 'bookmark') {
-        return 'الاستئناف من العلامة المحفوظة';
+        return 'علامة محفوظة';
     }
 
     if (source === 'lastRead') {
-        return 'الاستئناف من آخر قراءة';
+        return 'آخر قراءة';
     }
 
     return '';
