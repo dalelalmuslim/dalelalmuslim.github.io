@@ -1,7 +1,7 @@
 .section--stories {
   --stories-reader-max-width: 680px;
   --stories-stream-max-width: 720px;
-  --stories-bottom-safe-space: calc(var(--bottom-nav-height, 72px) + 44px + env(safe-area-inset-bottom, 0px));
+  --stories-bottom-safe-space: calc(var(--bottom-nav-height, 72px) + 104px + env(safe-area-inset-bottom, 0px));
   --stories-accent: var(--accent, #126b59);
   --stories-gold: #b98934;
   --stories-teal: #0d7585;
@@ -89,6 +89,7 @@
   padding-inline-start: 44px;
   padding-inline-end: 48px;
   border-radius: 18px;
+  direction: rtl;
 }
 
 .stories-clear-search {
@@ -109,7 +110,9 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding-block: 2px 4px;
+  margin-inline: -4px;
+  padding: 2px 18px 6px;
+  scroll-padding-inline: 18px;
   scrollbar-width: none;
 }
 
@@ -344,6 +347,7 @@
   position: sticky;
   top: 0;
   z-index: 4;
+  justify-content: flex-end;
   padding-bottom: 10px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface, #fffdf8) 94%, transparent), transparent);
   backdrop-filter: blur(8px);
@@ -363,6 +367,10 @@
   color: var(--stories-muted);
   font-weight: 900;
   font-size: 0.88rem;
+  direction: ltr;
+  unicode-bidi: isolate;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .stories-reader-title-block {
@@ -447,6 +455,7 @@
 .stories-reader-next {
   min-height: 52px;
   width: 100%;
+  margin-bottom: 8px;
 }
 
 html[data-theme='dark'] .section--stories,

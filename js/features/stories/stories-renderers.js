@@ -29,7 +29,7 @@ export function renderStoriesShell({ query = '' } = {}) {
             <input
               id="storiesSearchInput"
               class="input stories-search-input"
-              type="search"
+              type="text"
               placeholder="ابحث عن قصة أو فائدة..."
               value="${escapeHtml(query)}"
               autocomplete="off"
@@ -181,11 +181,9 @@ export function renderStoriesReader(vm) {
   return `
     <article class="stories-reader" aria-labelledby="storiesReaderTitle">
       <header class="stories-reader-head">
-        <button type="button" class="btn btn--ghost stories-reader-back" data-stories-action="close-reader">
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-          رجوع
-        </button>
-        <span class="stories-reader-counter">${escapeHtml(vm.counterText)}</span>
+        <span class="stories-reader-counter" dir="ltr" aria-label="القصة ${Number(vm.currentIndex || 1)} من ${Number(vm.totalCount || 1)}">
+          <span>${Number(vm.currentIndex || 1)}</span><span aria-hidden="true">/</span><span>${Number(vm.totalCount || 1)}</span>
+        </span>
       </header>
 
       <section class="stories-reader-title-block">
