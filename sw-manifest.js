@@ -99,8 +99,6 @@ self.__SW_MANIFEST__ = Object.freeze({
     "./js/domains/masbaha/masbaha-store.js",
     "./js/domains/names/names-selectors.js",
     "./js/domains/names/names-store.js",
-    "./js/domains/quran/quran-hifz-selectors.js",
-    "./js/domains/quran/quran-hifz-store.js",
     "./js/domains/quran/quran-reading-selectors.js",
     "./js/domains/quran/quran-reading-store.js",
     "./js/domains/settings/settings-store.js",
@@ -261,7 +259,7 @@ self.__SW_MANIFEST__ = Object.freeze({
   ],
   "precacheStats": {
     "documentsKb": 91,
-    "shellKb": 1810.6,
+    "shellKb": 1804.8,
     "dataKb": 1209.1,
     "deferredDataKb": 1724.8,
     "warmDataKb": 3.4
@@ -367,8 +365,6 @@ self.__SW_MANIFEST__ = Object.freeze({
       "./js/domains/masbaha/masbaha-store.js",
       "./js/domains/names/names-selectors.js",
       "./js/domains/names/names-store.js",
-      "./js/domains/quran/quran-hifz-selectors.js",
-      "./js/domains/quran/quran-hifz-store.js",
       "./js/domains/quran/quran-reading-selectors.js",
       "./js/domains/quran/quran-reading-store.js",
       "./js/domains/settings/settings-store.js",
@@ -524,5 +520,5 @@ self.__SW_MANIFEST__ = Object.freeze({
   "routing": {
     "documentFallback": "./index.html"
   },
-  "cacheVersion": "azkar-v26-phase22-4903cb513fcc"
+  "cacheVersion": "azkar-v26-phase22-aa2c1007dfee"
 });
