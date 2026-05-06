@@ -451,8 +451,11 @@ export async function getAzkarPrimaryActionViewModel() {
     if (!categories.length) return null;
 
     const timeContext = getCurrentTimeContext();
-    const primary = categories.find(category => category.isRecommendedNow && !category.progress.isCompleted)
-        || categories.find(category => category.period === timeContext.primaryPeriod && !category.progress.isCompleted)
+    // Keep the main "وردك الآن" tied to the user's current time context.
+    // Completing the current morning/evening wird should not jump the card to
+    // another period; it should switch to a review state for the same timed wird.
+    const primary = categories.find(category => category.period === timeContext.primaryPeriod)
+        || categories.find(category => category.isRecommendedNow)
         || categories.find(category => !category.progress.isCompleted)
         || categories[0];
 

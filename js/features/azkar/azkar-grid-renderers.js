@@ -32,18 +32,18 @@ function createCatalogAppbar() {
     const appbar = document.createElement('div');
     appbar.className = 'azkar-appbar';
 
-    const menu = createButton('azkar-appbar__icon-btn', 'القائمة');
-    appendIcon(menu, 'fa-bars');
-
-    const brand = document.createElement('div');
-    brand.className = 'azkar-appbar__brand';
-    appendIcon(brand, 'fa-mosque');
-    brand.appendChild(createTextElement('span', 'دليل المسلم'));
-
     const user = createButton('azkar-appbar__icon-btn', 'الحساب');
     appendIcon(user, 'fa-user');
 
-    appbar.append(menu, brand, user);
+    const brand = document.createElement('div');
+    brand.className = 'azkar-appbar__brand';
+    brand.appendChild(createTextElement('span', 'دليل المسلم'));
+    appendIcon(brand, 'fa-mosque');
+
+    const menu = createButton('azkar-appbar__icon-btn', 'القائمة');
+    appendIcon(menu, 'fa-bars');
+
+    appbar.append(user, brand, menu);
     return appbar;
 }
 
@@ -140,7 +140,6 @@ export function renderAzkarCatalogSurface({ container, viewModel, activeFilter, 
     surface.append(
         createCatalogAppbar(),
         createHero(viewModel, onActivatePrimary),
-        createFilters(viewModel?.filters || [], activeFilter || viewModel?.activeFilter || 'all', onSetFilter),
         createSectionHeading()
     );
 

@@ -968,3 +968,218 @@ body:has(.section--azkar.active) .page {
 .section--azkar .is-hidden {
     display: none !important;
 }
+
+/* ========== AZKAR 2026 V2 PRODUCT QA POLISH ========== */
+
+/* Match Duas catalog appbar ordering/brand treatment. */
+.section--azkar .azkar-appbar {
+    grid-template-columns: 46px minmax(0, 1fr) 46px;
+}
+
+.section--azkar .azkar-appbar__brand {
+    gap: 8px;
+}
+
+/* Product decision: no filter/search strip in Azkar catalog. */
+.section--azkar .azkar-filters {
+    display: none !important;
+}
+
+/* Main hero: denser, with a smaller current-wird card. */
+.section--azkar .azkar-hero {
+    min-height: 254px;
+    padding: 16px;
+}
+
+.section--azkar .azkar-hero__headline {
+    margin-block-end: 10px;
+}
+
+.section--azkar .azkar-hero__title {
+    font-size: clamp(2.3rem, 9vw, 3.15rem);
+}
+
+.section--azkar .azkar-hero__subtitle {
+    font-size: clamp(0.9rem, 3vw, 1.04rem);
+}
+
+.section--azkar .azkar-now-card {
+    grid-template-columns: minmax(0, 1fr) 70px;
+    min-height: 128px;
+    padding: 14px 15px;
+    border-radius: 25px;
+    gap: 10px;
+}
+
+.section--azkar .azkar-now-card__content {
+    gap: 6px;
+}
+
+.section--azkar .azkar-now-card__eyebrow {
+    font-size: 1.05rem;
+}
+
+.section--azkar .azkar-now-card__title {
+    font-size: clamp(1.02rem, 3.75vw, 1.25rem);
+    line-height: 1.42;
+}
+
+.section--azkar .azkar-now-card__cta {
+    min-width: 108px;
+    min-height: 38px;
+    padding: 8px 14px;
+    font-size: 0.94rem;
+}
+
+.section--azkar .azkar-now-card__visual {
+    min-height: 84px;
+}
+
+.section--azkar .azkar-now-card__orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    font-size: 1.48rem;
+}
+
+/* 2x2 catalog grid requested by product. */
+.section--azkar .azkar-categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.section--azkar .azkar-category-card,
+.section--azkar .azkar-favorite-item-card {
+    min-height: 148px;
+    border-radius: 23px;
+}
+
+.section--azkar .azkar-category-card__inner {
+    position: relative;
+    grid-template-columns: 1fr;
+    align-content: start;
+    align-items: start;
+    min-height: 148px;
+    gap: 8px;
+    padding: 12px;
+}
+
+.section--azkar .azkar-category-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 17px;
+    font-size: 1.25rem;
+}
+
+.section--azkar .azkar-category-card__body {
+    gap: 5px;
+}
+
+.section--azkar .azkar-category-card__title {
+    font-size: clamp(1rem, 3.8vw, 1.16rem);
+    line-height: 1.28;
+}
+
+.section--azkar .azkar-category-card__meta {
+    gap: 5px;
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
+.section--azkar .azkar-category-card__progress {
+    grid-template-columns: 1fr;
+    gap: 5px;
+}
+
+.section--azkar .azkar-category-card__progress-label {
+    font-size: 0.76rem;
+}
+
+.section--azkar .azkar-category-card__side {
+    position: absolute;
+    inset-inline-start: 10px;
+    inset-block-start: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.section--azkar .azkar-category-card__arrow {
+    display: none;
+}
+
+.section--azkar .azkar-category-card__state {
+    min-height: 25px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+}
+
+/* Reader: content-only dhikr cards. No source text/chip in the visual card. */
+.section--azkar .azkar-item-card {
+    gap: 12px;
+    padding: 16px;
+    min-height: auto;
+}
+
+.section--azkar .azkar-item-reference,
+.section--azkar .azkar-item-source-chip {
+    display: none !important;
+}
+
+.section--azkar .azkar-item-text {
+    line-height: 1.82;
+    margin-block: 4px 0;
+}
+
+.section--azkar .azkar-item-card.is-short-text .azkar-item-text {
+    font-size: clamp(1.9rem, 8vw, 2.45rem);
+    line-height: 1.65;
+    margin-block: 10px 4px;
+}
+
+.section--azkar .azkar-item-progress {
+    margin-block-start: 2px;
+}
+
+.section--azkar .azkar-item-actions {
+    justify-content: flex-start;
+    padding-top: 0;
+}
+
+.section--azkar .azkar-item-counter-btn {
+    min-height: 54px;
+    border-radius: 20px;
+}
+
+@media (max-width: 520px) {
+    .section--azkar .azkar-hero {
+        min-height: 248px;
+        padding: 15px;
+    }
+
+    .section--azkar .azkar-now-card {
+        grid-template-columns: minmax(0, 1fr) 62px;
+        min-height: 124px;
+        padding: 13px;
+    }
+
+    .section--azkar .azkar-now-card__orb {
+        width: 50px;
+        height: 50px;
+        font-size: 1.35rem;
+    }
+
+    .section--azkar .azkar-categories-grid {
+        gap: 9px;
+    }
+
+    .section--azkar .azkar-category-card,
+    .section--azkar .azkar-favorite-item-card {
+        min-height: 144px;
+    }
+
+    .section--azkar .azkar-category-card__inner {
+        min-height: 144px;
+        padding: 11px;
+    }
+}

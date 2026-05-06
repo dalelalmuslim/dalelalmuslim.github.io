@@ -77,7 +77,7 @@ export function renderAzkarSessionHeader({
 
     const vibrationButton = createButton('azkar-reader-topbar__btn', preferences.vibrationEnabled ? 'إيقاف الاهتزاز' : 'تشغيل الاهتزاز');
     vibrationButton.classList.toggle('is-active', Boolean(preferences.vibrationEnabled));
-    vibrationButton.appendChild(createIcon(preferences.vibrationEnabled ? 'fa-bell' : 'fa-bell-slash'));
+    vibrationButton.appendChild(createIcon(preferences.vibrationEnabled ? 'fa-mobile-screen-button' : 'fa-mobile-screen' ));
     vibrationButton.addEventListener('click', () => {
         if (typeof onToggleVibration === 'function') onToggleVibration();
     });
@@ -163,6 +163,7 @@ export function renderAzkarCategoryList({
         card.classList.toggle('azkar-item-card--completed', isDone);
         card.classList.toggle('is-favorite', isFavoriteItem);
         card.classList.toggle('is-targeted', activeItemId === itemId);
+        card.classList.toggle('is-short-text', itemText.replace(/\s+/g, ' ').trim().length <= 48);
 
         const topline = document.createElement('div');
         topline.className = 'azkar-item-topline';
@@ -180,17 +181,6 @@ export function renderAzkarCategoryList({
         topline.appendChild(favoriteBtn);
 
         const textEl = createText('p', itemText, 'amiri-text azkar-item-text');
-        const referenceEl = createText('p', itemMeta, 'azkar-item-reference');
-        if (!itemMeta) referenceEl.classList.add('is-hidden');
-
-        const sourceRow = document.createElement('div');
-        sourceRow.className = 'azkar-item-actions';
-        if (itemMeta) {
-            const sourceChip = createText('span', itemMeta, 'azkar-item-source-chip');
-            sourceChip.prepend(createIcon('fa-book-open'));
-            sourceRow.appendChild(sourceChip);
-        }
-
         const progressWrap = document.createElement('div');
         progressWrap.className = 'azkar-item-progress';
         const progressTrack = document.createElement('div');
@@ -223,7 +213,7 @@ export function renderAzkarCategoryList({
         }
         actions.appendChild(copyBtn);
 
-        card.append(topline, textEl, referenceEl, sourceRow, progressWrap, counterWrap, actions);
+        card.append(topline, textEl, progressWrap, counterWrap, actions);
         listContainer.appendChild(card);
     });
 
