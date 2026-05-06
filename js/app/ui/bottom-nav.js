@@ -7,7 +7,7 @@
 import { appEventBus } from '../events/app-event-bus.js';
 
 // Sections that have a dedicated tab in the bottom nav.
-const NAV_SECTIONS = new Set(['home', 'azkar', 'masbaha', 'quran']);
+const NAV_SECTIONS = new Set(['home', 'azkar', 'duas', 'quran']);
 
 // Reader-like subviews need immersive space and use the top Back action instead.
 const NAV_HIDDEN_SUBVIEWS = new Set(['surahReader', 'storyCategoryContent']);
@@ -98,7 +98,7 @@ function setActiveTab(sectionId) {
     });
 
     // If the section belongs to a named tab, highlight it.
-    // Otherwise (duas, tasks, stats, names, stories, settings) → highlight "more".
+    // Otherwise (masbaha, tasks, stats, names, stories, settings) → highlight "more".
     const isMoreSection = !NAV_SECTIONS.has(sectionId);
     const selector = isMoreSection
         ? '[data-bottom-nav-more]'

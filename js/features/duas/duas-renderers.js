@@ -7,12 +7,34 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+function getFavoriteIcon(isFavorite) {
+  return isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star';
+}
+
+function formatDuaCount(count) {
+  const numericCount = Number(count);
+  if (!Number.isFinite(numericCount) || numericCount <= 0) return '0 أدعية';
+  if (numericCount === 1) return 'دعاء واحد';
+  if (numericCount === 2) return 'دعاءان';
+  if (numericCount >= 3 && numericCount <= 10) return `${numericCount} أدعية`;
+  return `${numericCount} دعاءً`;
+}
+
+function getDisplayReference(item) {
+  return item?.displayReferenceText || item?.referenceText || '';
+}
+
 function renderFilterButton(filter, activeFilter) {
   const labels = {
     all: 'الكل',
     featured: 'مختارة',
     quran: 'من القرآن',
-    hadith: 'من السنة'
+    hadith: 'من السنة',
+    favorites: 'المفضلة'
+  };
+
+  const icons = {
+    favorites: '<i class="fa-regular fa-star" aria-hidden="true"></i>'
   };
 
   return `
@@ -20,25 +42,82 @@ function renderFilterButton(filter, activeFilter) {
       type="button"
       class="duas-filter-chip${activeFilter === filter ? ' is-active' : ''}"
       data-duas-action="set-filter"
-      data-duas-value="${filter}"
+      data-duas-value="${escapeHtml(filter)}"
       aria-pressed="${activeFilter === filter ? 'true' : 'false'}"
-    >${labels[filter]}</button>
+    >${icons[filter] || ''}<span>${labels[filter]}</span></button>
   `;
 }
 
-export function renderDuasShell({ activeFilter, searchQuery, showCatalogHome = true }) {
+function renderDailyDuaCard(dailyDua) {
+  if (!dailyDua?.text) return '';
+
+  return `
+    <button
+      type="button"
+      class="duas-daily-card"
+      data-duas-action="open-category"
+      data-duas-value="${escapeHtml(dailyDua.categorySlug || '')}"
+      aria-label="عرض دعاء نفحة اليوم"
+    >
+      <span class="duas-daily-card__icon" aria-hidden="true"><i class="fa-solid fa-box-open"></i></span>
+      <span class="duas-daily-card__body">
+        <span class="duas-daily-card__title">${escapeHtml(dailyDua.title || 'نفحة اليوم')}</span>
+        <span class="amiri-text duas-daily-card__text">${escapeHtml(dailyDua.shortText || dailyDua.text)}</span>
+        <span class="duas-daily-card__action"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i> عرض الدعاء</span>
+      </span>
+    </button>
+  `;
+}
+
+function renderCatalogAppbar() {
+  return `
+    <div class="duas-appbar duas-appbar--catalog" aria-label="شريط دليل المسلم">
+      <button type="button" class="duas-appbar__icon-btn" data-nav-section="settings" data-nav-title="حسابي" aria-label="الحساب">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+      </button>
+      <div class="duas-appbar__brand" aria-label="دليل المسلم">
+        <span>دليل المسلم</span>
+        <i class="fa-solid fa-mosque" aria-hidden="true"></i>
+      </div>
+      <button type="button" class="duas-appbar__icon-btn" data-duas-action="open-more" aria-label="فتح المزيد">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+  `;
+}
+
+export function renderDuasShell({ activeFilter, searchQuery, dailyDua = null, showCatalogHome = true }) {
   return `
     <div class="duas-shell${showCatalogHome ? '' : ' duas-shell--session-active'}">
       <div id="duasCatalogHome" class="duas-catalog-home${showCatalogHome ? '' : ' is-hidden'}">
-        <section class="cardx duas-toolbar" aria-label="البحث والتصفية في الأدعية">
+        ${renderCatalogAppbar()}
+        <section class="duas-hero" aria-labelledby="duasHeroTitle">
+          <div class="duas-hero__scene" aria-hidden="true">
+            <span class="duas-hero__moon"></span>
+            <span class="duas-hero__dome duas-hero__dome--main"></span>
+            <span class="duas-hero__dome duas-hero__dome--small"></span>
+            <span class="duas-hero__minaret"></span>
+            <span class="duas-hero__leaf duas-hero__leaf--one"></span>
+            <span class="duas-hero__leaf duas-hero__leaf--two"></span>
+          </div>
+          <div class="duas-hero__ornament" aria-hidden="true"></div>
+          <div class="duas-hero__content">
+            <p class="duas-hero__eyebrow">قسم الأدعية</p>
+            <h2 id="duasHeroTitle" class="duas-hero__title">الأدعية</h2>
+            <p class="duas-hero__subtitle">أدعية مختارة لوقتك ويومك</p>
+          </div>
+          ${renderDailyDuaCard(dailyDua)}
+        </section>
+
+        <section class="duas-toolbar" aria-label="البحث والتصفية في الأدعية">
           <div class="duas-toolbar__search">
             <div class="duas-search-wrap">
-              <input id="duasSearchInput" class="input duas-search" type="search" value="${escapeHtml(searchQuery || '')}" placeholder="ابحث عن دعاء أو تصنيف" aria-label="ابحث في الأدعية" />
+              <input id="duasSearchInput" class="input duas-search" type="text" inputmode="search" autocomplete="off" autocapitalize="none" spellcheck="false" value="${escapeHtml(searchQuery || '')}" placeholder="ابحث عن دعاء أو تصنيف" aria-label="ابحث في الأدعية" />
               <button type="button" class="btn btn--ghost duas-search__clear${searchQuery ? '' : ' is-hidden'}" data-duas-action="clear-search" aria-label="مسح البحث"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </div>
           </div>
-          <div id="duasFilters" class="duas-filters" role="tablist" aria-label="فلاتر الأدعية">
-            ${['all', 'featured', 'quran', 'hadith'].map((filter) => renderFilterButton(filter, activeFilter)).join('')}
+          <div id="duasFilters" class="duas-filters" role="group" aria-label="فلاتر الأدعية">
+            ${['all', 'featured', 'quran', 'hadith', 'favorites'].map((filter) => renderFilterButton(filter, activeFilter)).join('')}
           </div>
         </section>
 
@@ -50,71 +129,141 @@ export function renderDuasShell({ activeFilter, searchQuery, showCatalogHome = t
   `;
 }
 
+export function renderDuasLoadingState(message = 'جاري تحميل الأدعية...') {
+  return `
+    <div class="duas-skeleton-stack" aria-busy="true" aria-label="${escapeHtml(message)}">
+      <div class="duas-skeleton-card"></div>
+      <div class="duas-skeleton-card"></div>
+      <div class="duas-skeleton-card"></div>
+    </div>
+  `;
+}
+
+export function renderDuasErrorState(message = 'تعذر تحميل الأدعية الآن.') {
+  return `
+    <div class="duas-empty-state duas-empty-state--error">
+      <span class="duas-empty-state__icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></span>
+      <p>${escapeHtml(message)}</p>
+      <button type="button" class="btn btn--ghost" data-duas-action="retry-load">إعادة المحاولة</button>
+    </div>
+  `;
+}
+
 export function renderDuasCatalog(cards = []) {
   if (!cards.length) {
     return `
-      <div class="cardx duas-empty-state">
-        <p class="muted">لا توجد نتائج مطابقة الآن. امسح البحث أو غيّر الفلتر.</p>
+      <div class="duas-empty-state">
+        <span class="duas-empty-state__icon" aria-hidden="true"><i class="fa-regular fa-face-smile"></i></span>
+        <p>لا توجد نتائج مطابقة الآن. امسح البحث أو غيّر الفلتر.</p>
       </div>
     `;
   }
 
   return cards.map((card) => `
-    <button type="button" class="duas-category-card duas-tone--${escapeHtml(card.accentTone)}" data-duas-action="open-category" data-duas-value="${escapeHtml(card.slug)}">
-      <span class="duas-category-card__top">
-        <span class="duas-category-card__headline">
+    <article class="duas-category-card duas-tone--${escapeHtml(card.accentTone)}${card.isFavorite ? ' is-favorite' : ''}">
+      <button type="button" class="duas-category-card__main" data-duas-action="open-category" data-duas-value="${escapeHtml(card.slug)}">
+        <span class="duas-category-card__icon" aria-hidden="true"><i class="fa-solid ${escapeHtml(card.icon)}"></i></span>
+        <span class="duas-category-card__copy">
           <span class="duas-category-card__title">${escapeHtml(card.title)}</span>
-          <span class="duas-category-card__meta-inline">
-            <span>${card.itemCount} دعاء</span>
-            <span aria-hidden="true">•</span>
-            <span>${escapeHtml(card.sourceMeta)}</span>
-          </span>
+          ${card.description ? `<span class="duas-category-card__description">${escapeHtml(card.description)}</span>` : ''}
+          <span class="duas-category-card__source"><span aria-hidden="true"></span>${escapeHtml(card.sourceMeta)}</span>
         </span>
-        <span class="duas-category-card__icon"><i class="fa-solid ${escapeHtml(card.icon)}" aria-hidden="true"></i></span>
-      </span>
-    </button>
+        <span class="duas-category-card__count">${formatDuaCount(card.itemCount)}</span>
+      </button>
+    </article>
   `).join('');
 }
 
-export function renderDuasSession(sessionVm) {
-  const itemsHtml = sessionVm.items.map((item, index) => `
-    <article class="cardx dua-item-card${sessionVm.activeDuaId === item.id ? ' is-active' : ''}" data-duas-action="set-active-dua" data-duas-value="${item.id}">
-      <div class="dua-item-card__header">
-        <div class="dua-item-card__top">
-          <span class="duas-badge">دعاء ${index + 1}</span>
-          ${item.repeat > 1 ? `<span class="duas-badge">يكرر ${item.repeat}</span>` : ''}
-          ${item.source ? `<span class="dua-item-card__source">${escapeHtml(item.source === 'Quran' ? 'من القرآن' : 'من السنة')}</span>` : ''}
-        </div>
+function renderDuaSourceBadge(item) {
+  if (!item.sourceMeta) return '';
+  return `<span class="dua-item-card__source"><span aria-hidden="true"></span>${escapeHtml(item.sourceMeta)}</span>`;
+}
+
+function renderRepeatBadge(item) {
+  if (!Number.isFinite(Number(item.repeat)) || Number(item.repeat) <= 1) return '';
+  return `<span class="duas-badge duas-badge--repeat"><i class="fa-solid fa-rotate" aria-hidden="true"></i> يكرر ${Number(item.repeat)}</span>`;
+}
+
+function renderDuaItem(item, index, sessionVm) {
+  const isActive = sessionVm.activeDuaId === item.id;
+  return `
+    <article class="dua-item-card${isActive ? ' is-active' : ''}" data-duas-action="set-active-dua" data-duas-value="${escapeHtml(item.id)}">
+      <div class="dua-item-card__meta-row">
+        <span class="duas-badge">دعاء ${index + 1}</span>
+        ${renderRepeatBadge(item)}
+        ${renderDuaSourceBadge(item)}
       </div>
       <p class="amiri-text dua-item-card__text">${escapeHtml(item.text)}</p>
+      ${getDisplayReference(item) ? `<p class="dua-item-card__reference">${escapeHtml(getDisplayReference(item))}</p>` : ''}
       <div class="dua-item-card__footer">
-        ${item.referenceText ? `<p class="dua-item-card__reference muted">${escapeHtml(item.referenceText)}</p>` : '<span></span>'}
-        <div class="dua-item-card__actions">
-          <button type="button" class="btn btn--ghost" data-duas-action="copy-dua" data-duas-dua-id="${item.id}"><i class="fa-solid fa-copy" aria-hidden="true"></i> نسخ</button>
-          <button type="button" class="btn btn--ghost" data-duas-action="share-dua" data-duas-dua-id="${item.id}"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> مشاركة</button>
-        </div>
+        <button type="button" class="dua-action-btn" data-duas-action="share-dua" data-duas-dua-id="${escapeHtml(item.id)}"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> مشاركة</button>
+        <span class="dua-item-card__divider" aria-hidden="true"></span>
+        <button type="button" class="dua-action-btn" data-duas-action="copy-dua" data-duas-dua-id="${escapeHtml(item.id)}"><i class="fa-regular fa-copy" aria-hidden="true"></i> نسخ</button>
       </div>
     </article>
-  `).join('');
+  `;
+}
+
+export function renderDuasSession(sessionVm) {
+  const visibleItems = Array.isArray(sessionVm.visibleItems) ? sessionVm.visibleItems : sessionVm.items;
+  const itemsHtml = visibleItems.length
+    ? visibleItems.map((item, index) => renderDuaItem(item, index, sessionVm)).join('')
+    : `
+      <div class="duas-empty-state">
+        <span class="duas-empty-state__icon" aria-hidden="true"><i class="fa-regular fa-note-sticky"></i></span>
+        <p>لا توجد أدعية داخل هذا التصنيف حاليًا.</p>
+      </div>
+    `;
 
   return `
-    <div class="duas-session${sessionVm.largeText ? ' is-large-text' : ''}">
-      <section class="cardx duas-session-panel">
-        <div class="duas-session-panel__top">
-          <button type="button" class="btn btn--ghost duas-session-panel__close" data-duas-action="close-category" aria-label="إغلاق التصنيف والعودة للواجهة الرئيسية">
-            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-          </button>
-          <div class="duas-session-panel__content">
-            <h2 class="amiri-text cardx__title duas-session-panel__title">${escapeHtml(sessionVm.title)}</h2>
-            ${sessionVm.description ? `<p class="muted duas-session-panel__description">${escapeHtml(sessionVm.description)}</p>` : ''}
-            <div class="duas-session-panel__meta">
-              <span class="duas-chip">${sessionVm.itemCount} دعاء</span>
-              <span class="duas-chip">${escapeHtml(sessionVm.sourceMeta)}</span>
-            </div>
+    <div class="duas-session duas-tone--${escapeHtml(sessionVm.accentTone)}${sessionVm.largeText ? ' is-large-text' : ''}">
+      <header class="duas-appbar duas-appbar--reader">
+        <button type="button" class="duas-appbar__icon-btn duas-appbar__back" data-duas-action="close-category" aria-label="العودة إلى قسم الأدعية">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+        <h2 class="duas-appbar__title">${escapeHtml(sessionVm.title)}</h2>
+        <div class="duas-appbar__actions">
+          <button
+            type="button"
+            class="duas-appbar__icon-btn${sessionVm.isFavorite ? ' is-active' : ''}"
+            data-duas-action="toggle-favorite"
+            data-duas-value="${escapeHtml(sessionVm.slug)}"
+            aria-label="${sessionVm.isFavorite ? 'إزالة التصنيف من المفضلة' : 'إضافة التصنيف إلى المفضلة'}"
+            aria-pressed="${sessionVm.isFavorite ? 'true' : 'false'}"
+          ><i class="${getFavoriteIcon(sessionVm.isFavorite)}" aria-hidden="true"></i></button>
+          <button
+            type="button"
+            class="duas-appbar__icon-btn duas-appbar__text-size${sessionVm.largeText ? ' is-active' : ''}"
+            data-duas-action="toggle-large-text"
+            aria-label="تبديل حجم خط الأدعية"
+            aria-pressed="${sessionVm.largeText ? 'true' : 'false'}"
+          ><span aria-hidden="true">A<span>A</span></span></button>
+        </div>
+      </header>
+
+      <section class="duas-session-hero" aria-labelledby="duasSessionTitle">
+        <div class="duas-session-hero__art" aria-hidden="true">
+          <span><i class="fa-solid ${escapeHtml(sessionVm.icon)}"></i></span>
+          <i></i>
+        </div>
+        <div class="duas-session-hero__ornament" aria-hidden="true"></div>
+        <div class="duas-session-hero__content">
+          <h3 id="duasSessionTitle" class="duas-session-hero__title">${escapeHtml(sessionVm.title)}</h3>
+          ${sessionVm.description ? `<p class="duas-session-hero__description">${escapeHtml(sessionVm.description)}</p>` : ''}
+          <div class="duas-session-hero__meta">
+            <span class="duas-chip"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${escapeHtml(sessionVm.sourceMeta)}</span>
+            <span class="duas-chip"><i class="fa-solid fa-list-check" aria-hidden="true"></i>${formatDuaCount(sessionVm.itemCount)}</span>
           </div>
         </div>
       </section>
+
       <div class="duas-session-list">${itemsHtml}</div>
+
+      ${sessionVm.hasMore ? `
+        <button type="button" class="duas-load-more" data-duas-action="load-more">
+          عرض ${formatDuaCount(sessionVm.nextPageCount)} أخرى
+        </button>
+      ` : ''}
     </div>
   `;
 }

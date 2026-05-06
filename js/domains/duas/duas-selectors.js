@@ -3,10 +3,82 @@ import { duasHistoryStore } from './duas-history-store.js';
 import { duasPreferencesStore } from './duas-preferences-store.js';
 import { duasSessionStore } from './duas-session-store.js';
 
+const CATEGORY_VISUAL_ORDER = Object.freeze({
+  'distress-and-debt': 10,
+  'travel-and-road-rizq': 20,
+  'rizq-and-blessing': 30,
+  'forgiveness-and-repentance': 40,
+  'quran-duas': 50,
+  'protection-and-fortification': 60,
+  'health-and-healing': 70,
+  'mercy-guidance-and-steadfastness': 80
+});
+
+const CATEGORY_DISPLAY_TITLES = Object.freeze({
+  'quran-duas': 'أدعية من القرآن',
+  'distress-and-debt': 'أدعية الكرب',
+  'protection-and-fortification': 'أدعية التحصين',
+  'forgiveness-and-repentance': 'أدعية التوبة',
+  'rizq-and-blessing': 'أدعية الرزق',
+  'mercy-guidance-and-steadfastness': 'أدعية الهداية والثبات',
+  'general-duas': 'أدعية عامة',
+  'akhirah-and-jannah': 'أدعية الآخرة',
+  'dunya-and-akhirah': 'أدعية الخير',
+  'character-and-righteousness': 'أدعية الصلاح',
+  'health-and-healing': 'أدعية الشفاء',
+  'travel-and-road-rizq': 'أدعية السفر',
+  'family-and-children': 'أدعية الأهل والذرية',
+  'prayer-and-worship': 'أدعية العبادة',
+  'knowledge-and-understanding': 'أدعية العلم'
+});
+
+const CATEGORY_DISPLAY_DESCRIPTIONS = Object.freeze({
+  'distress-and-debt': 'أدعية تفرّج الهم وتزيل الكرب والضيق',
+  'travel-and-road-rizq': 'أدعية للمسافر وآداب السفر',
+  'rizq-and-blessing': 'أدعية طلب الرزق والبركة في المال',
+  'forgiveness-and-repentance': 'أدعية التوبة والاستغفار والرجوع إلى الله',
+  'quran-duas': 'أدعية قرآنية جامعة للثبات والهداية والرحمة',
+  'protection-and-fortification': 'أدعية التحصين والحفظ والاستعاذة بالله',
+  'health-and-healing': 'أدعية الشفاء والعافية والستر والسلامة'
+});
+
+const CATEGORY_DISPLAY_ICONS = Object.freeze({
+  'distress-and-debt': 'fa-cloud-rain',
+  'travel-and-road-rizq': 'fa-suitcase-rolling',
+  'rizq-and-blessing': 'fa-seedling',
+  'forgiveness-and-repentance': 'fa-person-praying',
+  'quran-duas': 'fa-book-quran'
+});
+
 function getSourceMetaFromType(sourceType) {
   if (sourceType === 'quran') return 'من القرآن';
   if (sourceType === 'hadith') return 'من السنة';
-  return 'قرآن • سنة';
+  return 'من القرآن • السنة';
+}
+
+function getSourceMetaFromItemSource(source) {
+  const value = String(source || '').trim().toLowerCase();
+  if (value === 'quran') return 'من القرآن';
+  if (value === 'hadith') return 'من السنة';
+  return '';
+}
+
+function getDisplayTitle(category) {
+  return CATEGORY_DISPLAY_TITLES[category?.slug] || category?.title || '';
+}
+
+function getDisplayDescription(category) {
+  return CATEGORY_DISPLAY_DESCRIPTIONS[category?.slug] || category?.description || '';
+}
+
+function getDisplayIcon(category) {
+  return CATEGORY_DISPLAY_ICONS[category?.slug] || category?.icon || 'fa-hands-praying';
+}
+
+function getDisplaySortOrder(category) {
+  const visualOrder = CATEGORY_VISUAL_ORDER[category?.slug];
+  if (Number.isFinite(Number(visualOrder))) return Number(visualOrder);
+  return Number.isFinite(Number(category?.sortOrder)) ? Number(category.sortOrder) + 100 : 9999;
 }
 
 function normalizeArabicText(value) {
@@ -56,18 +128,69 @@ function getShortReference(referenceText) {
   return shortened;
 }
 
+function getDisplayReference(referenceText, limit = 82) {
+  const value = String(referenceText || '')
+    .replace(/\s+/g, ' ')
+    .replace(/^رواه\s+/u, '')
+    .trim();
+
+  if (!value) return '';
+
+  const preferredSegment = value
+    .split('•')
+    .map((segment) => segment.trim())
+    .find(Boolean) || value;
+
+  if (preferredSegment.length <= limit) return preferredSegment;
+  return `${preferredSegment.slice(0, Math.max(0, limit - 1)).trim()}…`;
+}
+
+function buildReferenceSearchText(item) {
+  const referenceText = String(item?.referenceText || '').trim();
+  const rawReference = item?.reference;
+  const rawReferenceText = rawReference && typeof rawReference === 'object'
+    ? Object.values(rawReference).map((value) => String(value || '')).join(' ')
+    : String(rawReference || '');
+
+  return [
+    referenceText,
+    referenceText ? `رواه ${referenceText}` : '',
+    rawReferenceText,
+    rawReferenceText ? `رواه ${rawReferenceText}` : '',
+    item?.source,
+    getSourceMetaFromItemSource(item?.source)
+  ].join(' ');
+}
+
+function getShortText(text, limit = 86) {
+  const value = String(text || '').replace(/\s+/g, ' ').trim();
+  if (value.length <= limit) return value;
+  return `${value.slice(0, limit).trim()}…`;
+}
+
 function buildCategoryQueryText(category) {
   const sourceMeta = getSourceMetaFromType(category.sourceType);
   const fullItemsText = category.items
-    .map((item) => `${item.text} ${item.referenceText}`)
+    .map((item) => `${item.text} ${item.referenceText} ${buildReferenceSearchText(item)}`)
     .join(' ');
 
   return normalizeArabicText([
     category.title,
+    getDisplayTitle(category),
     category.description,
+    getDisplayDescription(category),
+    category.sourceSummary,
     sourceMeta,
     fullItemsText
   ].join(' '));
+}
+
+function normalizeDuaItemForView(item) {
+  return {
+    ...item,
+    sourceMeta: getSourceMetaFromItemSource(item.source),
+    displayReferenceText: getDisplayReference(item.referenceText)
+  };
 }
 
 export async function getDuasCatalogViewModel({ filter = 'all', query = '' } = {}) {
@@ -82,9 +205,10 @@ export async function getDuasCatalogViewModel({ filter = 'all', query = '' } = {
   const cards = catalog
     .map((category) => ({
       slug: category.slug,
-      title: category.title,
-      description: category.description,
-      icon: category.icon,
+      title: getDisplayTitle(category),
+      originalTitle: category.title,
+      description: getDisplayDescription(category),
+      icon: getDisplayIcon(category),
       accentTone: category.accentTone,
       estimatedMinutes: category.estimatedMinutes,
       itemCount: category.itemCount,
@@ -92,7 +216,7 @@ export async function getDuasCatalogViewModel({ filter = 'all', query = '' } = {
       sourceMeta: getSourceMetaFromType(category.sourceType),
       isFeatured: category.isFeatured,
       isFavorite: preferences.favoriteSlugs.includes(category.slug),
-      sortOrder: Number.isFinite(Number(category.sortOrder)) ? Number(category.sortOrder) : 9999,
+      sortOrder: getDisplaySortOrder(category),
       queryText: buildCategoryQueryText(category)
     }))
     .filter((card) => {
@@ -128,6 +252,7 @@ export async function getDailyDuaViewModel() {
   return {
     title: 'نفحة اليوم',
     text: item.text,
+    shortText: getShortText(item.text),
     referenceText: getShortReference(item.referenceText),
     categoryTitle: item.categoryTitle,
     categorySlug: item.categorySlug
@@ -150,14 +275,17 @@ export async function getDuasSessionViewModel(categoryKey) {
   const preferences = duasPreferencesStore.getState();
   return {
     slug: category.slug,
-    title: category.title,
-    description: category.description,
+    title: getDisplayTitle(category),
+    originalTitle: category.title,
+    description: getDisplayDescription(category),
+    icon: getDisplayIcon(category),
+    accentTone: category.accentTone,
     itemCount: category.itemCount,
     estimatedMinutes: category.estimatedMinutes,
     sourceMeta: getSourceMetaFromType(category.sourceType),
     isFavorite: preferences.favoriteSlugs.includes(category.slug),
     largeText: preferences.largeText,
     activeDuaId: sessionState.activeDuaId,
-    items: category.items
+    items: category.items.map(normalizeDuaItemForView)
   };
 }

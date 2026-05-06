@@ -4,19 +4,33 @@ import { replaceSectionRoute } from '../../router/route-state.js';
 import { copyToClipboard, shareText } from '../../app/shell/app-shell.js';
 import { cacheDuasDom } from './duas-dom.js';
 import { appendTrustedHTML, clearElement } from '../../shared/dom/dom-helpers.js';
-import { renderDuasCatalog, renderDuasSession, renderDuasShell } from './duas-renderers.js';
+import {
+  renderDuasCatalog,
+  renderDuasErrorState,
+  renderDuasLoadingState,
+  renderDuasSession,
+  renderDuasShell
+} from './duas-renderers.js';
 import { getDuaCategoryBySlug } from '../../domains/duas/duas-repository.js';
 import { duasSessionStore } from '../../domains/duas/duas-session-store.js';
 import { duasPreferencesStore } from '../../domains/duas/duas-preferences-store.js';
 import { duasHistoryStore } from '../../domains/duas/duas-history-store.js';
-import { getDuasCatalogViewModel, getDuasSessionViewModel } from '../../domains/duas/duas-selectors.js';
+import {
+  getDailyDuaViewModel,
+  getDuasCatalogViewModel,
+  getDuasSessionViewModel
+} from '../../domains/duas/duas-selectors.js';
+
+const SESSION_PAGE_SIZE = 16;
 
 const state = {
   initialized: false,
   dom: null,
   filter: 'all',
   query: '',
-  inputBound: false
+  inputBound: false,
+  visibleSessionCount: SESSION_PAGE_SIZE,
+  renderToken: 0
 };
 
 function ensureDom() {
@@ -30,13 +44,29 @@ function findDuaById(sessionVm, duaId) {
   return sessionVm.items.find((item) => item.id === idNum) || null;
 }
 
-function renderShell(options = {}) {
+function formatDuaForSharing(item) {
+  if (!item?.text) return '';
+  const reference = item.referenceText ? `\n\n${item.referenceText}` : '';
+  return `${item.text}${reference}`;
+}
+
+async function renderShell(options = {}) {
   const dom = ensureDom();
   if (!dom.root) return false;
+
+  let dailyDua = null;
+  if (options.showCatalogHome !== false) {
+    try {
+      dailyDua = await getDailyDuaViewModel();
+    } catch (_error) {
+      dailyDua = null;
+    }
+  }
 
   const html = renderDuasShell({
     activeFilter: state.filter,
     searchQuery: state.query,
+    dailyDua,
     showCatalogHome: options.showCatalogHome !== false
   });
 
@@ -46,10 +76,20 @@ function renderShell(options = {}) {
 }
 
 async function renderCatalogView() {
+  const token = ++state.renderToken;
   const dom = ensureDom();
   if (!dom.grid) return;
-  const vm = await getDuasCatalogViewModel({ filter: state.filter, query: state.query });
-  appendTrustedHTML(dom.grid, renderDuasCatalog(vm.cards));
+
+  appendTrustedHTML(dom.grid, renderDuasLoadingState());
+
+  try {
+    const vm = await getDuasCatalogViewModel({ filter: state.filter, query: state.query });
+    if (token !== state.renderToken) return;
+    appendTrustedHTML(dom.grid, renderDuasCatalog(vm.cards));
+  } catch (_error) {
+    if (token !== state.renderToken) return;
+    appendTrustedHTML(dom.grid, renderDuasErrorState('تعذر تحميل الأدعية الآن. حاول مرة أخرى.'));
+  }
 }
 
 function updateSessionClasses(sessionVm) {
@@ -63,13 +103,33 @@ async function renderSessionView(slug) {
   const dom = ensureDom();
   if (!dom.content) return false;
 
-  const sessionVm = await getDuasSessionViewModel(slug);
-  if (!sessionVm) return false;
+  appendTrustedHTML(dom.content, renderDuasLoadingState('جاري فتح التصنيف...'));
 
-  appendTrustedHTML(dom.content, renderDuasSession(sessionVm));
-  openSubview('duaCategoryContent');
-  updateSessionClasses(sessionVm);
-  return true;
+  try {
+    const sessionVm = await getDuasSessionViewModel(slug);
+    if (!sessionVm) {
+      appendTrustedHTML(dom.content, renderDuasErrorState('لم يتم العثور على هذا التصنيف.'));
+      return false;
+    }
+
+    const visibleCount = Math.max(SESSION_PAGE_SIZE, Number(state.visibleSessionCount) || SESSION_PAGE_SIZE);
+    const totalCount = Array.isArray(sessionVm.items) ? sessionVm.items.length : 0;
+    const visibleItems = sessionVm.items.slice(0, visibleCount);
+    const remainingCount = Math.max(0, totalCount - visibleItems.length);
+
+    appendTrustedHTML(dom.content, renderDuasSession({
+      ...sessionVm,
+      visibleItems,
+      hasMore: remainingCount > 0,
+      nextPageCount: Math.min(SESSION_PAGE_SIZE, remainingCount)
+    }));
+    openSubview('duaCategoryContent');
+    updateSessionClasses(sessionVm);
+    return true;
+  } catch (_error) {
+    appendTrustedHTML(dom.content, renderDuasErrorState('تعذر فتح التصنيف الآن.'));
+    return false;
+  }
 }
 
 async function getActiveSessionVm() {
@@ -102,10 +162,10 @@ function resolveInitialDuaId(category) {
   return items[0]?.id || null;
 }
 
-async function handleRootInput(event) {
+function handleRootInput(event) {
   if (!event.target.matches('#duasSearchInput')) return;
   state.query = String(event.target.value || '').trim();
-  await renderCatalogView();
+  void renderCatalogView();
 
   const dom = ensureDom();
   const clearButton = dom.root?.querySelector('.duas-search__clear');
@@ -121,8 +181,8 @@ function bindRootEvents() {
   state.inputBound = true;
 }
 
-async function rerenderWithPreservedSession() {
-  await renderSection({ preserveSession: Boolean(duasSessionStore.getState().activeCategorySlug) });
+function rerenderWithPreservedSession() {
+  void renderSection({ preserveSession: Boolean(duasSessionStore.getState().activeCategorySlug) });
 }
 
 function clearSessionContent() {
@@ -151,9 +211,21 @@ export async function dispatchDuasAction(action, payload = {}) {
       state.query = '';
       await renderSection();
       return true;
+    case 'open-more': {
+      const moreButton = document.getElementById('bottomNav')?.querySelector('[data-bottom-nav-more]');
+      if (moreButton instanceof HTMLElement) moreButton.click();
+      return true;
+    }
+    case 'retry-load':
+      await renderSection({ preserveSession: Boolean(duasSessionStore.getState().activeCategorySlug) });
+      return true;
+    case 'load-more':
+      state.visibleSessionCount += SESSION_PAGE_SIZE;
+      await renderSection({ preserveSession: true });
+      return true;
     case 'toggle-favorite':
       duasPreferencesStore.toggleFavorite(value || duasSessionStore.getState().activeCategorySlug);
-      await rerenderWithPreservedSession();
+      rerenderWithPreservedSession();
       return true;
     case 'toggle-large-text': {
       const current = duasPreferencesStore.getState();
@@ -169,13 +241,15 @@ export async function dispatchDuasAction(action, payload = {}) {
     case 'copy-dua': {
       const sessionVm = await getActiveSessionVm();
       const item = findDuaById(sessionVm, payload.duaId);
-      if (item?.text) copyToClipboard(item.text);
+      const text = formatDuaForSharing(item);
+      if (text) copyToClipboard(text);
       return true;
     }
     case 'share-dua': {
       const sessionVm = await getActiveSessionVm();
       const item = findDuaById(sessionVm, payload.duaId);
-      if (item?.text) shareText(item.text);
+      const text = formatDuaForSharing(item);
+      if (text) shareText(text);
       return true;
     }
     default:
@@ -193,19 +267,19 @@ export function handleDuasActionTarget(actionTarget) {
 
 export function initDuasSection() {
   if (state.initialized) return;
-  renderShell();
-  bindRootEvents();
+  state.initialized = true;
+  void renderSection();
   registerSubviewCloseHandler('duaCategoryContent', () => {
     clearSessionContent();
     duasSessionStore.reset();
-    renderSection();
+    state.visibleSessionCount = SESSION_PAGE_SIZE;
+    void renderSection();
   });
-  state.initialized = true;
 }
 
 export async function renderSection(options = {}) {
   const sessionSlug = options.preserveSession ? duasSessionStore.getState().activeCategorySlug : '';
-  renderShell({ showCatalogHome: !sessionSlug });
+  await renderShell({ showCatalogHome: !sessionSlug });
   bindRootEvents();
 
   if (sessionSlug) {
@@ -214,6 +288,7 @@ export async function renderSection(options = {}) {
   }
 
   clearSessionContent();
+  state.visibleSessionCount = SESSION_PAGE_SIZE;
   await renderCatalogView();
 }
 
@@ -226,18 +301,20 @@ export async function openDuaCategory(categoryKey) {
   if (!category) return;
 
   const initialDuaId = resolveInitialDuaId(category);
+  state.visibleSessionCount = SESSION_PAGE_SIZE;
   duasSessionStore.openCategory(category, { activeDuaId: initialDuaId });
   duasHistoryStore.markVisited(category, initialDuaId);
-  renderSection({ preserveSession: true });
+  await renderSection({ preserveSession: true });
   pushHashState({ section: 'duas', sub: true }, '#duas-category');
   scrollToTop();
 }
 
 export function closeDuaCategory() {
   const closed = closeSubview('duaCategoryContent');
+  state.visibleSessionCount = SESSION_PAGE_SIZE;
   if (!closed) {
     duasSessionStore.reset();
-    renderSection();
+    void renderSection();
   }
   replaceSectionRoute('duas');
 }
@@ -245,9 +322,10 @@ export function closeDuaCategory() {
 export function resetDuasView() {
   state.filter = 'all';
   state.query = '';
+  state.visibleSessionCount = SESSION_PAGE_SIZE;
   duasSessionStore.reset();
   clearSessionContent();
-  renderSection();
+  void renderSection();
 }
 
 export const duasFeatureController = {
