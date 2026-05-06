@@ -72,15 +72,13 @@ function renderDailyDuaCard(dailyDua) {
 function renderCatalogAppbar() {
   return `
     <div class="duas-appbar duas-appbar--catalog" aria-label="شريط دليل المسلم">
-      <button type="button" class="duas-appbar__icon-btn" data-nav-section="settings" data-nav-title="حسابي" aria-label="الحساب">
-        <i class="fa-solid fa-user" aria-hidden="true"></i>
-      </button>
+      <span class="duas-appbar__spacer" aria-hidden="true"></span>
       <div class="duas-appbar__brand" aria-label="دليل المسلم">
         <span>دليل المسلم</span>
         <i class="fa-solid fa-mosque" aria-hidden="true"></i>
       </div>
-      <button type="button" class="duas-appbar__icon-btn" data-duas-action="open-more" aria-label="فتح المزيد">
-        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      <button type="button" class="duas-appbar__icon-btn" data-nav-section="settings" data-nav-title="حسابي" aria-label="الحساب">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
       </button>
     </div>
   `;
