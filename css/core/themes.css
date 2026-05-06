@@ -105,3 +105,168 @@
     --surface-glass: rgba(10, 46, 36, 0.78);
     --ring: rgba(243, 213, 130, 0.32);
 }
+
+/* ==========================================
+   4. 2026 Section Dark Surface Overrides
+   ========================================== */
+[data-theme="dark"] .section--azkar {
+    --azkar-primary: #34d399;
+    --azkar-primary-dark: #10b981;
+    --azkar-ink: #f8fafc;
+    --azkar-muted: #cbd5e1;
+    --azkar-border: rgba(148, 163, 184, 0.26);
+    --azkar-card: #182232;
+    --azkar-surface: #0f172a;
+    --azkar-shadow: 0 18px 42px rgba(0, 0, 0, 0.46);
+    --azkar-shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.34);
+}
+
+[data-theme="dark"] .section--duas {
+    --duas-ink: #f8fafc;
+    --duas-muted: #cbd5e1;
+    --duas-card: #182232;
+    --duas-soft: #101827;
+    --duas-border: rgba(148, 163, 184, 0.26);
+    --duas-shadow: 0 18px 42px rgba(0, 0, 0, 0.46);
+    --duas-shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.34);
+}
+
+[data-theme="dark"] .azkar-appbar,
+[data-theme="dark"] .azkar-reader-topbar,
+[data-theme="dark"] .duas-appbar {
+    background: rgba(17, 24, 39, 0.88) !important;
+}
+
+[data-theme="dark"] .azkar-hero,
+[data-theme="dark"] .duas-hero,
+[data-theme="dark"] .duas-session-hero {
+    border-color: rgba(148, 163, 184, 0.24) !important;
+    background:
+        radial-gradient(circle at 16% 78%, rgba(16, 185, 129, 0.13) 0 18%, transparent 34%),
+        linear-gradient(135deg, #182232 0%, #111827 68%, #0b1220 100%) !important;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36) !important;
+}
+
+[data-theme="dark"] .azkar-hero__title,
+[data-theme="dark"] .duas-hero__title,
+[data-theme="dark"] .duas-session-hero__title,
+[data-theme="dark"] .azkar-session-title,
+[data-theme="dark"] .azkar-section-heading__title,
+[data-theme="dark"] .duas-category-card__title,
+[data-theme="dark"] .azkar-category-card__title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .azkar-hero__subtitle,
+[data-theme="dark"] .duas-hero__subtitle,
+[data-theme="dark"] .duas-session-hero__description,
+[data-theme="dark"] .azkar-session-hero__subtitle,
+[data-theme="dark"] .azkar-section-heading__subtitle,
+[data-theme="dark"] .duas-category-card__description,
+[data-theme="dark"] .azkar-category-card__meta,
+[data-theme="dark"] .azkar-category-card__progress-label {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .azkar-category-card,
+[data-theme="dark"] .azkar-favorite-item-card,
+[data-theme="dark"] .azkar-item-card,
+[data-theme="dark"] .azkar-empty-state,
+[data-theme="dark"] .azkar-loading-placeholder,
+[data-theme="dark"] .duas-category-card,
+[data-theme="dark"] .dua-item-card,
+[data-theme="dark"] .duas-empty-state,
+[data-theme="dark"] .duas-skeleton-card {
+    border-color: rgba(148, 163, 184, 0.24) !important;
+    background: #182232 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34) !important;
+}
+
+[data-theme="dark"] .azkar-item-card--completed,
+[data-theme="dark"] .dua-item-card.is-active {
+    background:
+        radial-gradient(circle at 16% 16%, rgba(16, 185, 129, 0.12), transparent 42%),
+        #172433 !important;
+}
+
+[data-theme="dark"] .azkar-item-text,
+[data-theme="dark"] .dua-item-card__text {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .azkar-item-reference,
+[data-theme="dark"] .dua-item-card__reference,
+[data-theme="dark"] .duas-category-card__source,
+[data-theme="dark"] .duas-category-card__count {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .azkar-item-index-badge,
+[data-theme="dark"] .azkar-item-meta,
+[data-theme="dark"] .azkar-item-source-chip,
+[data-theme="dark"] .azkar-item-copy-btn,
+[data-theme="dark"] .azkar-item-favorite-btn,
+[data-theme="dark"] .azkar-reader-topbar__btn,
+[data-theme="dark"] .duas-filter-chip,
+[data-theme="dark"] .duas-badge,
+[data-theme="dark"] .duas-chip,
+[data-theme="dark"] .dua-item-card__source,
+[data-theme="dark"] .duas-appbar--reader .duas-appbar__icon-btn {
+    border-color: rgba(148, 163, 184, 0.24) !important;
+    background: #111827 !important;
+    color: #e5e7eb !important;
+}
+
+[data-theme="dark"] .azkar-category-card__state,
+[data-theme="dark"] .azkar-section-heading__icon,
+[data-theme="dark"] .duas-empty-state__icon,
+[data-theme="dark"] .duas-daily-card__icon,
+[data-theme="dark"] .duas-category-card__icon {
+    background: rgba(16, 185, 129, 0.13) !important;
+    color: #34d399 !important;
+}
+
+[data-theme="dark"] .azkar-progress-track--item,
+[data-theme="dark"] .azkar-progress-track--session,
+[data-theme="dark"] .azkar-category-card__progress-track,
+[data-theme="dark"] .duas-skeleton-card {
+    background-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+[data-theme="dark"] .duas-toolbar,
+[data-theme="dark"] .duas-search-wrap,
+[data-theme="dark"] .duas-search {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .duas-search {
+    border-color: rgba(148, 163, 184, 0.24) !important;
+    background: #182232 !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .duas-search::placeholder {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .duas-daily-card {
+    border-color: rgba(148, 163, 184, 0.24) !important;
+    background: rgba(24, 34, 50, 0.96) !important;
+    color: #f8fafc !important;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42) !important;
+}
+
+[data-theme="dark"] .duas-daily-card__title,
+[data-theme="dark"] .duas-daily-card__action {
+    color: #34d399 !important;
+}
+
+[data-theme="dark"] .duas-daily-card__text {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .azkar-session-hero:not([data-tone="evening"]):not([data-tone="prayer"]):not([data-tone="gold"]):not([data-tone="morning"]) {
+    background: linear-gradient(135deg, #182232 0%, #111827 100%) !important;
+    color: #f8fafc !important;
+}
