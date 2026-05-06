@@ -6,52 +6,160 @@ import {
 } from '../../shared/dom/dom-helpers.js';
 
 function getCategoryIcon(category) {
+    if (category?.periodIcon) return category.periodIcon;
+    if (category?.icon === 'fa-pray') return 'fa-mosque';
     if (category?.icon) return category.icon;
     return 'fa-book-open';
 }
 
 function getCategoryTone(category) {
-    return String(category?.accentTone || 'default').trim() || 'default';
+    return String(category?.tone || category?.accentTone || 'default').trim() || 'default';
 }
 
-export function renderAzkarPrimaryAction({ container, viewModel, onActivate }) {
+function appendIcon(parent, classes) {
+    parent.appendChild(createIconElement(Array.isArray(classes) ? classes : ['fa-solid', classes]));
+}
+
+function createButton(className, label) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = className;
+    if (label) button.setAttribute('aria-label', label);
+    return button;
+}
+
+function createCatalogAppbar() {
+    const appbar = document.createElement('div');
+    appbar.className = 'azkar-appbar';
+
+    const menu = createButton('azkar-appbar__icon-btn', 'القائمة');
+    appendIcon(menu, 'fa-bars');
+
+    const brand = document.createElement('div');
+    brand.className = 'azkar-appbar__brand';
+    appendIcon(brand, 'fa-mosque');
+    brand.appendChild(createTextElement('span', 'دليل المسلم'));
+
+    const user = createButton('azkar-appbar__icon-btn', 'الحساب');
+    appendIcon(user, 'fa-user');
+
+    appbar.append(menu, brand, user);
+    return appbar;
+}
+
+function createHero(viewModel, onActivate) {
+    const primary = viewModel?.primaryAction || {};
+    const hero = document.createElement('article');
+    hero.className = 'azkar-hero';
+    hero.setAttribute('aria-label', 'قسم الأذكار ووردك الآن');
+
+    const headline = document.createElement('div');
+    headline.className = 'azkar-hero__headline';
+    headline.append(
+        createTextElement('h3', 'الأذكار', 'azkar-hero__title'),
+        createTextElement('p', 'ورد الصباح والمساء وما بعد الصلاة', 'azkar-hero__subtitle')
+    );
+
+    const card = document.createElement('article');
+    card.className = 'azkar-now-card';
+    card.dataset.tone = getCategoryTone(primary);
+
+    const content = document.createElement('div');
+    content.className = 'azkar-now-card__content';
+    const eyebrow = createTextElement('p', 'وردك الآن', 'azkar-now-card__eyebrow');
+    const title = createTextElement('p', primary.title || 'ابدأ وردك اليومي', 'azkar-now-card__title');
+    const helper = createTextElement('p', primary.helperText || '0 من 0', 'azkar-now-card__title');
+    const cta = createButton('azkar-now-card__cta', primary.actionLabel || 'ابدأ الورد');
+    cta.append(createTextElement('span', primary.isCompleted ? 'راجع' : 'ابدأ'));
+    appendIcon(cta, 'fa-chevron-left');
+    cta.addEventListener('click', () => {
+        if (primary.slug && typeof onActivate === 'function') onActivate(primary.slug);
+    });
+    content.append(eyebrow, title, helper, cta);
+
+    const visual = document.createElement('div');
+    visual.className = 'azkar-now-card__visual';
+    const orb = document.createElement('span');
+    orb.className = 'azkar-now-card__orb';
+    appendIcon(orb, primary.icon || 'fa-moon');
+    const landscape = document.createElement('span');
+    landscape.className = 'azkar-now-card__landscape';
+    visual.append(orb, landscape);
+
+    card.append(content, visual);
+    hero.append(headline, card);
+    return hero;
+}
+
+function createFilters(filters, activeFilter, onSetFilter) {
+    const wrap = document.createElement('div');
+    wrap.className = 'azkar-filters';
+    wrap.setAttribute('aria-label', 'تصفية الأذكار');
+
+    filters.forEach((filter) => {
+        const button = createButton('azkar-filter-chip', `عرض ${filter.label}`);
+        button.textContent = filter.label;
+        button.dataset.azkarFilter = filter.key;
+        button.classList.toggle('is-active', filter.key === activeFilter);
+        button.setAttribute('aria-pressed', String(filter.key === activeFilter));
+        button.addEventListener('click', () => {
+            if (typeof onSetFilter === 'function') onSetFilter(filter.key);
+        });
+        wrap.appendChild(button);
+    });
+
+    return wrap;
+}
+
+function createSectionHeading() {
+    const heading = document.createElement('div');
+    heading.className = 'azkar-section-heading';
+
+    const icon = document.createElement('span');
+    icon.className = 'azkar-section-heading__icon';
+    appendIcon(icon, 'fa-calendar-days');
+
+    const copy = document.createElement('div');
+    copy.append(
+        createTextElement('h3', 'الأوراد اليومية', 'azkar-section-heading__title'),
+        createTextElement('p', 'اختر وردك وواظب على ذكر الله.', 'azkar-section-heading__subtitle')
+    );
+
+    heading.append(icon, copy);
+    return heading;
+}
+
+export function renderAzkarCatalogSurface({ container, viewModel, activeFilter, onSetFilter, onActivatePrimary }) {
     if (!container) return false;
 
     clearElement(container);
-
-    if (!viewModel?.slug) {
-        container.classList.add('is-hidden');
-        return false;
-    }
-
     container.classList.remove('is-hidden');
 
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'azkar-primary-action__btn';
-    button.dataset.tone = getCategoryTone(viewModel);
+    const surface = document.createElement('div');
+    surface.className = 'azkar-catalog-surface';
+    surface.append(
+        createCatalogAppbar(),
+        createHero(viewModel, onActivatePrimary),
+        createFilters(viewModel?.filters || [], activeFilter || viewModel?.activeFilter || 'all', onSetFilter),
+        createSectionHeading()
+    );
 
-    const iconWrap = document.createElement('span');
-    iconWrap.className = 'azkar-primary-action__icon';
-    iconWrap.appendChild(createIconElement(['fa-solid', viewModel.icon || 'fa-sparkles']));
-
-    const content = document.createElement('span');
-    content.className = 'azkar-primary-action__content';
-
-    const eyebrow = createTextElement('span', viewModel.helperText || 'الأنسب الآن', 'azkar-primary-action__eyebrow');
-    const title = createTextElement('span', viewModel.title || 'افتح الورد', 'azkar-primary-action__title');
-
-    content.append(eyebrow, title);
-    button.append(iconWrap, content);
-
-    button.addEventListener('click', () => {
-        if (typeof onActivate === 'function') {
-            onActivate(viewModel.slug);
-        }
-    });
-
-    container.appendChild(button);
+    container.appendChild(surface);
     return true;
+}
+
+export function renderAzkarPrimaryAction({ container, viewModel, onActivate }) {
+    return renderAzkarCatalogSurface({
+        container,
+        viewModel: {
+            filters: [],
+            activeFilter: 'all',
+            primaryAction: viewModel
+        },
+        activeFilter: 'all',
+        onSetFilter: null,
+        onActivatePrimary: onActivate
+    });
 }
 
 export function renderAzkarCategoriesGrid({
@@ -60,60 +168,78 @@ export function renderAzkarCategoriesGrid({
     categories,
     onOpenCategory
 }) {
-    if (!grid || !template) return false;
+    if (!grid) return false;
 
     clearElement(grid);
     grid.dataset.view = 'categories';
 
     if (!Array.isArray(categories)) {
-        grid.appendChild(createTextElement('p', 'جاري تحميل الأذكار...', 'muted cardx--center azkar-loading-placeholder'));
+        grid.appendChild(createTextElement('p', 'جاري تحميل الأذكار...', 'azkar-loading-placeholder'));
         return false;
     }
 
     if (categories.length === 0) {
-        grid.appendChild(createTextElement('p', 'لا توجد تصنيفات', 'cardx cardx--center azkar-empty-state'));
+        grid.appendChild(createTextElement('p', 'لا توجد أوراد مطابقة.', 'azkar-empty-state'));
         return true;
     }
 
     categories.forEach(category => {
-        const clone = template.content.cloneNode(true);
-        const card = clone.querySelector('.azkar-category-card');
-        const iconEl = clone.querySelector('.azkar-category-card__icon i');
-        const eyebrowEl = clone.querySelector('.azkar-category-card__eyebrow');
-        const titleEl = clone.querySelector('.azkar-category-card__title');
-        const stateEl = clone.querySelector('.azkar-category-card__state');
-        const progressFillEl = clone.querySelector('.azkar-category-card__progress-fill');
+        const card = createButton('azkar-category-card', `افتح ${category.title}`);
+        card.dataset.azkarCategoryKey = category.slug;
+        card.dataset.tone = getCategoryTone(category);
+        card.dataset.timeContext = category.timeContextKey || 'day';
+        card.classList.toggle('is-recommended-now', Boolean(category.isRecommendedNow));
+        card.classList.toggle('is-completed-today', Boolean(category.progress?.isCompleted));
 
-        const progress = category.progress || {};
-        const completionRatio = progress.itemCompletionRatio || 0;
+        const inner = document.createElement('span');
+        inner.className = 'azkar-category-card__inner';
 
-        if (card) {
-            card.dataset.azkarCategoryKey = category.slug;
-            card.dataset.tone = getCategoryTone(category);
-            card.dataset.timeContext = category.timeContextKey || 'day';
-            card.classList.toggle('is-recommended-now', Boolean(category.isRecommendedNow));
-            card.classList.toggle('is-completed-today', Boolean(progress.isCompleted));
-            card.addEventListener('click', () => onOpenCategory(category.slug));
-        }
-        if (iconEl) {
-            iconEl.className = `fa-solid ${getCategoryIcon(category)}`;
-        }
-        if (eyebrowEl) {
-            eyebrowEl.textContent = category.periodLabel || '';
-        }
-        if (titleEl) {
-            titleEl.textContent = category.title;
-        }
-        if (stateEl) {
-            const label = category.categoryStateLabel || '';
-            stateEl.textContent = label;
-            stateEl.classList.toggle('is-hidden', !label);
-        }
-        if (progressFillEl) {
-            setProgressPercent(progressFillEl, completionRatio * 100);
-        }
+        const icon = document.createElement('span');
+        icon.className = 'azkar-category-card__icon';
+        appendIcon(icon, getCategoryIcon(category));
 
-        grid.appendChild(clone);
+        const body = document.createElement('span');
+        body.className = 'azkar-category-card__body';
+        body.appendChild(createTextElement('span', category.title, 'azkar-category-card__title'));
+
+        const meta = document.createElement('span');
+        meta.className = 'azkar-category-card__meta';
+        meta.append(
+            createTextElement('span', category.progress?.itemCountLabel || ''),
+            createTextElement('span', '•'),
+            createTextElement('span', category.estimatedMinutesLabel || '')
+        );
+        body.appendChild(meta);
+
+        const progress = document.createElement('span');
+        progress.className = 'azkar-category-card__progress';
+        const progressLabel = createTextElement('span', category.progress?.progressLabelReadable || '', 'azkar-category-card__progress-label');
+        const track = document.createElement('span');
+        track.className = 'azkar-category-card__progress-track';
+        const fill = document.createElement('span');
+        fill.className = 'azkar-category-card__progress-fill';
+        setProgressPercent(fill, (category.progress?.itemCompletionRatio || 0) * 100);
+        track.appendChild(fill);
+        progress.append(progressLabel, track);
+        body.appendChild(progress);
+
+        const side = document.createElement('span');
+        side.className = 'azkar-category-card__side';
+        if (category.categoryStateLabel) {
+            const state = createTextElement('span', category.categoryStateLabel, 'azkar-category-card__state');
+            state.classList.toggle('is-now', category.categoryStateKind === 'now');
+            state.classList.toggle('is-complete', category.categoryStateKind === 'complete');
+            side.appendChild(state);
+        }
+        const arrow = document.createElement('span');
+        arrow.className = 'azkar-category-card__arrow';
+        appendIcon(arrow, 'fa-chevron-left');
+        side.appendChild(arrow);
+
+        inner.append(icon, body, side);
+        card.appendChild(inner);
+        card.addEventListener('click', () => onOpenCategory(category.slug));
+        grid.appendChild(card);
     });
 
     return true;
@@ -125,48 +251,44 @@ export function renderAzkarFavoriteItemsGrid({
     items,
     onOpenItem
 }) {
-    if (!grid || !template) return false;
+    if (!grid) return false;
 
     clearElement(grid);
     grid.dataset.view = 'favorites';
 
     if (!Array.isArray(items) || items.length === 0) {
-        grid.appendChild(createTextElement('p', 'لا توجد أذكار مفضلة بعد.', 'cardx cardx--center azkar-empty-state'));
+        grid.appendChild(createTextElement('p', 'لا توجد أذكار مفضلة بعد.', 'azkar-empty-state'));
         return true;
     }
 
     items.forEach((item) => {
-        const clone = template.content.cloneNode(true);
-        const card = clone.querySelector('.azkar-favorite-item-card');
-        const categoryEl = clone.querySelector('.azkar-favorite-item-card__category');
-        const snippetEl = clone.querySelector('.azkar-favorite-item-card__snippet');
-        const metaEl = clone.querySelector('.azkar-favorite-item-card__meta');
+        const card = createButton('azkar-favorite-item-card', `افتح الذكر المفضل من ${item.categoryTitle || 'الأذكار'}`);
+        card.dataset.tone = getCategoryTone(item);
 
-        if (card) {
-            card.dataset.tone = getCategoryTone(item);
-            card.classList.toggle('is-completed-today', Boolean(item.isCompleted));
-            card.classList.toggle('is-recommended-now', Boolean(item.isRecommendedNow));
-            card.setAttribute('aria-label', `افتح الذكر المفضل من ${item.categoryTitle || 'الأذكار'}`);
-            card.addEventListener('click', () => {
-                if (typeof onOpenItem === 'function') {
-                    onOpenItem(item);
-                }
-            });
-        }
+        const inner = document.createElement('span');
+        inner.className = 'azkar-category-card__inner';
 
-        if (categoryEl) {
-            categoryEl.textContent = `من ${item.categoryTitle || item.categoryPeriodLabel || 'الأذكار'}`;
-        }
-        if (snippetEl) {
-            snippetEl.textContent = item.snippet || item.text || '';
-        }
-        if (metaEl) {
-            metaEl.textContent = item.isCompleted
-                ? `${item.progressLabel} • تم اليوم`
-                : `${item.progressLabel} • ${item.categoryPeriodLabel || ''}`;
-        }
+        const icon = document.createElement('span');
+        icon.className = 'azkar-category-card__icon';
+        appendIcon(icon, 'fa-star');
 
-        grid.appendChild(clone);
+        const body = document.createElement('span');
+        body.className = 'azkar-category-card__body';
+        body.append(
+            createTextElement('span', item.categoryTitle || 'الأذكار', 'azkar-category-card__title'),
+            createTextElement('span', item.snippet || item.text || '', 'azkar-category-card__meta')
+        );
+
+        const side = document.createElement('span');
+        side.className = 'azkar-category-card__side';
+        side.appendChild(createTextElement('span', item.progressLabel || '', 'azkar-category-card__state'));
+
+        inner.append(icon, body, side);
+        card.appendChild(inner);
+        card.addEventListener('click', () => {
+            if (typeof onOpenItem === 'function') onOpenItem(item);
+        });
+        grid.appendChild(card);
     });
 
     return true;
@@ -174,14 +296,6 @@ export function renderAzkarFavoriteItemsGrid({
 
 export function renderAzkarResumeMini({ container, textEl, summary }) {
     if (!container) return;
-
-    if (!summary || !summary.slug) {
-        container.classList.add('is-hidden');
-        return;
-    }
-
-    container.classList.remove('is-hidden');
-    if (textEl) {
-        textEl.textContent = summary.title || 'وردك الأخير';
-    }
+    container.classList.add('is-hidden');
+    if (textEl && summary?.title) textEl.textContent = summary.title;
 }

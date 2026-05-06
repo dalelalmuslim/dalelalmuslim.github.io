@@ -12,29 +12,34 @@ import { azkarSessionStore } from '../../domains/azkar/azkar-session-store.js';
 import { azkarHistoryStore } from '../../domains/azkar/azkar-history-store.js';
 import { azkarPreferencesStore } from '../../domains/azkar/azkar-preferences-store.js';
 import {
-    getAzkarCategorySummaries,
+    getAzkarCatalogSurfaceViewModel,
     getAzkarCategoryViewModel,
     getFavoriteAzkarItemsViewModel,
-    getAzkarPrimaryActionViewModel,
     getAzkarResumeSummary
 } from '../../domains/azkar/azkar-selectors.js';
 import { cacheAzkarDom, resolveAzkarElement } from './azkar-dom.js';
-import { setProgressPercent } from '../../shared/dom/dom-helpers.js';
 import {
+    renderAzkarCatalogSurface,
     renderAzkarCategoriesGrid,
-    renderAzkarCategoryList,
     renderAzkarFavoriteItemsGrid,
-    renderAzkarPrimaryAction,
-    renderAzkarResumeMini
+    renderAzkarResumeMini,
+    renderAzkarCategoryList,
+    renderAzkarSessionHeader
 } from './azkar-renderers.js';
+
+const DEFAULT_FILTER = 'all';
 
 export const azkarController = {
     dom: {},
     currentCategoryKey: null,
+    currentFilter: DEFAULT_FILTER,
     showFavoritesOnly: false,
+    isRenderingCatalog: false,
 
     init() {
         this.dom = cacheAzkarDom();
+        this.applyPreferenceClasses();
+
         registerSubviewCloseHandler('azkarListView', () => {
             this.currentCategoryKey = null;
             azkarSessionStore.clearActiveCategory();
@@ -55,75 +60,80 @@ export const azkarController = {
         return getAzkarCatalog();
     },
 
-    updateFavoriteButtonState() {
-        const favBtn = document.getElementById('azkarFavoriteFilterBtn');
-        if (!favBtn) return;
-
-        favBtn.setAttribute('aria-pressed', String(this.showFavoritesOnly));
-        favBtn.setAttribute('title', this.showFavoritesOnly ? 'عرض كل الأذكار' : 'إظهار الأذكار المفضلة');
-        favBtn.setAttribute('aria-label', this.showFavoritesOnly ? 'عرض كل الأذكار' : 'إظهار الأذكار المفضلة');
-
-        const icon = favBtn.querySelector('i');
-        if (icon) {
-            icon.className = this.showFavoritesOnly ? 'fa-solid fa-star' : 'fa-regular fa-star';
+    applyPreferenceClasses() {
+        const preferences = azkarPreferencesStore.getState();
+        const listView = resolveAzkarElement(this.dom, 'listView', 'azkarListView');
+        if (listView) {
+            listView.classList.toggle('is-large-text', Boolean(preferences.largeText));
+            listView.classList.toggle('is-focus-mode', Boolean(preferences.focusMode));
         }
     },
 
     async renderAzkarCategories() {
+        if (this.isRenderingCatalog) return;
+        this.isRenderingCatalog = true;
+
         const grid = resolveAzkarElement(this.dom, 'categoriesGrid', 'azkarCategoriesGrid');
         const primaryAction = resolveAzkarElement(this.dom, 'primaryAction', 'azkarPrimaryAction');
-        const categoryTemplate = document.getElementById('tpl-azkar-category-card');
-        const favoriteItemTemplate = document.getElementById('tpl-azkar-favorite-item-card');
-        if (!grid) return;
-
-        await this.ensureAzkarLoaded();
-        this.updateFavoriteButtonState();
-
-        if (this.showFavoritesOnly) {
-            const favoriteItems = await getFavoriteAzkarItemsViewModel();
-            renderAzkarFavoriteItemsGrid({
-                grid,
-                template: favoriteItemTemplate,
-                items: favoriteItems,
-                onOpenItem: (item) => this.openFavoriteItem(item)
-            });
-            if (primaryAction) {
-                primaryAction.classList.add('is-hidden');
-                primaryAction.replaceChildren();
-            }
-        } else {
-            const categories = await getAzkarCategorySummaries();
-            renderAzkarCategoriesGrid({
-                grid,
-                template: categoryTemplate,
-                categories,
-                onOpenCategory: (key) => this.openAzkarCategory(key)
-            });
-            renderAzkarPrimaryAction({
-                container: primaryAction,
-                viewModel: await getAzkarPrimaryActionViewModel(),
-                onActivate: (slug) => this.openAzkarCategory(slug)
-            });
+        if (!grid) {
+            this.isRenderingCatalog = false;
+            return;
         }
 
-        await this.renderResumeMini();
+        try {
+            await this.ensureAzkarLoaded();
+            this.showFavoritesOnly = this.currentFilter === 'favorites';
+            const viewModel = await getAzkarCatalogSurfaceViewModel({ filterKey: this.currentFilter });
+
+            renderAzkarCatalogSurface({
+                container: primaryAction,
+                viewModel,
+                activeFilter: this.currentFilter,
+                onSetFilter: (filterKey) => this.setFilter(filterKey),
+                onActivatePrimary: (slug) => this.openAzkarCategory(slug)
+            });
+
+            if (this.currentFilter === 'favorites') {
+                const favoriteItems = await getFavoriteAzkarItemsViewModel();
+                renderAzkarFavoriteItemsGrid({
+                    grid,
+                    template: null,
+                    items: favoriteItems,
+                    onOpenItem: (item) => this.openFavoriteItem(item)
+                });
+            } else {
+                renderAzkarCategoriesGrid({
+                    grid,
+                    template: null,
+                    categories: viewModel.categories,
+                    onOpenCategory: (key) => this.openAzkarCategory(key)
+                });
+            }
+
+            await this.renderResumeMini();
+        } catch (error) {
+            console.error('[azkar] failed to render catalog', error);
+            grid.replaceChildren();
+            const message = document.createElement('p');
+            message.className = 'azkar-empty-state';
+            message.textContent = 'تعذر تحميل الأذكار الآن. حاول مرة أخرى.';
+            grid.appendChild(message);
+        } finally {
+            this.isRenderingCatalog = false;
+        }
     },
 
     async renderResumeMini() {
         const container = document.getElementById('azkarResumeMini');
         const textEl = document.getElementById('azkarResumeMiniText');
 
-        if (this.showFavoritesOnly) {
+        if (this.currentFilter === 'favorites') {
             renderAzkarResumeMini({ container, textEl, summary: null });
             return;
         }
 
         const summary = await getAzkarResumeSummary();
-        renderAzkarResumeMini({
-            container,
-            textEl,
-            summary
-        });
+        renderAzkarResumeMini({ container, textEl, summary });
     },
 
     focusItemCard(itemId) {
@@ -146,13 +156,10 @@ export const azkarController = {
         if (!categoryData) return false;
 
         const listContainer = resolveAzkarElement(this.dom, 'listContainer', 'azkarList');
-        const listTitle = resolveAzkarElement(this.dom, 'listTitle', 'azkarListTitle');
-        const progressFill = document.getElementById('azkarSessionProgressFill');
-        const progressText = document.getElementById('azkarSessionProgressText');
-        const template = document.getElementById('tpl-azkar-item-card');
+        const listHeader = this.dom.listHeader || document.querySelector('#azkarListView .azkar-session-header');
         const categoryProgress = getAzkarProgressForCategory(categoryData.slug);
 
-        if (!listContainer || !template) return false;
+        if (!listContainer) return false;
 
         const itemIndexFromId = activeItemId
             ? categoryData.azkar.findIndex((item, index) => (item.id || `${categoryData.slug}-${index + 1}`) === activeItemId)
@@ -164,21 +171,17 @@ export const azkarController = {
             || categoryData.azkar[resolvedItemIndex]?.id
             || '';
 
-        if (listTitle) {
-            listTitle.textContent = categoryData.title;
-        }
-
-        if (progressFill && categoryData.progress) {
-            const ratio = categoryData.progress.itemCompletionRatio || 0;
-            setProgressPercent(progressFill, ratio * 100);
-        }
-        if (progressText && categoryData.progress) {
-            progressText.textContent = categoryData.progress.progressLabel || '0/0';
-        }
+        renderAzkarSessionHeader({
+            container: listHeader,
+            categoryData,
+            onBack: () => this.closeAzkarCategory(),
+            onToggleLargeText: () => this.toggleLargeText(),
+            onToggleVibration: () => this.toggleVibration()
+        });
 
         renderAzkarCategoryList({
             listContainer,
-            template,
+            template: null,
             categoryData,
             progress: categoryProgress,
             activeItemId: resolvedActiveItemId,
@@ -192,6 +195,8 @@ export const azkarController = {
         if (markVisited) {
             azkarHistoryStore.markCategoryVisited(categoryData);
         }
+
+        this.applyPreferenceClasses();
 
         if (openAsSubview) {
             openSubview('azkarListView');
@@ -233,7 +238,7 @@ export const azkarController = {
         if (!categoryState) return;
 
         const nextIndex = categoryState.azkar.findIndex((item, itemIndex) => {
-            const safeTarget = Number(item?.repeatTarget ?? 1) || 1;
+            const safeTarget = Number(item?.repeatTarget ?? item?.repeat ?? item?.count ?? 1) || 1;
             const safeCurrent = Number(categoryState.progressMap[itemIndex]) || 0;
             return safeCurrent < safeTarget;
         });
@@ -254,9 +259,15 @@ export const azkarController = {
         await this.renderAzkarCategories();
     },
 
-    async toggleFavoriteFilter() {
-        this.showFavoritesOnly = !this.showFavoritesOnly;
+    async setFilter(filterKey) {
+        const safeFilter = typeof filterKey === 'string' && filterKey.trim() ? filterKey.trim() : DEFAULT_FILTER;
+        this.currentFilter = safeFilter;
+        this.showFavoritesOnly = safeFilter === 'favorites';
         await this.renderAzkarCategories();
+    },
+
+    async toggleFavoriteFilter() {
+        await this.setFilter(this.currentFilter === 'favorites' ? DEFAULT_FILTER : 'favorites');
     },
 
     async resumeCategory() {
@@ -280,9 +291,42 @@ export const azkarController = {
             activeItemId: safeItemId
         });
         await this.renderResumeMini();
-        if (this.showFavoritesOnly) {
+        if (this.currentFilter === 'favorites') {
             await this.renderAzkarCategories();
         }
+    },
+
+    async toggleLargeText() {
+        const current = azkarPreferencesStore.getState();
+        azkarPreferencesStore.update({ largeText: !Boolean(current.largeText) });
+        this.applyPreferenceClasses();
+        if (this.currentCategoryKey) {
+            await this.renderOpenCategory(this.currentCategoryKey, { openAsSubview: false, markVisited: false });
+        }
+    },
+
+    async toggleFocusMode() {
+        const current = azkarPreferencesStore.getState();
+        azkarPreferencesStore.update({ focusMode: !Boolean(current.focusMode) });
+        this.applyPreferenceClasses();
+    },
+
+    async toggleVibration() {
+        const current = azkarPreferencesStore.getState();
+        azkarPreferencesStore.update({ vibrationEnabled: !Boolean(current.vibrationEnabled) });
+        if (this.currentCategoryKey) {
+            await this.renderOpenCategory(this.currentCategoryKey, { openAsSubview: false, markVisited: false });
+        }
+    },
+
+    async cycleReminderWindow() {
+        azkarPreferencesStore.cycleReminderWindow();
+        await this.renderAzkarCategories();
+    },
+
+    async toggleSmartOrdering() {
+        azkarPreferencesStore.toggleSmartOrdering();
+        await this.renderAzkarCategories();
     },
 
     async closeAzkarCategory() {

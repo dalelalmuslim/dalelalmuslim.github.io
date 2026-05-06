@@ -5,6 +5,7 @@ export function cacheAzkarDom() {
         categoriesGrid: document.getElementById('azkarCategoriesGrid'),
         primaryAction: document.getElementById('azkarPrimaryAction'),
         listTitle: document.getElementById('azkarListTitle'),
+        listHeader: document.querySelector('#azkarListView .azkar-session-header'),
         listContainer: document.getElementById('azkarList'),
         resumeMini: document.getElementById('azkarResumeMini'),
         resumeMiniText: document.getElementById('azkarResumeMiniText')
