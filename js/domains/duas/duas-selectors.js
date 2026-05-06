@@ -128,6 +128,40 @@ function getShortReference(referenceText) {
   return shortened;
 }
 
+function getDisplayReference(referenceText, limit = 82) {
+  const value = String(referenceText || '')
+    .replace(/\s+/g, ' ')
+    .replace(/^رواه\s+/u, '')
+    .trim();
+
+  if (!value) return '';
+
+  const preferredSegment = value
+    .split('•')
+    .map((segment) => segment.trim())
+    .find(Boolean) || value;
+
+  if (preferredSegment.length <= limit) return preferredSegment;
+  return `${preferredSegment.slice(0, Math.max(0, limit - 1)).trim()}…`;
+}
+
+function buildReferenceSearchText(item) {
+  const referenceText = String(item?.referenceText || '').trim();
+  const rawReference = item?.reference;
+  const rawReferenceText = rawReference && typeof rawReference === 'object'
+    ? Object.values(rawReference).map((value) => String(value || '')).join(' ')
+    : String(rawReference || '');
+
+  return [
+    referenceText,
+    referenceText ? `رواه ${referenceText}` : '',
+    rawReferenceText,
+    rawReferenceText ? `رواه ${rawReferenceText}` : '',
+    item?.source,
+    getSourceMetaFromItemSource(item?.source)
+  ].join(' ');
+}
+
 function getShortText(text, limit = 86) {
   const value = String(text || '').replace(/\s+/g, ' ').trim();
   if (value.length <= limit) return value;
@@ -137,13 +171,15 @@ function getShortText(text, limit = 86) {
 function buildCategoryQueryText(category) {
   const sourceMeta = getSourceMetaFromType(category.sourceType);
   const fullItemsText = category.items
-    .map((item) => `${item.text} ${item.referenceText}`)
+    .map((item) => `${item.text} ${item.referenceText} ${buildReferenceSearchText(item)}`)
     .join(' ');
 
   return normalizeArabicText([
     category.title,
     getDisplayTitle(category),
     category.description,
+    getDisplayDescription(category),
+    category.sourceSummary,
     sourceMeta,
     fullItemsText
   ].join(' '));
@@ -152,7 +188,8 @@ function buildCategoryQueryText(category) {
 function normalizeDuaItemForView(item) {
   return {
     ...item,
-    sourceMeta: getSourceMetaFromItemSource(item.source)
+    sourceMeta: getSourceMetaFromItemSource(item.source),
+    displayReferenceText: getDisplayReference(item.referenceText)
   };
 }
 

@@ -1402,3 +1402,182 @@
     font-size: clamp(0.94rem, 4.15vw, 1.12rem);
   }
 }
+
+
+/* ============================================================
+   Duas 2026 v4 — language, search, readability and polish fixes
+   ============================================================ */
+.section--duas {
+  --duas-ink: #0f172a;
+  --duas-muted: #586273;
+  --duas-reference: #667085;
+}
+
+.duas-search {
+  padding-inline: 18px 56px;
+  color: var(--duas-ink);
+  caret-color: var(--duas-accent);
+}
+
+.duas-search::-webkit-search-decoration,
+.duas-search::-webkit-search-cancel-button,
+.duas-search::-webkit-search-results-button,
+.duas-search::-webkit-search-results-decoration {
+  display: none;
+  appearance: none;
+}
+
+.duas-search__clear {
+  inset-inline-start: 10px;
+  color: var(--duas-accent);
+  background: transparent;
+}
+
+.duas-search__clear:not(.is-hidden) {
+  display: inline-flex;
+  opacity: 1;
+}
+
+.duas-search-wrap:has(.duas-search__clear:not(.is-hidden)) .duas-search {
+  padding-inline-start: 54px;
+}
+
+.duas-filters {
+  position: relative;
+  margin-inline: -2px;
+  padding-inline: 2px 12px;
+  mask-image: linear-gradient(to left, transparent 0, #000 18px, #000 calc(100% - 20px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 18px, #000 calc(100% - 20px), transparent 100%);
+}
+
+.duas-filter-chip {
+  min-height: 38px;
+  padding-inline: 13px;
+  font-size: 0.88rem;
+}
+
+.duas-category-card__main {
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  padding-inline-start: 12px;
+}
+
+.duas-category-card__favorite {
+  display: none;
+}
+
+.duas-category-card__count,
+.duas-session-hero__meta .duas-chip,
+.duas-load-more {
+  letter-spacing: 0;
+}
+
+.dua-item-card {
+  padding: 13px 15px 12px;
+  gap: 9px;
+}
+
+.dua-item-card__meta-row {
+  margin-bottom: 2px;
+}
+
+.dua-item-card__text {
+  color: #111827;
+  text-align: right;
+  font-weight: 720;
+  line-height: 1.82;
+}
+
+.dua-item-card.is-active .dua-item-card__text {
+  color: #12443f;
+}
+
+.dua-item-card__reference {
+  display: -webkit-box;
+  margin: 0;
+  color: var(--duas-reference);
+  font-size: 0.9rem;
+  font-weight: 760;
+  line-height: 1.55;
+  text-align: right;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.dua-item-card__footer {
+  justify-content: flex-start;
+  padding-top: 4px;
+  border-top: 1px solid color-mix(in srgb, var(--duas-border) 48%, transparent);
+}
+
+.dua-action-btn {
+  direction: rtl;
+  min-height: 36px;
+  color: #344054;
+}
+
+.duas-session-hero__art span {
+  overflow: hidden;
+}
+
+.duas-session-hero__art span i,
+.duas-category-card__icon i {
+  max-width: 1em;
+  max-height: 1em;
+  overflow: hidden;
+}
+
+.duas-daily-card {
+  grid-template-columns: 40px minmax(0, 1fr);
+  width: min(58%, 340px);
+}
+
+.duas-daily-card__text {
+  color: #1f2937;
+}
+
+@media (max-width: 760px) {
+  .duas-filter-chip {
+    min-height: 37px;
+    padding-inline: 12px;
+    font-size: 0.86rem;
+  }
+
+  .duas-category-card__main {
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    padding-inline-start: 12px;
+  }
+
+  .duas-category-card__count {
+    font-size: 0.8rem;
+  }
+
+  .dua-item-card__text {
+    font-size: clamp(1.15rem, 4.25vw, 1.48rem);
+  }
+}
+
+@media (max-width: 430px) {
+  .duas-daily-card {
+    width: min(60%, 292px);
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .duas-daily-card__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .duas-daily-card__title {
+    font-size: 1rem;
+  }
+
+  .duas-daily-card__text {
+    font-size: 0.9rem;
+  }
+
+  .duas-filter-chip {
+    padding-inline: 10px;
+    font-size: 0.82rem;
+  }
+}

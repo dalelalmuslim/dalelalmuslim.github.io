@@ -11,6 +11,19 @@ function getFavoriteIcon(isFavorite) {
   return isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star';
 }
 
+function formatDuaCount(count) {
+  const numericCount = Number(count);
+  if (!Number.isFinite(numericCount) || numericCount <= 0) return '0 أدعية';
+  if (numericCount === 1) return 'دعاء واحد';
+  if (numericCount === 2) return 'دعاءان';
+  if (numericCount >= 3 && numericCount <= 10) return `${numericCount} أدعية`;
+  return `${numericCount} دعاءً`;
+}
+
+function getDisplayReference(item) {
+  return item?.displayReferenceText || item?.referenceText || '';
+}
+
 function renderFilterButton(filter, activeFilter) {
   const labels = {
     all: 'الكل',
@@ -99,7 +112,7 @@ export function renderDuasShell({ activeFilter, searchQuery, dailyDua = null, sh
         <section class="duas-toolbar" aria-label="البحث والتصفية في الأدعية">
           <div class="duas-toolbar__search">
             <div class="duas-search-wrap">
-              <input id="duasSearchInput" class="input duas-search" type="search" value="${escapeHtml(searchQuery || '')}" placeholder="ابحث عن دعاء أو تصنيف" aria-label="ابحث في الأدعية" />
+              <input id="duasSearchInput" class="input duas-search" type="text" inputmode="search" autocomplete="off" autocapitalize="none" spellcheck="false" value="${escapeHtml(searchQuery || '')}" placeholder="ابحث عن دعاء أو تصنيف" aria-label="ابحث في الأدعية" />
               <button type="button" class="btn btn--ghost duas-search__clear${searchQuery ? '' : ' is-hidden'}" data-duas-action="clear-search" aria-label="مسح البحث"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </div>
           </div>
@@ -155,16 +168,8 @@ export function renderDuasCatalog(cards = []) {
           ${card.description ? `<span class="duas-category-card__description">${escapeHtml(card.description)}</span>` : ''}
           <span class="duas-category-card__source"><span aria-hidden="true"></span>${escapeHtml(card.sourceMeta)}</span>
         </span>
-        <span class="duas-category-card__count">${card.itemCount} دعاء</span>
+        <span class="duas-category-card__count">${formatDuaCount(card.itemCount)}</span>
       </button>
-      <button
-        type="button"
-        class="duas-category-card__favorite"
-        data-duas-action="toggle-favorite"
-        data-duas-value="${escapeHtml(card.slug)}"
-        aria-label="${card.isFavorite ? 'إزالة التصنيف من المفضلة' : 'إضافة التصنيف إلى المفضلة'}"
-        aria-pressed="${card.isFavorite ? 'true' : 'false'}"
-      ><i class="${getFavoriteIcon(card.isFavorite)}" aria-hidden="true"></i></button>
     </article>
   `).join('');
 }
@@ -189,7 +194,7 @@ function renderDuaItem(item, index, sessionVm) {
         ${renderDuaSourceBadge(item)}
       </div>
       <p class="amiri-text dua-item-card__text">${escapeHtml(item.text)}</p>
-      ${item.referenceText ? `<p class="dua-item-card__reference">${escapeHtml(item.referenceText)}</p>` : ''}
+      ${getDisplayReference(item) ? `<p class="dua-item-card__reference">${escapeHtml(getDisplayReference(item))}</p>` : ''}
       <div class="dua-item-card__footer">
         <button type="button" class="dua-action-btn" data-duas-action="share-dua" data-duas-dua-id="${escapeHtml(item.id)}"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> مشاركة</button>
         <span class="dua-item-card__divider" aria-hidden="true"></span>
@@ -247,7 +252,7 @@ export function renderDuasSession(sessionVm) {
           ${sessionVm.description ? `<p class="duas-session-hero__description">${escapeHtml(sessionVm.description)}</p>` : ''}
           <div class="duas-session-hero__meta">
             <span class="duas-chip"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${escapeHtml(sessionVm.sourceMeta)}</span>
-            <span class="duas-chip"><i class="fa-solid fa-list-check" aria-hidden="true"></i>${sessionVm.itemCount} دعاء</span>
+            <span class="duas-chip"><i class="fa-solid fa-list-check" aria-hidden="true"></i>${formatDuaCount(sessionVm.itemCount)}</span>
           </div>
         </div>
       </section>
@@ -256,7 +261,7 @@ export function renderDuasSession(sessionVm) {
 
       ${sessionVm.hasMore ? `
         <button type="button" class="duas-load-more" data-duas-action="load-more">
-          عرض ${sessionVm.nextPageCount} دعاء أخرى
+          عرض ${formatDuaCount(sessionVm.nextPageCount)} أخرى
         </button>
       ` : ''}
     </div>
