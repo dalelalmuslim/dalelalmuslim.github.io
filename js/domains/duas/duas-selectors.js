@@ -3,6 +3,17 @@ import { duasHistoryStore } from './duas-history-store.js';
 import { duasPreferencesStore } from './duas-preferences-store.js';
 import { duasSessionStore } from './duas-session-store.js';
 
+const CATEGORY_VISUAL_ORDER = Object.freeze({
+  'distress-and-debt': 10,
+  'travel-and-road-rizq': 20,
+  'rizq-and-blessing': 30,
+  'forgiveness-and-repentance': 40,
+  'quran-duas': 50,
+  'protection-and-fortification': 60,
+  'health-and-healing': 70,
+  'mercy-guidance-and-steadfastness': 80
+});
+
 const CATEGORY_DISPLAY_TITLES = Object.freeze({
   'quran-duas': 'أدعية من القرآن',
   'distress-and-debt': 'أدعية الكرب',
@@ -21,6 +32,24 @@ const CATEGORY_DISPLAY_TITLES = Object.freeze({
   'knowledge-and-understanding': 'أدعية العلم'
 });
 
+const CATEGORY_DISPLAY_DESCRIPTIONS = Object.freeze({
+  'distress-and-debt': 'أدعية تفرّج الهم وتزيل الكرب والضيق',
+  'travel-and-road-rizq': 'أدعية للمسافر وآداب السفر',
+  'rizq-and-blessing': 'أدعية طلب الرزق والبركة في المال',
+  'forgiveness-and-repentance': 'أدعية التوبة والاستغفار والرجوع إلى الله',
+  'quran-duas': 'أدعية قرآنية جامعة للثبات والهداية والرحمة',
+  'protection-and-fortification': 'أدعية التحصين والحفظ والاستعاذة بالله',
+  'health-and-healing': 'أدعية الشفاء والعافية والستر والسلامة'
+});
+
+const CATEGORY_DISPLAY_ICONS = Object.freeze({
+  'distress-and-debt': 'fa-cloud-rain',
+  'travel-and-road-rizq': 'fa-suitcase-rolling',
+  'rizq-and-blessing': 'fa-seedling',
+  'forgiveness-and-repentance': 'fa-person-praying',
+  'quran-duas': 'fa-book-quran'
+});
+
 function getSourceMetaFromType(sourceType) {
   if (sourceType === 'quran') return 'من القرآن';
   if (sourceType === 'hadith') return 'من السنة';
@@ -36,6 +65,20 @@ function getSourceMetaFromItemSource(source) {
 
 function getDisplayTitle(category) {
   return CATEGORY_DISPLAY_TITLES[category?.slug] || category?.title || '';
+}
+
+function getDisplayDescription(category) {
+  return CATEGORY_DISPLAY_DESCRIPTIONS[category?.slug] || category?.description || '';
+}
+
+function getDisplayIcon(category) {
+  return CATEGORY_DISPLAY_ICONS[category?.slug] || category?.icon || 'fa-hands-praying';
+}
+
+function getDisplaySortOrder(category) {
+  const visualOrder = CATEGORY_VISUAL_ORDER[category?.slug];
+  if (Number.isFinite(Number(visualOrder))) return Number(visualOrder);
+  return Number.isFinite(Number(category?.sortOrder)) ? Number(category.sortOrder) + 100 : 9999;
 }
 
 function normalizeArabicText(value) {
@@ -127,8 +170,8 @@ export async function getDuasCatalogViewModel({ filter = 'all', query = '' } = {
       slug: category.slug,
       title: getDisplayTitle(category),
       originalTitle: category.title,
-      description: category.description,
-      icon: category.icon,
+      description: getDisplayDescription(category),
+      icon: getDisplayIcon(category),
       accentTone: category.accentTone,
       estimatedMinutes: category.estimatedMinutes,
       itemCount: category.itemCount,
@@ -136,7 +179,7 @@ export async function getDuasCatalogViewModel({ filter = 'all', query = '' } = {
       sourceMeta: getSourceMetaFromType(category.sourceType),
       isFeatured: category.isFeatured,
       isFavorite: preferences.favoriteSlugs.includes(category.slug),
-      sortOrder: Number.isFinite(Number(category.sortOrder)) ? Number(category.sortOrder) : 9999,
+      sortOrder: getDisplaySortOrder(category),
       queryText: buildCategoryQueryText(category)
     }))
     .filter((card) => {
@@ -197,8 +240,8 @@ export async function getDuasSessionViewModel(categoryKey) {
     slug: category.slug,
     title: getDisplayTitle(category),
     originalTitle: category.title,
-    description: category.description,
-    icon: category.icon,
+    description: getDisplayDescription(category),
+    icon: getDisplayIcon(category),
     accentTone: category.accentTone,
     itemCount: category.itemCount,
     estimatedMinutes: category.estimatedMinutes,

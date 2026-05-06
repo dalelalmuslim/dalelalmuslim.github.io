@@ -21,7 +21,7 @@ import {
   getDuasSessionViewModel
 } from '../../domains/duas/duas-selectors.js';
 
-const SESSION_PAGE_SIZE = 20;
+const SESSION_PAGE_SIZE = 16;
 
 const state = {
   initialized: false,
@@ -211,6 +211,11 @@ export async function dispatchDuasAction(action, payload = {}) {
       state.query = '';
       await renderSection();
       return true;
+    case 'open-more': {
+      const moreButton = document.getElementById('bottomNav')?.querySelector('[data-bottom-nav-more]');
+      if (moreButton instanceof HTMLElement) moreButton.click();
+      return true;
+    }
     case 'retry-load':
       await renderSection({ preserveSession: Boolean(duasSessionStore.getState().activeCategorySlug) });
       return true;

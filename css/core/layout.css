@@ -91,7 +91,6 @@
     }
 }
 
-
 @supports (padding: max(0px)) {
     .header {
         padding-top: max(14px, env(safe-area-inset-top));
@@ -126,4 +125,13 @@
             padding-inline-end: max(10px, env(safe-area-inset-right));
         }
     }
+}
+
+/* Duas 2026 owns its top bar to match the approved mobile reference. */
+body:has(.section--duas.active) .header {
+    display: none;
+}
+
+body:has(.section--duas.active) .page {
+    padding-top: max(8px, env(safe-area-inset-top, 0px));
 }

@@ -3,7 +3,7 @@
 
 <!-- ═══════════════════════════════════════════════
      Bottom Navigation Bar
-     Tabs: الرئيسية | الأذكار | المسبحة | القرآن | المزيد
+     Tabs: الرئيسية | الأذكار | الأدعية | القرآن | المزيد
      Active state managed by js/app/ui/bottom-nav.js
      Section navigation handled by global click-action-map via data-nav-section
      ═══════════════════════════════════════════════ -->
@@ -16,9 +16,9 @@
     <i class="fa-solid fa-moon" aria-hidden="true"></i>
     <span class="bottom-nav__label">الأذكار</span>
   </button>
-  <button class="bottom-nav__tab bottom-nav__tab--center" data-nav-section="masbaha" data-nav-title="المسبحة الذكية" type="button" aria-label="المسبحة">
-    <i class="fa-solid fa-fingerprint" aria-hidden="true"></i>
-    <span class="bottom-nav__label">المسبحة</span>
+  <button class="bottom-nav__tab bottom-nav__tab--center" data-nav-section="duas" data-nav-title="الأدعية" type="button" aria-label="الأدعية">
+    <i class="fa-solid fa-hands-praying" aria-hidden="true"></i>
+    <span class="bottom-nav__label">الأدعية</span>
   </button>
   <button class="bottom-nav__tab" data-nav-section="quran" data-nav-title="القرآن الكريم" type="button" aria-label="القرآن">
     <i class="fa-solid fa-book-quran" aria-hidden="true"></i>
@@ -39,9 +39,9 @@
     <div class="more-drawer__handle" aria-hidden="true"></div>
     <p class="more-drawer__title">المزيد من الأقسام</p>
     <nav class="more-drawer__grid" aria-label="أقسام إضافية">
-      <button class="more-drawer__item" data-nav-section="duas" data-nav-title="الأدعية" type="button">
-        <div class="more-drawer__icon"><i class="fa-solid fa-hands-praying" aria-hidden="true"></i></div>
-        <span>الأدعية</span>
+      <button class="more-drawer__item" data-nav-section="masbaha" data-nav-title="المسبحة الذكية" type="button">
+        <div class="more-drawer__icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></div>
+        <span>المسبحة</span>
       </button>
       <button class="more-drawer__item" data-nav-section="tasks" data-nav-title="المهام اليومية" type="button">
         <div class="more-drawer__icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></div>

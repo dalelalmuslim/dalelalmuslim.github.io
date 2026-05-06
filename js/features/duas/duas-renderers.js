@@ -56,10 +56,28 @@ function renderDailyDuaCard(dailyDua) {
   `;
 }
 
+function renderCatalogAppbar() {
+  return `
+    <div class="duas-appbar duas-appbar--catalog" aria-label="شريط دليل المسلم">
+      <button type="button" class="duas-appbar__icon-btn" data-nav-section="settings" data-nav-title="حسابي" aria-label="الحساب">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+      </button>
+      <div class="duas-appbar__brand" aria-label="دليل المسلم">
+        <span>دليل المسلم</span>
+        <i class="fa-solid fa-mosque" aria-hidden="true"></i>
+      </div>
+      <button type="button" class="duas-appbar__icon-btn" data-duas-action="open-more" aria-label="فتح المزيد">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+  `;
+}
+
 export function renderDuasShell({ activeFilter, searchQuery, dailyDua = null, showCatalogHome = true }) {
   return `
     <div class="duas-shell${showCatalogHome ? '' : ' duas-shell--session-active'}">
       <div id="duasCatalogHome" class="duas-catalog-home${showCatalogHome ? '' : ' is-hidden'}">
+        ${renderCatalogAppbar()}
         <section class="duas-hero" aria-labelledby="duasHeroTitle">
           <div class="duas-hero__scene" aria-hidden="true">
             <span class="duas-hero__moon"></span>
@@ -194,15 +212,15 @@ export function renderDuasSession(sessionVm) {
 
   return `
     <div class="duas-session duas-tone--${escapeHtml(sessionVm.accentTone)}${sessionVm.largeText ? ' is-large-text' : ''}">
-      <header class="duas-reader-bar">
-        <button type="button" class="duas-reader-bar__back" data-duas-action="close-category" aria-label="العودة إلى قسم الأدعية">
+      <header class="duas-appbar duas-appbar--reader">
+        <button type="button" class="duas-appbar__icon-btn duas-appbar__back" data-duas-action="close-category" aria-label="العودة إلى قسم الأدعية">
           <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
         </button>
-        <h2 class="duas-reader-bar__title">${escapeHtml(sessionVm.title)}</h2>
-        <div class="duas-reader-bar__actions">
+        <h2 class="duas-appbar__title">${escapeHtml(sessionVm.title)}</h2>
+        <div class="duas-appbar__actions">
           <button
             type="button"
-            class="duas-reader-action${sessionVm.isFavorite ? ' is-active' : ''}"
+            class="duas-appbar__icon-btn${sessionVm.isFavorite ? ' is-active' : ''}"
             data-duas-action="toggle-favorite"
             data-duas-value="${escapeHtml(sessionVm.slug)}"
             aria-label="${sessionVm.isFavorite ? 'إزالة التصنيف من المفضلة' : 'إضافة التصنيف إلى المفضلة'}"
@@ -210,7 +228,7 @@ export function renderDuasSession(sessionVm) {
           ><i class="${getFavoriteIcon(sessionVm.isFavorite)}" aria-hidden="true"></i></button>
           <button
             type="button"
-            class="duas-reader-action${sessionVm.largeText ? ' is-active' : ''}"
+            class="duas-appbar__icon-btn duas-appbar__text-size${sessionVm.largeText ? ' is-active' : ''}"
             data-duas-action="toggle-large-text"
             aria-label="تبديل حجم خط الأدعية"
             aria-pressed="${sessionVm.largeText ? 'true' : 'false'}"
