@@ -32,18 +32,19 @@ function createCatalogAppbar() {
     const appbar = document.createElement('div');
     appbar.className = 'azkar-appbar';
 
-    const user = createButton('azkar-appbar__icon-btn', 'الحساب');
-    appendIcon(user, 'fa-user');
+    const spacer = document.createElement('span');
+    spacer.className = 'azkar-appbar__spacer';
+    spacer.setAttribute('aria-hidden', 'true');
 
     const brand = document.createElement('div');
     brand.className = 'azkar-appbar__brand';
     brand.appendChild(createTextElement('span', 'دليل المسلم'));
     appendIcon(brand, 'fa-mosque');
 
-    const menu = createButton('azkar-appbar__icon-btn', 'القائمة');
-    appendIcon(menu, 'fa-bars');
+    const user = createButton('azkar-appbar__icon-btn', 'الحساب');
+    appendIcon(user, 'fa-user');
 
-    appbar.append(user, brand, menu);
+    appbar.append(spacer, brand, user);
     return appbar;
 }
 
@@ -89,26 +90,6 @@ function createHero(viewModel, onActivate) {
     card.append(content, visual);
     hero.append(headline, card);
     return hero;
-}
-
-function createFilters(filters, activeFilter, onSetFilter) {
-    const wrap = document.createElement('div');
-    wrap.className = 'azkar-filters';
-    wrap.setAttribute('aria-label', 'تصفية الأذكار');
-
-    filters.forEach((filter) => {
-        const button = createButton('azkar-filter-chip', `عرض ${filter.label}`);
-        button.textContent = filter.label;
-        button.dataset.azkarFilter = filter.key;
-        button.classList.toggle('is-active', filter.key === activeFilter);
-        button.setAttribute('aria-pressed', String(filter.key === activeFilter));
-        button.addEventListener('click', () => {
-            if (typeof onSetFilter === 'function') onSetFilter(filter.key);
-        });
-        wrap.appendChild(button);
-    });
-
-    return wrap;
 }
 
 function createSectionHeading() {
