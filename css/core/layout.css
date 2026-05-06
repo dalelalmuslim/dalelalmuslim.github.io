@@ -137,46 +137,48 @@ body:has(.section--duas.active) .page {
 }
 
 /* Duas 2026 final hero alignment polish.
-   Scoped here intentionally because the shared shell owns the page/header frame
-   while the Duas section owns its in-section appbar. */
+   This replaces the previous visual-only tweaks and keeps all changes scoped to
+   the Duas active section so the shared shell remains stable elsewhere. */
 body:has(.section--duas.active) .section--duas .duas-hero__eyebrow {
     display: none;
 }
 
 body:has(.section--duas.active) .section--duas .duas-hero {
-    min-height: 218px;
+    min-height: 226px;
 }
 
 body:has(.section--duas.active) .section--duas .duas-hero__scene {
-    inset-inline-start: auto;
-    inset-inline-end: 0;
-    width: 55%;
-    opacity: 0.74;
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+    width: 54%;
+    opacity: 0.72;
 }
 
 body:has(.section--duas.active) .section--duas .duas-hero__content {
-    width: min(48%, 320px);
+    z-index: 4;
+    width: min(46%, 310px);
     margin-inline-start: 0;
     margin-inline-end: auto;
     text-align: right;
 }
 
 body:has(.section--duas.active) .section--duas .duas-hero__title {
-    font-size: clamp(2.25rem, 9.5vw, 3.2rem);
+    font-size: clamp(2.2rem, 9.2vw, 3.12rem);
     line-height: 1;
 }
 
 body:has(.section--duas.active) .section--duas .duas-hero__subtitle {
-    max-width: 16rem;
+    max-width: 15.5rem;
+    line-height: 1.35;
 }
 
 body:has(.section--duas.active) .section--duas .duas-daily-card {
-    inset-inline-start: 15px;
-    inset-inline-end: auto;
+    inset-inline-start: auto;
+    inset-inline-end: 15px;
     inset-block-end: 13px;
     grid-template-columns: 38px minmax(0, 1fr);
     width: min(63%, 350px);
-    min-height: 94px;
+    min-height: 96px;
     padding: 11px 13px;
     align-items: center;
 }
@@ -219,17 +221,27 @@ body:has(.section--duas.active) .section--duas .duas-session-hero__art {
 body:has(.section--duas.active) .section--duas .duas-session-hero__art span {
     inset-inline-start: 6px;
     inset-block-start: 8px;
-    width: 76px;
-    height: 64px;
-    font-size: 1.68rem;
+    width: 78px;
+    height: 68px;
+    font-size: 1.7rem;
 }
 
-body:has(.section--duas.active) .section--duas .duas-session-hero__art i:last-child {
+body:has(.section--duas.active) .section--duas .duas-session-hero__art span > i {
+    position: static;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    opacity: 1;
+}
+
+body:has(.section--duas.active) .section--duas .duas-session-hero__art > i:last-child {
+    position: absolute;
     inset-inline-start: -8px;
     inset-block-end: 0;
     width: 136px;
     height: 94px;
-    opacity: 0.78;
+    opacity: 0.72;
 }
 
 body:has(.section--duas.active) .section--duas .duas-search::-webkit-search-cancel-button,
@@ -241,17 +253,17 @@ body:has(.section--duas.active) .section--duas .duas-search::-webkit-search-deco
 
 @media (max-width: 520px) {
     body:has(.section--duas.active) .section--duas .duas-hero {
-        min-height: 212px;
+        min-height: 224px;
         padding: 15px;
     }
 
     body:has(.section--duas.active) .section--duas .duas-hero__content {
-        width: 49%;
+        width: 47%;
     }
 
     body:has(.section--duas.active) .section--duas .duas-daily-card {
-        width: 64%;
-        min-height: 94px;
+        width: 63%;
+        min-height: 96px;
         padding: 11px 12px;
     }
 
@@ -269,8 +281,8 @@ body:has(.section--duas.active) .section--duas .duas-search::-webkit-search-deco
     }
 
     body:has(.section--duas.active) .section--duas .duas-session-hero__art span {
-        width: 68px;
-        height: 58px;
-        font-size: 1.48rem;
+        width: 70px;
+        height: 60px;
+        font-size: 1.5rem;
     }
 }
